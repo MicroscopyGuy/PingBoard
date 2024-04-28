@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using System.Text.Json.Serialization;
 using PingBoard.Pinging;
 
 
@@ -9,9 +10,11 @@ namespace PingBoard.Pinging{
         /// IPStatus is an enum defined in System.Net.NetworkInformation, and which represents
         /// the exact status of an individual ping sent via a ping function call 
         /// </summary>
+        
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public IPStatus IcmpStatusCode { get; set;}
 
-        // 
+         
         /// <summary>
         /// A brief description of the ICMP StatusCode, intended for storage in DB and display in UI
         /// </summary>
@@ -29,6 +32,8 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// The resulting state of the monitoring warranted by the particular IPStatus returned by an *individual* ping
         /// </summary>
+        
+        [JsonConverter(typeof(JsonStringEnumConverter))]
         public  PingingStates.PingState State {get; set;}
     }
 }
