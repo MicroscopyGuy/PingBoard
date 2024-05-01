@@ -18,7 +18,12 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// The actual payload contained in the packets sent via each individual ping call
         /// </summary>
-        public string? PayloadStr {get; set;} 
+        public string? PayloadStr {get; set;}
+
+        /// <summary>
+        /// The TTL (time to live) set for the ping call, the PingSender class defaults to 128
+        /// </summary>
+        public int Ttl {get; set;} 
 
     }
 }

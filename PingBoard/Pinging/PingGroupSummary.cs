@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -27,7 +28,7 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// The lowest of the recorded pings in the group
         /// </summary>
-        public float? MinimumPing  {get; set;} 
+        public short? MinimumPing  {get; set;} 
         
         /// <summary>
         /// The average measurement of all the pings in the group
@@ -37,7 +38,7 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// The highest of the recorded pings in the group
         /// </summary>         
-        public float? MaximumPing {get; set;}
+        public short? MaximumPing {get; set;}
         
         /// <summary>
         /// The variance of the pings in the group; how far apart from the average ping measurement the group was
@@ -52,7 +53,13 @@ namespace PingBoard.Pinging{
         /// If an IP status is returned that is mapped to the Halt state (in ICMPStatusCodes.json),
         /// this property will indicate which exact IPStatus was returned
         /// </summary>
-        public IPStatus HaltingIPStatus {get; set;}
+        public IPStatus TerminatingIPStatus {get; set;}
+
+        /// <summary>
+        /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
+        /// For more information, see ThresholdExceededFlags.cs.
+        /// </summary>
+        public byte PingQualityFlags {get; set;}
 
         /// <summary>
         /// Safely initializes and returns a PingGroupSummmary object with five properties safely intialized to default values:
@@ -64,10 +71,11 @@ namespace PingBoard.Pinging{
         public static PingGroupSummary Empty(){
             return new PingGroupSummary(){
                 Start = DateTime.MinValue,
-                End    = DateTime.MaxValue,
-                MinimumPing     = float.MaxValue,
-                MaximumPing     = float.MinValue,
-                AveragePing     = 0
+                End   = DateTime.MaxValue,
+                MinimumPing      = short.MaxValue,
+                MaximumPing      = short.MinValue,
+                AveragePing      = 0,
+                PingQualityFlags = 0b00000000 // bitmask for PingQualityFlags
             };
         }
     }

@@ -7,7 +7,7 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// Immutable data container allowing each IPStatus enum to reference its associated info
         /// <seealso> **Important:** Note that the DestinationProhibited and DestinationProtocolUnreachable enums
-        ///                          both have the same ordinal value. This causes a System.TypeInitiliazationException when
+        ///                          both have the same ordinal value. This causes a System.TypeInitializationException when
         ///                          deserializing this data into StatusCodes, the IImmutableDictionary. Since the Dictionary 
         ///                          checks these ordinal values for uniqueness (in this case, both 11004), they are considered duplicates.
         ///                          
@@ -22,7 +22,7 @@ namespace PingBoard.Pinging{
         public static readonly IImmutableDictionary<IPStatus, IcmpStatusCodeEntry> StatusCodes;
 
         /// <summary>
-        /// Static constructor, populates Errors with the IPStatus information from ICMPStatusCodes.json
+        /// Static constructor, populates StatusCodes with the IPStatus information from ICMPStatusCodes.json
         /// </summary>
         static IcmpStatusCodeLookup(){
             string statusCodeInfoFromJson = ReadInIpStatusInfo("ICMPStatusCodes.json");
