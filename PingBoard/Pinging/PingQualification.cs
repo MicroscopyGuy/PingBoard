@@ -24,7 +24,8 @@ namespace PingBoard.Pinging{
         public PingQualification(IOptions<PingingThresholdsConfig> pingThresholds){
             _pingThresholds = pingThresholds.Value;
         }
-
+        
+        
         /// <summary>
         /// Uses the thresholds stored in _pingThresholds as well as the flags stored in the enum ThresholdExeededFlags
         /// in order to compute the byte PingGroupSummary.PingQualitySummary. To be used later to check for exceeded thresholds.

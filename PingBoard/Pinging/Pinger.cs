@@ -3,6 +3,7 @@ using System.Net.NetworkInformation;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
+using Pingboard.Pinging;
 using PingBoard.Pinging;
 
 ///<TODO>
@@ -22,39 +23,34 @@ using PingBoard.Pinging;
 /// the round trip time is a long, not a float, fix this accordingly
 /// 
 ///</TODO>
-public class Pinger{
-    private readonly PingingBehaviorConfig _pingBehavior;
-
-    // consider removing this (also remove from registration in Program.cs and from constructor if so)
+public class GroupPinger{
     private readonly PingingThresholdsConfig _pingThresholds;
-    private readonly ILogger<Pinger> _logger;
+    private readonly ILogger<GroupPinger> _logger;
     private readonly PingQualification _pingQualifier; 
 
-    public Pinger(PingQualification pingQualifier, IOptions<PingingBehaviorConfig> behaviorConfig, 
-                  IOptions<PingingThresholdsConfig> thresholdsConfig, ILogger<Pinger> logger){
+    private readonly IndividualPinger _individualPinger;
+
+    public GroupPinger(IndividualPinger individualPinger, PingQualification pingQualifier, 
+                       IOptions<PingingThresholdsConfig> thresholdsConfig, ILogger<GroupPinger> logger){
         _pingQualifier = pingQualifier;
-        _pingBehavior = behaviorConfig.Value;
         _pingThresholds = thresholdsConfig.Value;
         _logger = logger;
+        _individualPinger = individualPinger;
+
     }
 
     public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
         long[] responseTimes = new long[numberOfPings];
         int packetsLost = 0;
- 
-        using Ping pingSender = new Ping();
-        PingOptions options = new PingOptions();
-        options.DontFragment = true; // prevents data from being split into > 1 packet, crucial
-        options.Ttl = this._pingBehavior.Ttl;
-        byte[] buffer = Encoding.ASCII.GetBytes(_pingBehavior.PayloadStr!);
 
         int pingCounter = 0;
         while(pingCounter < numberOfPings){
 
             if (pingGroupInfo.Start == DateTime.MinValue){ pingGroupInfo.Start = DateTime.Now; }
 
-            PingReply response = await pingSender.SendPingAsync(target, _pingBehavior.WaitMs, buffer, options);
+            //PingReply response = await pingSender.SendPingAsync(target, _pingBehavior.WaitMs, buffer, options);
+            PingReply response = await _individualPinger.SendPingIndividualAsync(target);
             packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0; 
             PingingStates.PingState currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
 

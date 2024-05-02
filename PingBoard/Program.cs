@@ -1,4 +1,6 @@
+using System.Net.NetworkInformation;
 using Microsoft.Extensions.Options;
+using Pingboard.Pinging;
 using PingBoard.Pinging;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,8 +11,11 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddTransient<Pinger>();
+builder.Services.AddTransient<GroupPinger>();
 builder.Services.AddTransient<PingQualification>();
+builder.Services.AddTransient<IndividualPinger>();
+builder.Services.AddTransient<Ping>();
+builder.Services.AddTransient<PingOptions>();
 builder.Services.AddHostedService<NetworkMonitoringService>();
 
 builder.Services.Configure<PingBoard.Pinging.PingingBehaviorConfig>(
