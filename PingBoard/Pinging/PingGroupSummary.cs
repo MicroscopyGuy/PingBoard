@@ -78,5 +78,19 @@ namespace PingBoard.Pinging{
                 PingQualityFlags = 0b00000000 // bitmask for PingQualityFlags
             };
         }
+
+        public float CalculatePingVariance(long[] responseTimes, float mean){
+            if (responseTimes.Length <= 1){ 
+                return 0;
+            }
+
+            float sumSquaredMeanDiff = 0;
+            foreach (long rtt in responseTimes){
+                sumSquaredMeanDiff += (float) Math.Pow(rtt-mean, 2);
+            }
+            
+            // variance
+            return (float) sumSquaredMeanDiff / responseTimes.Length;
+        }
     }
 }

@@ -3,10 +3,10 @@ using System.Net;
 
 public class NetworkMonitoringService : BackgroundService
 {
-    private readonly ILogger<GroupPinger> _logger;
-    private readonly GroupPinger _groupPinger;
+    private readonly ILogger<IGroupPinger> _logger;
+    private readonly IGroupPinger _groupPinger;
 
-    public NetworkMonitoringService(ILogger<GroupPinger> logger, GroupPinger groupPinger)
+    public NetworkMonitoringService(ILogger<IGroupPinger> logger, IGroupPinger groupPinger)
     {
         _logger = logger;
         _groupPinger = groupPinger;

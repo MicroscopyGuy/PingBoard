@@ -23,18 +23,18 @@ using PingBoard.Pinging;
 /// the round trip time is a long, not a float, fix this accordingly
 /// 
 ///</TODO>
-public class GroupPinger{
+public class GroupPinger : IGroupPinger{
     private readonly PingingThresholdsConfig _pingThresholds;
-    private readonly ILogger<GroupPinger> _logger;
+    private readonly ILogger<IGroupPinger> _logger;
     private readonly PingQualification _pingQualifier; 
 
-    private readonly IndividualPinger _individualPinger;
+    private readonly IIndividualPinger _individualPinger;
 
-    public GroupPinger(IndividualPinger individualPinger, PingQualification pingQualifier, 
-                       IOptions<PingingThresholdsConfig> thresholdsConfig, ILogger<GroupPinger> logger){
-        _pingQualifier = pingQualifier;
-        _pingThresholds = thresholdsConfig.Value;
-        _logger = logger;
+    public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, 
+                       IOptions<PingingThresholdsConfig> thresholdsConfig, ILogger<IGroupPinger> logger){
+        _pingQualifier    = pingQualifier;
+        _pingThresholds   = thresholdsConfig.Value;
+        _logger           = logger;
         _individualPinger = individualPinger;
 
     }
@@ -48,8 +48,6 @@ public class GroupPinger{
         while(pingCounter < numberOfPings){
 
             if (pingGroupInfo.Start == DateTime.MinValue){ pingGroupInfo.Start = DateTime.Now; }
-
-            //PingReply response = await pingSender.SendPingAsync(target, _pingBehavior.WaitMs, buffer, options);
             PingReply response = await _individualPinger.SendPingIndividualAsync(target);
             packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0; 
             PingingStates.PingState currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
@@ -77,26 +75,13 @@ public class GroupPinger{
             pingCounter++; 
 
         }
-        pingGroupInfo.Jitter = CalculatePingVariance(responseTimes, pingGroupInfo.AveragePing!.Value);
+        pingGroupInfo.Jitter = pingGroupInfo.CalculatePingVariance(responseTimes, pingGroupInfo.AveragePing!.Value);
         pingGroupInfo.AveragePing /= pingCounter;
         pingGroupInfo.PacketLoss = packetsLost/pingCounter;
         pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
         return pingGroupInfo;
     }
 
-    public static float CalculatePingVariance(long[] responseTimes, float mean){
-        if (responseTimes.Length <= 1){ 
-            return 0;
-        }
-
-        float sumSquaredMeanDiff = 0;
-        foreach (long rtt in responseTimes){
-            sumSquaredMeanDiff += (float) Math.Pow(rtt-mean, 2);
-        }
-
-        
-        // variance
-        return (float) sumSquaredMeanDiff / responseTimes.Length;
-    }
+    
 
 }

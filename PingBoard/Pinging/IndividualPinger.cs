@@ -10,7 +10,7 @@ namespace Pingboard.Pinging{
     /// <summary>
     /// Essentially a wrapper around C#'s Ping library. 
     /// </summary>
-    public class IndividualPinger{
+    public class IndividualPinger : IIndividualPinger{
         private readonly PingingBehaviorConfig _pingBehavior;
         private readonly ILogger<IndividualPinger> _logger;
         private readonly PingOptions _pingOptions;
