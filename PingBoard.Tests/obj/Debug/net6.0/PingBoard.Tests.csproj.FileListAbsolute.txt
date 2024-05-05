@@ -110,3 +110,5 @@ C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net6.0\PingBoard.Tests.pdb
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net6.0\PingBoard.Tests.genruntimeconfig.cache
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net6.0\ref\PingBoard.Tests.dll
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\bin\Debug\net6.0\Castle.Core.dll
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\bin\Debug\net6.0\Moq.dll

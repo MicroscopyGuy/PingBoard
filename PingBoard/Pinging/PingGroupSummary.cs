@@ -59,7 +59,7 @@ namespace PingBoard.Pinging{
         /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
         /// For more information, see ThresholdExceededFlags.cs.
         /// </summary>
-        public byte PingQualityFlags {get; set;}
+        public PingQualification.ThresholdExceededFlags PingQualityFlags {get; set;}
 
         /// <summary>
         /// Safely initializes and returns a PingGroupSummmary object with five properties safely intialized to default values:
@@ -88,7 +88,7 @@ namespace PingBoard.Pinging{
             foreach (long rtt in responseTimes){
                 sumSquaredMeanDiff += (float) Math.Pow(rtt-mean, 2);
             }
-            
+
             // variance
             return (float) sumSquaredMeanDiff / responseTimes.Length;
         }

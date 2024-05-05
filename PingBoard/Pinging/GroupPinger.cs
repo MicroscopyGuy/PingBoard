@@ -24,16 +24,13 @@ using PingBoard.Pinging;
 /// 
 ///</TODO>
 public class GroupPinger : IGroupPinger{
-    private readonly PingingThresholdsConfig _pingThresholds;
     private readonly ILogger<IGroupPinger> _logger;
     private readonly PingQualification _pingQualifier; 
-
     private readonly IIndividualPinger _individualPinger;
 
-    public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, 
-                       IOptions<PingingThresholdsConfig> thresholdsConfig, ILogger<IGroupPinger> logger){
+    public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier,
+                       ILogger<IGroupPinger> logger){
         _pingQualifier    = pingQualifier;
-        _pingThresholds   = thresholdsConfig.Value;
         _logger           = logger;
         _individualPinger = individualPinger;
 
@@ -76,8 +73,8 @@ public class GroupPinger : IGroupPinger{
 
         }
         pingGroupInfo.Jitter = pingGroupInfo.CalculatePingVariance(responseTimes, pingGroupInfo.AveragePing!.Value);
-        pingGroupInfo.AveragePing /= pingCounter;
-        pingGroupInfo.PacketLoss = packetsLost/pingCounter;
+        pingGroupInfo.AveragePing = pingCounter > 0 ? pingGroupInfo.AveragePing/pingCounter : 0;
+        pingGroupInfo.PacketLoss = pingCounter > 0 ? packetsLost/pingCounter : 0;
         pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
         return pingGroupInfo;
     }
