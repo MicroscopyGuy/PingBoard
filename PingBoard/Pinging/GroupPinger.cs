@@ -46,12 +46,11 @@ public class GroupPinger : IGroupPinger{
 
             if (pingGroupInfo.Start == DateTime.MinValue){ pingGroupInfo.Start = DateTime.Now; }
             PingReply response = await _individualPinger.SendPingIndividualAsync(target);
+            pingGroupInfo.End = DateTime.Now;  // set time received, since may terminate prematurely keep this up to date
             packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0; 
             PingingStates.PingState currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
 
             if (currentPingState == PingingStates.PingState.Continue){
-                if (pingCounter == numberOfPings){ pingGroupInfo.End = DateTime.Now; } // set time received
-
                 pingGroupInfo.AveragePing += response.RoundtripTime;
                 if (response.RoundtripTime < pingGroupInfo.MinimumPing){ pingGroupInfo.MinimumPing = (short) response.RoundtripTime; }
                 if (response.RoundtripTime > pingGroupInfo.MaximumPing){ pingGroupInfo.MaximumPing = (short) response.RoundtripTime; }
@@ -72,8 +71,9 @@ public class GroupPinger : IGroupPinger{
             pingCounter++; 
 
         }
-        pingGroupInfo.Jitter = pingGroupInfo.CalculatePingVariance(responseTimes, pingGroupInfo.AveragePing!.Value);
-        pingGroupInfo.AveragePing = pingCounter > 0 ? pingGroupInfo.AveragePing/pingCounter : 0;
+        
+        pingGroupInfo.AveragePing = (float) Math.Round(pingCounter > 0 ? pingGroupInfo.AveragePing!.Value/pingCounter : 0, 3);
+        pingGroupInfo.Jitter = PingGroupSummary.CalculatePingJitter(responseTimes);
         pingGroupInfo.PacketLoss = pingCounter > 0 ? packetsLost/pingCounter : 0;
         pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
         return pingGroupInfo;

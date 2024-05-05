@@ -80,7 +80,6 @@ namespace PingBoard.Pinging{
                         qualityDescription.Append(", ");
                     }
                     qualityDescription.Append(flag.ToString());
-
                 }
             }
             return qualityDescription.ToString();

@@ -53,7 +53,7 @@ namespace PingBoard.Pinging{
         /// If an IP status is returned that is mapped to the Halt state (in ICMPStatusCodes.json),
         /// this property will indicate which exact IPStatus was returned
         /// </summary>
-        public IPStatus TerminatingIPStatus {get; set;}
+        public IPStatus? TerminatingIPStatus {get; set;}
 
         /// <summary>
         /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
@@ -79,7 +79,7 @@ namespace PingBoard.Pinging{
             };
         }
 
-        public float CalculatePingVariance(long[] responseTimes, float mean){
+        public static float CalculatePingStdDeviation(long[] responseTimes, float mean){
             if (responseTimes.Length <= 1){ 
                 return 0;
             }
@@ -89,8 +89,21 @@ namespace PingBoard.Pinging{
                 sumSquaredMeanDiff += (float) Math.Pow(rtt-mean, 2);
             }
 
-            // variance
-            return (float) sumSquaredMeanDiff / responseTimes.Length;
+            return (float) Math.Sqrt(sumSquaredMeanDiff / responseTimes.Length);
+        }
+
+        public static float CalculatePingJitter(long[] responseTimes){
+            if (responseTimes.Length <= 1){
+                return 0;
+            }
+            
+            double jitter = 0;
+            for (int i = 0; i < responseTimes.Length-1; i++){
+                jitter += Math.Abs(responseTimes[i] - responseTimes[i+1]);
+            }
+
+            jitter /= responseTimes.Length-1;
+            return (float) Math.Round(jitter, 3);
         }
     }
 }

@@ -78,7 +78,7 @@ public class PingQualificationTesting
             PacketLossPercentage = 0
         };
 
-        PingGroupSummary poorQualityResult = new PingGroupSummary();
+        PingGroupSummary poorQualityResult = PingGroupSummary.Empty();
         poorQualityResult.MinimumPing = 102;
         poorQualityResult.AveragePing = 182;
         poorQualityResult.MaximumPing = 2987;
