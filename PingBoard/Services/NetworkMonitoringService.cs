@@ -6,7 +6,6 @@ public class NetworkMonitoringService : BackgroundService
 {
     private readonly ILogger<IGroupPinger> _logger;
     private readonly IGroupPinger _groupPinger;
-
     private readonly PingingBehaviorConfig _pingingBehavior;
 
     public NetworkMonitoringService( IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior,
@@ -20,8 +19,8 @@ public class NetworkMonitoringService : BackgroundService
     {
         while (!stoppingToken.IsCancellationRequested)
         {
-            PingGroupSummary result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse("8.8.8.8"), 64);
-            if (!PingQualification.PingQualityWithinThresholds(result.PingQualityFlags) || result.TerminatingIPStatus != null){
+            PingGroupSummary result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse("8.8.8.8"), _pingingBehavior.PingsPerCall);
+            if (PingQualification.PingQualityWithinThresholds(result.PingQualityFlags) || result.TerminatingIPStatus != null){
                 Console.WriteLine($"MinimumPing: {result.MinimumPing} AveragePing: {result.AveragePing} " +
                                   $"MaximumPing: {result.MaximumPing} Jitter: {result.Jitter} PacketLoss: {result.PacketLoss} " +
                                   $"TerminatingIPStatus: {result.TerminatingIPStatus} EndTime: {result.End}");
