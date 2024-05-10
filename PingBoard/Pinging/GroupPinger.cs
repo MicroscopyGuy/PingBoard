@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
@@ -25,12 +26,15 @@ using PingBoard.Pinging;
 ///</TODO>
 public class GroupPinger : IGroupPinger{
     private readonly ILogger<IGroupPinger> _logger;
+
+    private readonly PingingBehaviorConfig _pingBehavior;
     private readonly PingQualification _pingQualifier; 
     private readonly IIndividualPinger _individualPinger;
 
     public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier,
-                       ILogger<IGroupPinger> logger){
+                       IOptions<PingingBehaviorConfig> pingBehavior, ILogger<IGroupPinger> logger){
         _pingQualifier    = pingQualifier;
+        _pingBehavior     = pingBehavior.Value;
         _logger           = logger;
         _individualPinger = individualPinger;
 
@@ -39,37 +43,40 @@ public class GroupPinger : IGroupPinger{
     public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
         long[] responseTimes = new long[numberOfPings];
-        int packetsLost = 0;
 
+        TimeSpan baselineWaitTimeInBetweenPings = TimeSpan.FromMilliseconds(_pingBehavior.WaitMs/numberOfPings);
+        TimeSpan MinimumWaitTime                = TimeSpan.FromMilliseconds(10);
+        Stopwatch timer = new Stopwatch();
+        pingGroupInfo.Start = DateTime.UtcNow;
+        
+        int packetsLost = 0;
         int pingCounter = 0;
         while(pingCounter < numberOfPings){
-
+            timer.Restart();
             if (pingGroupInfo.Start == DateTime.MinValue){ pingGroupInfo.Start = DateTime.Now; }
+  
             PingReply response = await _individualPinger.SendPingIndividualAsync(target);
-            pingGroupInfo.End = DateTime.Now;  // set time received, since may terminate prematurely keep this up to date
-            packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0; 
+            pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
+            packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0;
             PingingStates.PingState currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
 
             if (currentPingState == PingingStates.PingState.Continue){
                 pingGroupInfo.AveragePing += response.RoundtripTime;
                 if (response.RoundtripTime < pingGroupInfo.MinimumPing){ pingGroupInfo.MinimumPing = (short) response.RoundtripTime; }
                 if (response.RoundtripTime > pingGroupInfo.MaximumPing){ pingGroupInfo.MaximumPing = (short) response.RoundtripTime; }
-
                 responseTimes[pingCounter] = response.RoundtripTime;
             }
 
             else if (currentPingState == PingingStates.PingState.Pause || currentPingState == PingingStates.PingState.Halt){
-
-                // probably should pause, this way each pause results in a wait of 1 x WaitMs, 
-                // as opposed to NumberOfPingsToSend x WaitMs (32 x 3 sec = 96 sec, or  > 1.5 minutes!)
-                pingGroupInfo.End = DateTime.Now;
-                pingGroupInfo.TerminatingIPStatus = response.Status;
-                 
-                // 
+                pingGroupInfo.TerminatingIPStatus = response.Status; 
                 break;
             }
-            pingCounter++; 
 
+            pingCounter++;
+            timer.Stop();
+            TimeSpan waitMinusPingTime = baselineWaitTimeInBetweenPings-TimeSpan.FromMilliseconds(timer.Elapsed.TotalMilliseconds);
+            TimeSpan adjustedWaitBeforeNextPing = waitMinusPingTime > MinimumWaitTime ? waitMinusPingTime : MinimumWaitTime;
+            await Task.Delay(adjustedWaitBeforeNextPing);
         }
         
         pingGroupInfo.AveragePing = (float) Math.Round(pingCounter > 0 ? pingGroupInfo.AveragePing!.Value/pingCounter : 0, 3);

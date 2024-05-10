@@ -20,14 +20,14 @@ public class NetworkMonitoringService : BackgroundService
         while (!stoppingToken.IsCancellationRequested)
         {
             PingGroupSummary result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse("8.8.8.8"), _pingingBehavior.PingsPerCall);
-            if (PingQualification.PingQualityWithinThresholds(result.PingQualityFlags) || result.TerminatingIPStatus != null){
+            if (true /*!PingQualification.PingQualityWithinThresholds(result.PingQualityFlags) || result.TerminatingIPStatus != null*/){
                 Console.WriteLine($"MinimumPing: {result.MinimumPing} AveragePing: {result.AveragePing} " +
                                   $"MaximumPing: {result.MaximumPing} Jitter: {result.Jitter} PacketLoss: {result.PacketLoss} " +
-                                  $"TerminatingIPStatus: {result.TerminatingIPStatus} EndTime: {result.End}");
+                                  $"TerminatingIPStatus: {result.TerminatingIPStatus} EndTime: {result.End!.Value.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}");
             }
             
 
-            await Task.Delay(_pingingBehavior.WaitMs, stoppingToken);
+            await Task.Delay(0,stoppingToken);
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Pingboard.Pinging{
 
             PingReply response = await _pinger.SendPingAsync(
                 target, 
-                _pingBehavior.WaitMs,
+                _pingBehavior.TimeoutMs,
                 Encoding.ASCII.GetBytes(_pingBehavior.PayloadStr!), 
                 _pingOptions
             );
