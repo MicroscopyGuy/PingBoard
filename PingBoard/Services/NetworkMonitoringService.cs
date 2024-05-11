@@ -2,6 +2,7 @@ using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
+using PingBoard.Pinging.Configuration;
 using System.Net;
 
 public class NetworkMonitoringService : BackgroundService

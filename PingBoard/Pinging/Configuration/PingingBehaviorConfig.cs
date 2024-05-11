@@ -1,5 +1,4 @@
-
-namespace PingBoard.Pinging{
+namespace PingBoard.Pinging.Configuration{
     /// <summary>
     /// A simple class for holding associated with configurable pinging behavior
     /// </summary>

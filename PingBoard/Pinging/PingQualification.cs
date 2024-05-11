@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Options;
+using PingBoard.Pinging.Configuration;
 
 namespace PingBoard.Pinging{
 
@@ -16,7 +17,6 @@ namespace PingBoard.Pinging{
         /// Needed in order to set the ThresholdFlags.
         /// </summary>
         private readonly PingingThresholdsConfig _pingThresholds;
-
 
         /// <summary>
         /// Flags used to encode and decode qualitative information about a ping group,
@@ -37,7 +37,6 @@ namespace PingBoard.Pinging{
             _pingThresholds = pingThresholds.Value;
         }
         
-
         /// <summary>
         /// Uses the thresholds stored in _pingThresholds as well as the flags stored in the enum ThresholdExeededFlags
         /// in order to compute the byte PingGroupSummary.PingQualitySummary. To be used later to check for exceeded thresholds.
