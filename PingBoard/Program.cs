@@ -1,4 +1,5 @@
 using System.Net.NetworkInformation;
+using FluentValidation;
 using Microsoft.Extensions.Options;
 using Pingboard.Pinging;
 using PingBoard.Pinging;
@@ -24,6 +25,8 @@ builder.Services.Configure<PingBoard.Pinging.PingingBehaviorConfig>(
 builder.Services.Configure<PingBoard.Pinging.PingingThresholdsConfig>(
     builder.Configuration.GetSection("PingingThresholds"));
 
+builder.Services.AddTransient<PingingBehaviorConfigValidator>();
+builder.Services.AddTransient<PingingThresholdsConfigValidator>();
 
 var app = builder.Build();
 

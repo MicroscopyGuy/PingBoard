@@ -46,6 +46,7 @@ public class GroupPinger : IGroupPinger{
 
         TimeSpan baselineWaitTimeInBetweenPings = TimeSpan.FromMilliseconds(_pingBehavior.WaitMs/numberOfPings);
         TimeSpan MinimumWaitTime                = TimeSpan.FromMilliseconds(10);
+        TimeSpan waitMinusPingTime, adjustedWaitBeforeNextPing;
         Stopwatch timer = new Stopwatch();
         pingGroupInfo.Start = DateTime.UtcNow;
         
@@ -74,8 +75,8 @@ public class GroupPinger : IGroupPinger{
 
             pingCounter++;
             timer.Stop();
-            TimeSpan waitMinusPingTime = baselineWaitTimeInBetweenPings-TimeSpan.FromMilliseconds(timer.Elapsed.TotalMilliseconds);
-            TimeSpan adjustedWaitBeforeNextPing = waitMinusPingTime > MinimumWaitTime ? waitMinusPingTime : MinimumWaitTime;
+            waitMinusPingTime = baselineWaitTimeInBetweenPings-TimeSpan.FromMilliseconds(timer.Elapsed.TotalMilliseconds);
+            adjustedWaitBeforeNextPing = waitMinusPingTime > MinimumWaitTime ? waitMinusPingTime : MinimumWaitTime;
             await Task.Delay(adjustedWaitBeforeNextPing);
         }
         
