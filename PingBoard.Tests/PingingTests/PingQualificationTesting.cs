@@ -1,6 +1,7 @@
 using System.Net.NetworkInformation;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
+using PingBoard.Pinging.Configuration;
 
 namespace PingBoard.Tests;
 
