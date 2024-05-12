@@ -39,14 +39,14 @@ namespace PingBoard.Pinging{
             
             int packetsLost = 0;
             int pingCounter = 0;
-            while(pingCounter < numberOfPings){
+            PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
+            while(pingCounter < numberOfPings && currentPingState == PingingStates.PingState.Continue){
                 timer.Restart();
-                if (pingGroupInfo.Start == DateTime.MinValue){ pingGroupInfo.Start = DateTime.Now; }
     
                 PingReply response = await _individualPinger.SendPingIndividualAsync(target);
                 pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
                 packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0;
-                PingingStates.PingState currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
+                currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
 
                 if (currentPingState == PingingStates.PingState.Continue){
                     pingGroupInfo.AveragePing += response.RoundtripTime;
@@ -57,7 +57,6 @@ namespace PingBoard.Pinging{
 
                 else if (currentPingState == PingingStates.PingState.Pause || currentPingState == PingingStates.PingState.Halt){
                     pingGroupInfo.TerminatingIPStatus = response.Status; 
-                    break;
                 }
 
                 pingCounter++;
@@ -69,7 +68,7 @@ namespace PingBoard.Pinging{
             
             pingGroupInfo.AveragePing = (float) Math.Round(pingCounter > 0 ? pingGroupInfo.AveragePing!.Value/pingCounter : 0, 3);
             pingGroupInfo.Jitter = PingGroupSummary.CalculatePingJitter(responseTimes);
-            pingGroupInfo.PacketLoss = pingCounter > 0 ? packetsLost/pingCounter : 0;
+            pingGroupInfo.PacketLoss = pingCounter > 0 ? packetsLost/pingCounter * 100 : 0;
             pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
             return pingGroupInfo;
         }

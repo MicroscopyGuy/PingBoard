@@ -29,10 +29,7 @@ namespace Pingboard.Pinging{
         }
 
         public async Task<PingReply> SendPingIndividualAsync(IPAddress target){
-
-            
             Stopwatch timer = Stopwatch.StartNew();
-
 
             PingReply response = await _pinger.SendPingAsync(
                 target, 
@@ -40,6 +37,7 @@ namespace Pingboard.Pinging{
                 Encoding.ASCII.GetBytes(_pingBehavior.PayloadStr!), 
                 _pingOptions
             );
+            
             timer.Stop();
             long elapsedMicroseconds = timer.ElapsedTicks/(Stopwatch.Frequency / (1000L * 1000L));
             float elapsedMilliseconds = (float) elapsedMicroseconds/ 1000L;
