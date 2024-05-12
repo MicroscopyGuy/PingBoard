@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "iVuCWv7NwFx7UfyahaJCJQXitPeqSfwhORzTDfJjZbWCOrLodNogJgJTkZ7qLCuHrf7hjI/gzPz3hrgXU5SKyw==",
+  "dgSpecHash": "/+mzbo9JEp8oS6yCDaFWi3Z5Q7LTnDg7dMhzwif3kjwKxbjS4jbqyRw9QnWMHkGg+DvU7m+8CsAk+DemUBWcnw==",
   "success": true,
   "projectFilePath": "C:\\Users\\LeorGoldberg\\Documents\\Projects\\PingBoard\\PingBoard\\PingBoard.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\fluentvalidation\\11.9.1\\fluentvalidation.11.9.1.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",

@@ -1,7 +1,9 @@
 using System.Net.NetworkInformation;
+using FluentValidation;
 using Microsoft.Extensions.Options;
 using Pingboard.Pinging;
 using PingBoard.Pinging;
+using PingBoard.Pinging.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,12 +20,16 @@ builder.Services.AddTransient<Ping>();
 builder.Services.AddTransient<PingOptions>();
 builder.Services.AddHostedService<NetworkMonitoringService>();
 
-builder.Services.Configure<PingBoard.Pinging.PingingBehaviorConfig>(
+builder.Services.Configure<PingingBehaviorConfig>(
     builder.Configuration.GetSection("PingingBehavior"));
 
-builder.Services.Configure<PingBoard.Pinging.PingingThresholdsConfig>(
+builder.Services.Configure<PingingThresholdsConfig>(
     builder.Configuration.GetSection("PingingThresholds"));
 
+builder.Services.AddTransient<PingingBehaviorConfigValidator>();
+builder.Services.AddTransient<PingingThresholdsConfigValidator>();
+builder.Services.AddTransient<PingingBehaviorConfigLimits>();
+builder.Services.AddTransient<PingingThresholdsConfigLimits>();
 
 var app = builder.Build();
 

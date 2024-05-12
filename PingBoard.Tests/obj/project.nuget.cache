@@ -1,11 +1,12 @@
 {
   "version": 2,
-  "dgSpecHash": "ofJwKC1y3kuuJKnZ+4uNgbqa4/J6f/2P6ZonYUpSSeOmEs91V+2VeQ5z23C3RKW7VxVYuq9PyOmfooFzoaf/tA==",
+  "dgSpecHash": "jMzHEovX2C0dfmG9bUQPSu/8q7B/1eVpI+MLKNv6vgREpPdeUfsYpSO8ih4pJWoRtllTbmaTuVILrgLa7rAKhw==",
   "success": true,
   "projectFilePath": "C:\\Users\\LeorGoldberg\\Documents\\Projects\\PingBoard\\PingBoard.Tests\\PingBoard.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\castle.core\\5.1.1\\castle.core.5.1.1.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\coverlet.collector\\3.1.2\\coverlet.collector.3.1.2.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\fluentvalidation\\11.9.1\\fluentvalidation.11.9.1.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.codecoverage\\17.1.0\\microsoft.codecoverage.17.1.0.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.csharp\\4.0.1\\microsoft.csharp.4.0.1.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
