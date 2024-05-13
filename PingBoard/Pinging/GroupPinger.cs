@@ -18,30 +18,28 @@ namespace PingBoard.Pinging{
         private readonly PingQualification _pingQualifier; 
         private readonly IIndividualPinger _individualPinger;
 
-        public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier,
+        private readonly PingScheduler _scheduler;
+
+        public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, PingScheduler scheduler,
                         IOptions<PingingBehaviorConfig> pingBehavior, ILogger<IGroupPinger> logger){
             _pingQualifier    = pingQualifier;
             _pingBehavior     = pingBehavior.Value;
             _logger           = logger;
             _individualPinger = individualPinger;
-
+            _scheduler        = scheduler;
         }
 
         public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
             PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
             long[] responseTimes = new long[numberOfPings];
 
-            TimeSpan baselineWaitTimeInBetweenPings = TimeSpan.FromMilliseconds(_pingBehavior.WaitMs/numberOfPings);
-            TimeSpan MinimumWaitTime                = TimeSpan.FromMilliseconds(10);
-            TimeSpan waitMinusPingTime, adjustedWaitBeforeNextPing;
-            Stopwatch timer = new Stopwatch();
             pingGroupInfo.Start = DateTime.UtcNow;
             
             int packetsLost = 0;
             int pingCounter = 0;
             PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
             while(pingCounter < numberOfPings && currentPingState == PingingStates.PingState.Continue){
-                timer.Restart();
+                _scheduler.StartIntervalTracking();
     
                 PingReply response = await _individualPinger.SendPingIndividualAsync(target);
                 pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
@@ -60,10 +58,8 @@ namespace PingBoard.Pinging{
                 }
 
                 pingCounter++;
-                timer.Stop();
-                waitMinusPingTime = baselineWaitTimeInBetweenPings-TimeSpan.FromMilliseconds(timer.Elapsed.TotalMilliseconds);
-                adjustedWaitBeforeNextPing = waitMinusPingTime > MinimumWaitTime ? waitMinusPingTime : MinimumWaitTime;
-                await Task.Delay(adjustedWaitBeforeNextPing);
+                _scheduler.EndIntervalTracking();
+                await Task.Delay(_scheduler.CalculateDelayToEvenlySpreadPings());
             }
             
             pingGroupInfo.AveragePing = (float) Math.Round(pingCounter > 0 ? pingGroupInfo.AveragePing!.Value/pingCounter : 0, 3);

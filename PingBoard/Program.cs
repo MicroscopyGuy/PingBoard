@@ -30,6 +30,7 @@ builder.Services.AddTransient<PingingBehaviorConfigValidator>();
 builder.Services.AddTransient<PingingThresholdsConfigValidator>();
 builder.Services.AddTransient<PingingBehaviorConfigLimits>();
 builder.Services.AddTransient<PingingThresholdsConfigLimits>();
+builder.Services.AddTransient<PingScheduler>();
 
 var app = builder.Build();
 

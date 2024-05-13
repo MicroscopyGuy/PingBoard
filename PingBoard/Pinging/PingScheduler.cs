@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
@@ -30,9 +29,9 @@ namespace PingBoard.Pinging{
     /// |in   |                                          |in   |                                           |
     /// |70ms |                                          |50ms |                                           |
     /// ----------------------------------------------------------------------------------------------------
-    ///        PingScheduler calculates (500-70)ms wait  | PingScheduler calculates (500-50)ms wait 
-    ///        GroupPinger now waits 430ms before        | GroupPinger now waits 450ms before finishing
-    ///        sending the next ping in the group        | SendPingGroupAsync function call
+    /// |      PingScheduler calculates (500-70)ms wait  | PingScheduler calculates (500-50)ms wait        |
+    /// |      GroupPinger now waits 430ms before        | GroupPinger now waits 450ms before finishing    |
+    /// |      sending the next ping in the group        | SendPingGroupAsync function call                |
     /// ----------------------------------------------------------------------------------------------------
     /// 
     /// If the Ping send/processing time exceeds that of the estimated wait (500ms in the diagram above), which
@@ -49,20 +48,33 @@ namespace PingBoard.Pinging{
         private readonly PingingBehaviorConfig _pingBehaviorConfig;
         private readonly Stopwatch _timer; 
         private readonly TimeSpan _MinimumWaitBeforeNextPingMs = TimeSpan.FromMilliseconds(10);
-        private readonly TimeSpan _estimatedWaitTimeInBetweenPingsMs; 
+        private TimeSpan _estimatedWaitTimeInBetweenPingsMs;
+        private TimeSpan _waitMinusPingTime; 
     
         public PingScheduler(IOptions<PingingBehaviorConfig> pingBehaviorConfig){
             _pingBehaviorConfig = pingBehaviorConfig.Value;
             _timer = new Stopwatch();
             _estimatedWaitTimeInBetweenPingsMs = TimeSpan.FromMilliseconds(_pingBehaviorConfig.WaitMs/_pingBehaviorConfig.PingsPerCall);
+            //Console.WriteLine($"The estimated wait time is: {_estimatedWaitTimeInBetweenPingsMs}");
         }
 
         public void StartIntervalTracking(){
-            _timer.Restart(); // can be more flexibily invoked in the loop in GroupPinger.cs this way
+            _timer.Restart(); // can be more flexibly invoked in the loop in GroupPinger.cs this way
         }
 
         public void EndIntervalTracking(){
             _timer.Stop();
+            _waitMinusPingTime = _estimatedWaitTimeInBetweenPingsMs - TimeSpan.FromMilliseconds(_timer.Elapsed.TotalMilliseconds);
+            Console.WriteLine($"The waitMinusPingTime is: {_waitMinusPingTime}");
+        }
+
+        public TimeSpan CalculateDelayToEvenlySpreadPings(){
+            TimeSpan adjustedWaitBeforeNextPing = _waitMinusPingTime > _MinimumWaitBeforeNextPingMs 
+                                                  ? _waitMinusPingTime 
+                                                  : _MinimumWaitBeforeNextPingMs;
+                                                  
+            //Console.WriteLine($"The adjustedWaitBeforeNextPing is: {adjustedWaitBeforeNextPing}");
+            return adjustedWaitBeforeNextPing;
         }
     }
 }

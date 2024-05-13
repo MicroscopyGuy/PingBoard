@@ -10,10 +10,8 @@ public class NetworkMonitoringService : BackgroundService
     private readonly ILogger<IGroupPinger> _logger;
     private readonly IGroupPinger _groupPinger;
     private readonly PingingBehaviorConfig _pingingBehavior;
-
     private readonly PingingThresholdsConfig _pingingThresholds;
     private readonly PingingBehaviorConfigValidator _pingingBehaviorValidator;
-
     private readonly PingingThresholdsConfigValidator _pingingThresholdsValidator;
 
     public NetworkMonitoringService( IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, IOptions<PingingThresholdsConfig> pingingThresholds,
