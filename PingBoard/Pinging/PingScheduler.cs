@@ -65,7 +65,7 @@ namespace PingBoard.Pinging{
         public void EndIntervalTracking(){
             _timer.Stop();
             _waitMinusPingTime = _estimatedWaitTimeInBetweenPingsMs - TimeSpan.FromMilliseconds(_timer.Elapsed.TotalMilliseconds);
-            Console.WriteLine($"The waitMinusPingTime is: {_waitMinusPingTime}");
+            //Console.WriteLine($"The waitMinusPingTime is: {_waitMinusPingTime}");
         }
 
         public TimeSpan CalculateDelayToEvenlySpreadPings(){
@@ -73,8 +73,29 @@ namespace PingBoard.Pinging{
                                                   ? _waitMinusPingTime 
                                                   : _MinimumWaitBeforeNextPingMs;
                                                   
-            //Console.WriteLine($"The adjustedWaitBeforeNextPing is: {adjustedWaitBeforeNextPing}");
             return adjustedWaitBeforeNextPing;
+        }
+
+        public async Task DelayPingingAsync(){
+            Stopwatch delayTimer = new Stopwatch();
+            delayTimer.Start();
+
+            TimeSpan adjustedWaitBeforeNextPingMs = CalculateDelayToEvenlySpreadPings();
+            long adjustedWaitMsToLong = (long) adjustedWaitBeforeNextPingMs.TotalMilliseconds;
+            long remainingMs, imprecisionBufferRemainingTimeMs = 0;
+            
+            // waits up to the last 16 milliseconds (since windows has timing accuracy of 15ms)
+            // and then eats up the remaining time with the while loop
+            int iterations = 0;
+            while (delayTimer.ElapsedMilliseconds < adjustedWaitMsToLong){
+                iterations++;
+                remainingMs = adjustedWaitMsToLong - delayTimer.ElapsedMilliseconds;
+                if (remainingMs < 25) continue;
+                imprecisionBufferRemainingTimeMs = remainingMs - 16;
+                await Task.Delay(TimeSpan.FromMilliseconds(imprecisionBufferRemainingTimeMs));      
+            } 
+            delayTimer.Stop();
+            Console.WriteLine(iterations);
         }
     }
 }

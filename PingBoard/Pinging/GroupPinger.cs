@@ -42,6 +42,7 @@ namespace PingBoard.Pinging{
                 _scheduler.StartIntervalTracking();
     
                 PingReply response = await _individualPinger.SendPingIndividualAsync(target);
+
                 pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
                 packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0;
                 currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
@@ -59,7 +60,7 @@ namespace PingBoard.Pinging{
 
                 pingCounter++;
                 _scheduler.EndIntervalTracking();
-                await Task.Delay(_scheduler.CalculateDelayToEvenlySpreadPings());
+                await _scheduler.DelayPingingAsync();
             }
             
             pingGroupInfo.AveragePing = (float) Math.Round(pingCounter > 0 ? pingGroupInfo.AveragePing!.Value/pingCounter : 0, 3);
