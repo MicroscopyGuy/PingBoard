@@ -76,6 +76,7 @@ namespace PingBoard.Pinging{
             return adjustedWaitBeforeNextPing;
         }
 
+
         public async Task DelayPingingAsync(){
             Stopwatch delayTimer = new Stopwatch();
             delayTimer.Start();
@@ -85,7 +86,7 @@ namespace PingBoard.Pinging{
             long remainingMs, imprecisionBufferRemainingTimeMs = 0;
             
             // waits up to the last 16 milliseconds (since windows has timing accuracy of 15ms)
-            // and then eats up the remaining time with the while loop
+            // and then eats up the remaining time with the while loop, kind of a reverse 2 phase wait
             int iterations = 0;
             while (delayTimer.ElapsedMilliseconds < adjustedWaitMsToLong){
                 iterations++;
