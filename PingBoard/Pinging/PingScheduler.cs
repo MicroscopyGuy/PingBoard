@@ -55,7 +55,7 @@ namespace PingBoard.Pinging{
             _pingBehaviorConfig = pingBehaviorConfig.Value;
             _timer = new Stopwatch();
             _estimatedWaitTimeInBetweenPingsMs = TimeSpan.FromMilliseconds(_pingBehaviorConfig.WaitMs/_pingBehaviorConfig.PingsPerCall);
-            //Console.WriteLine($"The estimated wait time is: {_estimatedWaitTimeInBetweenPingsMs}");
+            
         }
 
         public void StartIntervalTracking(){
@@ -76,7 +76,6 @@ namespace PingBoard.Pinging{
             return adjustedWaitBeforeNextPing;
         }
 
-
         public async Task DelayPingingAsync(){
             Stopwatch delayTimer = new Stopwatch();
             delayTimer.Start();
@@ -96,7 +95,7 @@ namespace PingBoard.Pinging{
                 await Task.Delay(TimeSpan.FromMilliseconds(imprecisionBufferRemainingTimeMs));      
             } 
             delayTimer.Stop();
-            Console.WriteLine(iterations);
+            
         }
     }
 }

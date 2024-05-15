@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.NetworkInformation;
 
 namespace PingBoard.Pinging{
-    public struct PingGroupSummary{
+    public class PingGroupSummary{
 
         /// <summary>
         /// The time the attempt to send the group of pings either started, or attempted to start
@@ -56,6 +56,14 @@ namespace PingBoard.Pinging{
         public IPStatus? TerminatingIPStatus {get; set;}
 
         /// <summary>
+        /// The number of consecutive timeouts reported by GroupPinger. Crucial to persist
+        /// this data as the number of required timeouts in order to be a possible outage
+        /// (see PossibleOutageAfterTimeouts in PingingThresholdsConfig.cs) may be split
+        /// across more than one ping group.
+        /// </summary>
+        //public short? ConsecutiveTimeouts {get; set;}
+
+        /// <summary>
         /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
         /// For more information, see ThresholdExceededFlags.cs.
         /// </summary>
@@ -72,9 +80,9 @@ namespace PingBoard.Pinging{
             return new PingGroupSummary(){
                 Start = DateTime.MinValue,
                 End   = DateTime.MaxValue,
-                MinimumPing      = short.MaxValue,
-                MaximumPing      = short.MinValue,
-                AveragePing      = 0,
+                MinimumPing         = short.MaxValue,
+                MaximumPing         = short.MinValue,
+                AveragePing         = 0,
                 PingQualityFlags = 0b00000000 // bitmask for PingQualityFlags
             };
         }

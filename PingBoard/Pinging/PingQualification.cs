@@ -30,7 +30,7 @@ namespace PingBoard.Pinging{
             HighAveragePing = (byte) 1 << 1,
             HighMaximumPing = (byte) 1 << 2,
             HighJitter      = (byte) 1 << 3,
-            HighPacketLoss  = (byte) 1 << 4
+            HighPacketLoss  = (byte) 1 << 4,
         }
 
         public PingQualification(IOptions<PingingThresholdsConfig> pingThresholds){
@@ -92,5 +92,6 @@ namespace PingBoard.Pinging{
         public static bool PingQualityWithinThresholds(ThresholdExceededFlags pingQualityFlags){
             return pingQualityFlags == ThresholdExceededFlags.NotExceeded;
         }
+
     }
 }

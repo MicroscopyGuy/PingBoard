@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Net;
 using System.Net.NetworkInformation;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
@@ -15,47 +16,54 @@ namespace PingBoard.Pinging{
     public class GroupPinger : IGroupPinger{
         private readonly ILogger<IGroupPinger> _logger;
         private readonly PingingBehaviorConfig _pingBehavior;
+        private readonly PingingThresholdsConfig _pingThresholds;
         private readonly PingQualification _pingQualifier; 
         private readonly IIndividualPinger _individualPinger;
-
         private readonly PingScheduler _scheduler;
 
         public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, PingScheduler scheduler,
-                        IOptions<PingingBehaviorConfig> pingBehavior, ILogger<IGroupPinger> logger){
+                           IOptions<PingingBehaviorConfig> pingBehavior, IOptions<PingingThresholdsConfig> pingThresholds,
+                           ILogger<IGroupPinger> logger){
             _pingQualifier    = pingQualifier;
             _pingBehavior     = pingBehavior.Value;
+            _pingThresholds   = pingThresholds.Value;
             _logger           = logger;
             _individualPinger = individualPinger;
             _scheduler        = scheduler;
         }
 
+        /// <summary>
+        ///     An asynchronous function which sends a group of pings and reports back their metrics.
+        /// </summary>
+        /// <param name="target">A domain or IP Address that the user wishes to send pings to</param>
+        /// <param name="numberOfPings">The number of pings to be sent in the group</param>
+        /// <returns> 
+        ///     A PingGroupSummary object which summarizes the results of the pings that were sent
+        /// </returns>
         public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
             PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
+            PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
             long[] responseTimes = new long[numberOfPings];
-
+            int packetsLost = 0, pingCounter = 0, timeoutStreak = 0; 
             pingGroupInfo.Start = DateTime.UtcNow;
             
-            int packetsLost = 0;
-            int pingCounter = 0;
-            PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
-            while(pingCounter < numberOfPings && currentPingState == PingingStates.PingState.Continue){
+            Func<bool> hasRemainingPings    = () => pingCounter < numberOfPings;
+            Func<bool> pingStateIsContinue  = () => currentPingState == PingingStates.PingState.Continue;
+            Func<bool> belowOutageThreshold = () => timeoutStreak < _pingThresholds.PossibleOutageAfterTimeouts;
+
+            while(hasRemainingPings() && pingStateIsContinue() && belowOutageThreshold()){
                 _scheduler.StartIntervalTracking();
     
                 PingReply response = await _individualPinger.SendPingIndividualAsync(target);
-
                 pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
-                packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0;
                 currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
-
-                if (currentPingState == PingingStates.PingState.Continue){
-                    pingGroupInfo.AveragePing += response.RoundtripTime;
-                    if (response.RoundtripTime < pingGroupInfo.MinimumPing){ pingGroupInfo.MinimumPing = (short) response.RoundtripTime; }
-                    if (response.RoundtripTime > pingGroupInfo.MaximumPing){ pingGroupInfo.MaximumPing = (short) response.RoundtripTime; }
-                    responseTimes[pingCounter] = response.RoundtripTime;
-                }
-
-                else if (currentPingState == PingingStates.PingState.Pause || currentPingState == PingingStates.PingState.Halt){
-                    pingGroupInfo.TerminatingIPStatus = response.Status; 
+                timeoutStreak = (response.Status == IPStatus.TimedOut) ? timeoutStreak+1 : 0;
+                packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0;
+                
+                switch(currentPingState){
+                    case PingingStates.PingState.Continue: ProcessContinue(pingGroupInfo, response, responseTimes, pingCounter); break;
+                    case PingingStates.PingState.Halt:     ProcessHalt(pingGroupInfo, response); break;
+                    case PingingStates.PingState.Pause:    ProcessPause(pingGroupInfo, response); break;
                 }
 
                 pingCounter++;
@@ -68,6 +76,56 @@ namespace PingBoard.Pinging{
             pingGroupInfo.PacketLoss = pingCounter > 0 ? packetsLost/pingCounter * 100 : 0;
             pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
             return pingGroupInfo;
+        }
+
+        /// <summary>
+        /// A helper function for SendPingGroupAsync which handles the logic in the event there is a Continue state.
+        /// It does so by updating three properties (AveragePing, MinimumPing, MaximumPing) as appropriate,
+        /// and then storing the most recent ping time in the array of response times that SendPingGroupAsync
+        /// will eventually pass to a function that calculates jitter.
+        /// </summary>
+        /// <param name="currentPingGroup">
+        ///     The PingGroupSummary object summarizing the ping group that SendPingGroupAsync is working on sending
+        /// </param>
+        /// <param name="reply">
+        ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
+        /// </param>
+        /// <param name="rttArray">
+        ///     The array of response times which is used to calculate jitter. It is declared and instantiated in
+        ///     SendPingGroupAsync.
+        /// </param>
+        /// <param name="pingCounter">
+        ///     A counter to indicate the sequential number of the ping that was last sent
+        /// </param>
+        public void ProcessContinue(PingGroupSummary currentPingGroup, PingReply reply, long[] rttArray, int pingCounter){
+            currentPingGroup.AveragePing += reply.RoundtripTime;
+            if (reply.RoundtripTime < currentPingGroup.MinimumPing){ currentPingGroup.MinimumPing = (short) reply.RoundtripTime; }
+            if (reply.RoundtripTime > currentPingGroup.MaximumPing){ currentPingGroup.MaximumPing = (short) reply.RoundtripTime; }
+            rttArray[pingCounter] = reply.RoundtripTime;
+        }
+
+        /// <summary>
+        ///     A helper method for SendPingGroupAsync, and which handles the logic in the event there is a Halt state
+        /// </summary>
+        /// <param name="currentPingGroup">
+        ///     The PingGroupSummary object summarizing the ping group that SendPingGroupAsync is working on sending
+        /// </param>
+        /// <param name="reply">
+        ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
+        /// </param>
+        public void ProcessHalt(PingGroupSummary currentPingGroup, PingReply reply){
+            currentPingGroup.TerminatingIPStatus = reply.Status;
+        }
+        
+        /// <summary>
+        ///     At the moment, pausing has the same behavior as ProcessStop, but it may not in the future.
+        ///     For the time being this simply invokes the ProcessHalt() function.
+        /// </summary>
+        /// <param name="currentPingGroup">
+        ///     The PingGroupSummary object summarizing the ping group that SendPingGroupAsync is working on sending
+        /// </param>
+        public void ProcessPause(PingGroupSummary currentPingGroup, PingReply reply){
+            ProcessHalt(currentPingGroup, reply);
         }
 
     }
