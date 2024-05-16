@@ -1,9 +1,7 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
-using System.Reflection.Metadata.Ecma335;
-using System.Text;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Options;
 using Pingboard.Pinging;
 using PingBoard.Pinging.Configuration;
@@ -97,10 +95,17 @@ namespace PingBoard.Pinging{
         /// <param name="pingCounter">
         ///     A counter to indicate the sequential number of the ping that was last sent
         /// </param>
-        public void ProcessContinue(PingGroupSummary currentPingGroup, PingReply reply, long[] rttArray, int pingCounter){
+        [ExcludeFromCodeCoverage]
+        public static void ProcessContinue(PingGroupSummary currentPingGroup, PingReply reply, long[] rttArray, int pingCounter){
             currentPingGroup.AveragePing += reply.RoundtripTime;
-            if (reply.RoundtripTime < currentPingGroup.MinimumPing){ currentPingGroup.MinimumPing = (short) reply.RoundtripTime; }
-            if (reply.RoundtripTime > currentPingGroup.MaximumPing){ currentPingGroup.MaximumPing = (short) reply.RoundtripTime; }
+            
+            if (reply.RoundtripTime < currentPingGroup.MinimumPing){ 
+                currentPingGroup.MinimumPing = (short) reply.RoundtripTime; 
+            }
+            
+            if (reply.RoundtripTime > currentPingGroup.MaximumPing){
+                currentPingGroup.MaximumPing = (short) reply.RoundtripTime; 
+            }
             rttArray[pingCounter] = reply.RoundtripTime;
         }
 
@@ -113,7 +118,7 @@ namespace PingBoard.Pinging{
         /// <param name="reply">
         ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
         /// </param>
-        public void ProcessHalt(PingGroupSummary currentPingGroup, PingReply reply){
+        public static void ProcessHalt(PingGroupSummary currentPingGroup, PingReply reply){
             currentPingGroup.TerminatingIPStatus = reply.Status;
         }
         
@@ -124,7 +129,7 @@ namespace PingBoard.Pinging{
         /// <param name="currentPingGroup">
         ///     The PingGroupSummary object summarizing the ping group that SendPingGroupAsync is working on sending
         /// </param>
-        public void ProcessPause(PingGroupSummary currentPingGroup, PingReply reply){
+        public static void ProcessPause(PingGroupSummary currentPingGroup, PingReply reply){
             ProcessHalt(currentPingGroup, reply);
         }
 
