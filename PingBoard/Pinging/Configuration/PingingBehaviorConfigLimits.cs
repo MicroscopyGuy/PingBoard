@@ -17,14 +17,14 @@ namespace PingBoard.Pinging.Configuration{
         public const int LongestAllowedPayloadStr = 64;
 
         /// <summary>
+        /// Fewest pings allowed to be sent in every ping group sent by a GroupPinger object
+        /// </summary>
+        public const int FewestAllowedPingsPerCall = 2;
+
+         /// <summary>
         /// Most pings allowed to be sent in every ping group sent by a GroupPinger object
         /// </summary>
         public const int MostAllowedPingsPerCall = 32;
-
-        /// <summary>
-        /// Fewest pings allowed to be sent in every ping group sent by a GroupPinger object
-        /// </summary>
-        public const int FewestAllowedPingsPerCall = 1;
 
         /// <summary>
         /// Shortest amount of time, measured in milliseconds, allowed to elapse before a packet is considered lost
@@ -55,6 +55,20 @@ namespace PingBoard.Pinging.Configuration{
         /// Longest wait time, measured in milliseconds, allowed for a ping group
         /// </summary>
         public const int LongestAllowedWaitMs = 3600000;
+
+        /// <summary>
+        /// The fewest number of consecutive timeouts allowed before GroupPinger reports back to the
+        /// caller
+        /// </summary>
+        public int FewestAllowedConsecutiveTimeoutsBeforeReportBack = FewestAllowedPingsPerCall;
+        
+        /// <summary>
+        /// The most number of consecutive timeouts allowed before GroupPinger reports back to the
+        /// caller
+        /// </summary>
+        public int MostAllowedConsecutiveTimeoutsBeforeReportBack = MostAllowedPingsPerCall/4;
+
+        
 
     }
 }

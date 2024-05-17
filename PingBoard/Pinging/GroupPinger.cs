@@ -47,7 +47,7 @@ namespace PingBoard.Pinging{
             
             Func<bool> hasRemainingPings    = () => pingCounter < numberOfPings;
             Func<bool> pingStateIsContinue  = () => currentPingState == PingingStates.PingState.Continue;
-            Func<bool> belowOutageThreshold = () => timeoutStreak < _pingThresholds.PossibleOutageAfterTimeouts;
+            Func<bool> belowOutageThreshold = () => timeoutStreak < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
 
             while(hasRemainingPings() && pingStateIsContinue() && belowOutageThreshold()){
                 _scheduler.StartIntervalTracking();
