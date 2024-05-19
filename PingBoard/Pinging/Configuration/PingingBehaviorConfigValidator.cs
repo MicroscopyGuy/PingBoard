@@ -22,12 +22,13 @@ namespace PingBoard.Pinging.Configuration{
                 .InclusiveBetween(Limits.ShortestAllowedWaitMs, Limits.LongestAllowedWaitMs);
 
             RuleFor(pbc => pbc.ReportBackAfterConsecutiveTimeouts)
-                .InclusiveBetween(pingingBehaviorLimits.FewestAllowedConsecutiveTimeoutsBeforeReportBack, pingingBehaviorLimits.MostAllowedConsecutiveTimeoutsBeforeReportBack)
-                .WithMessage($"""
+                .InclusiveBetween(pingingBehaviorLimits.FewestAllowedConsecutiveTimeoutsBeforeReportBack, pingingBehaviorLimits.MostAllowedConsecutiveTimeoutsBeforeReportBack);
+                /*.WithMessage($"""
                                 The ReportBackAfterTimeouts property can't be less than FewestPingsPerCall, or more than than MostPingsPerCall.
                                 Additionally it is *strongly* encouraged to leave this value at 2, as it increases the responsiveness of 
-                                the program's outage reporting. 
-                             """);
+                                the program's outage reporting. It is currently configured to {} and 
+                             """);*/
+                
         }
     }
 }
