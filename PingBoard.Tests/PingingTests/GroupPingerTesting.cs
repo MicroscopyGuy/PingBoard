@@ -23,114 +23,119 @@ public class GroupPingerTesting{
     }
 
     [Fact]
-    public void ProcessContinueUpdatesAveragePing(){
+    public void ProcessContinue_UpdatesAveragePing(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
         testSummary.MinimumPing = 2;
         testSummary.AveragePing = 6; // since not yet divided by / of pings sent
         testSummary.MaximumPing = 4;
-        long[] rtts = new long[8];
-        rtts.Append(2); rtts.Append(4);
-        int pingCounter = 2;
+
+        List<long> rtts = new List<long>{ 2, 4};
+   
         PingReply fakeReply = MakePingReplyStub(3, IPStatus.Success, new byte[]{});
-        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts, pingCounter);
+        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(9, testSummary.AveragePing);
         Assert.Equal(2, testSummary.MinimumPing.Value);
         Assert.Equal(4, testSummary.MaximumPing.Value);
-        Assert.Equal(3, rtts[pingCounter]);
+        Assert.Equal(3, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessContinueUpdatesMinimumPingWhenNewMinimumPing(){
+    public void ProcessContinue_UpdatesMinimumPingWhenNewMinimumPing(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
         testSummary.MinimumPing = 3;
         testSummary.AveragePing = 7; // since not yet divided by / of pings sent
         testSummary.MaximumPing = 4;
-        long[] rtts = new long[8];
-        rtts.Append(3); rtts.Append(4);
-        int pingCounter = 2;
+        List<long> rtts = new List<long>{ 3, 4};
+     
         PingReply fakeReply = MakePingReplyStub(2, IPStatus.Success, new byte[]{});
-        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts, pingCounter);
+        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(9, testSummary.AveragePing);
         Assert.Equal(2, testSummary.MinimumPing.Value);
         Assert.Equal(4, testSummary.MaximumPing.Value);
-        Assert.Equal(2, rtts[pingCounter]);
+        Assert.Equal(2, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessContinueUpdatesMaximumPingWhenNewMaximumPing(){
+    public void ProcessContinue_UpdatesMaximumPingWhenNewMaximumPing(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
         testSummary.MinimumPing = 3;
         testSummary.AveragePing = 15; // since not yet divided by / of pings sent
         testSummary.MaximumPing = 12;
-        long[] rtts = new long[8];
-        rtts.Append(3); rtts.Append(12);
-        int pingCounter = 2;
+        List<long> rtts = new List<long>{3, 12 };
+    
         PingReply fakeReply = MakePingReplyStub(197, IPStatus.Success, new byte[]{});
-        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts, pingCounter);
+        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(212, testSummary.AveragePing);
         Assert.Equal(3, testSummary.MinimumPing.Value);
         Assert.Equal(197, testSummary.MaximumPing.Value);
-        Assert.Equal(197, rtts[pingCounter]);
+        Assert.Equal(197, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessContinueUpdatesMinimumAndMaxPingWhenFirstPingInGroup(){
+    public void ProcessContinue_UpdatesMinimumAndMaxPing_WhenFirstPingInGroup(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
-        long[] rtts = new long[8];
-        rtts.Append(3);
-        int pingCounter = 1;
+        List<long> rtts = new List<long>{ 3 };
+
         PingReply fakeReply = MakePingReplyStub(3, IPStatus.Success, new byte[]{});
-        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts, pingCounter);
+        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(3, testSummary.AveragePing);
         Assert.Equal(3, testSummary.MinimumPing!.Value);
         Assert.Equal(3, testSummary.MaximumPing!.Value);
-        Assert.Equal(3, rtts[pingCounter]);
+        Assert.Equal(3, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessContinueOnlyUpdatesAveragePingStoresRttWhenUremarkablePing(){
+    public void ProcessContinue_OnlyUpdatesAveragePingAndStoresRtt_WhenUremarkablePing(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
         testSummary.MinimumPing = 3;
         testSummary.AveragePing = 15; // since not yet divided by / of pings sent
         testSummary.MaximumPing = 12;
-        long[] rtts = new long[8];
-        rtts.Append(4);
-        int pingCounter = 1;
+        List<long> rtts = new List<long>{ 4 };
+
         PingReply fakeReply = MakePingReplyStub(4, IPStatus.Success, new byte[]{});
-        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts, pingCounter);
+        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(19, testSummary.AveragePing);
         Assert.Equal(3, testSummary.MinimumPing!.Value);
         Assert.Equal(12, testSummary.MaximumPing!.Value);
-        Assert.Equal(4, rtts[pingCounter]);
+        Assert.Equal(4, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessHaltSavesTerminatingIPStatusOnHaltingIPStatus(){
+    public void ProcessHalt_SavesTerminatingIPStatus_OnHaltingIPStatus(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
+        List<long> rtts = new List<long>();
         PingReply fakeReply = MakePingReplyStub(4, IPStatus.HardwareError, new byte[]{});
-        GroupPinger.ProcessHalt(testSummary, fakeReply);
 
+        GroupPinger.ProcessHalt(testSummary, fakeReply, rtts);
         Assert.Equal(IPStatus.HardwareError, testSummary.TerminatingIPStatus);
+        Assert.Equal(4, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessHaltSavesTerminatingIPStatusOnPausingIPStatus(){
+    public void ProcessHalt_SavesTerminatingIPStatus_OnPausingIPStatus(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
-        PingReply fakeReply = MakePingReplyStub(4, IPStatus.SourceQuench, new byte[]{});
-        GroupPinger.ProcessPause(testSummary, fakeReply);
+        List<long> rtts = new List<long>();
+        PingReply fakeReply = MakePingReplyStub(7, IPStatus.SourceQuench, new byte[]{});
+
+        GroupPinger.ProcessPause(testSummary, fakeReply, rtts);
 
         Assert.Equal(IPStatus.SourceQuench, testSummary.TerminatingIPStatus);
     }
 
+    [Fact]
+    public void ProcessPacketLossCaution_UpdatesPacketInfo_OnPacketLoss(){
+        PingGroupSummary testSummary = PingGroupSummary.Empty();
+        PingReply fakeReply = MakePingReplyStub(1504, IPStatus.TimedOut, new byte[]{}); // don't actually know if rtt returned on TimedOut
 
+        GroupPinger.ProcessPacketLossCaution(testSummary, fakeReply);
 
-
-
-
-
+        Assert.Equal(1, testSummary.PacketsSent!.Value);
+        Assert.Equal(1, testSummary.PacketsLost!.Value);
+        Assert.Equal(1, testSummary.ConsecutiveTimeouts!.Value);
+    }
 }

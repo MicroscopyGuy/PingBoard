@@ -41,27 +41,25 @@ namespace PingBoard.Pinging{
         public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
             PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
             PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
-            long[] responseTimes = new long[numberOfPings];
-            int packetsLost = 0, pingCounter = 0, timeoutStreak = 0; 
+            List<long> responseTimes = new List<long>();
+            int pingCounter = 0;
             pingGroupInfo.Start = DateTime.UtcNow;
             
             Func<bool> hasRemainingPings    = () => pingCounter < numberOfPings;
             Func<bool> pingStateIsContinue  = () => currentPingState == PingingStates.PingState.Continue;
-            Func<bool> belowOutageThreshold = () => timeoutStreak < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
+            Func<bool> belowReportThreshold = () => pingGroupInfo.ConsecutiveTimeouts < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
 
-            while(hasRemainingPings() && pingStateIsContinue() && belowOutageThreshold()){
+            while(hasRemainingPings() && pingStateIsContinue() && belowReportThreshold()){
                 _scheduler.StartIntervalTracking();
-    
                 PingReply response = await _individualPinger.SendPingIndividualAsync(target);
                 pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
                 currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
-                timeoutStreak = (response.Status == IPStatus.TimedOut) ? timeoutStreak+1 : 0;
-                packetsLost += (response.Status == IPStatus.TimedOut) ? 1 : 0;
                 
                 switch(currentPingState){
-                    case PingingStates.PingState.Continue: ProcessContinue(pingGroupInfo, response, responseTimes, pingCounter); break;
-                    case PingingStates.PingState.Halt:     ProcessHalt(pingGroupInfo, response); break;
-                    case PingingStates.PingState.Pause:    ProcessPause(pingGroupInfo, response); break;
+                    case PingingStates.PingState.Continue: ProcessContinue(pingGroupInfo, response, responseTimes); break;
+                    case PingingStates.PingState.Halt:     ProcessHalt(pingGroupInfo, response, responseTimes); break;
+                    case PingingStates.PingState.Pause:    ProcessPause(pingGroupInfo, response, responseTimes); break;
+                    case PingingStates.PingState.PacketLossCaution: ProcessPacketLossCaution(pingGroupInfo, response); break;
                 }
 
                 pingCounter++;
@@ -69,9 +67,9 @@ namespace PingBoard.Pinging{
                 await _scheduler.DelayPingingAsync();
             }
             
-            pingGroupInfo.AveragePing = (float) Math.Round(pingCounter > 0 ? pingGroupInfo.AveragePing!.Value/pingCounter : 0, 3);
-            pingGroupInfo.Jitter = PingGroupSummary.CalculatePingJitter(responseTimes);
-            pingGroupInfo.PacketLoss = pingCounter > 0 ? packetsLost/pingCounter * 100 : 0;
+            pingGroupInfo.AveragePing = PingGroupSummary.CalculateAveragePing(pingGroupInfo.AveragePing!.Value, pingGroupInfo.PacketsSent!.Value, pingGroupInfo.PacketsLost!.Value);
+            pingGroupInfo.Jitter      = PingGroupSummary.CalculatePingJitter(responseTimes);
+            pingGroupInfo.PacketLoss  = PingGroupSummary.CalculatePacketLoss(pingGroupInfo.PacketsSent!.Value, pingGroupInfo.PacketsLost!.Value);
             pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
             return pingGroupInfo;
         }
@@ -88,15 +86,16 @@ namespace PingBoard.Pinging{
         /// <param name="reply">
         ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
         /// </param>
-        /// <param name="rttArray">
-        ///     The array of response times which is used to calculate jitter. It is declared and instantiated in
+        /// <param name="rtts">
+        ///     The list of response times which is used to calculate jitter. It is declared and instantiated in
         ///     SendPingGroupAsync.
         /// </param>
         /// <param name="pingCounter">
         ///     A counter to indicate the sequential number of the ping that was last sent
         /// </param>
         [ExcludeFromCodeCoverage]
-        public static void ProcessContinue(PingGroupSummary currentPingGroup, PingReply reply, long[] rttArray, int pingCounter){
+        public static void ProcessContinue(PingGroupSummary currentPingGroup, PingReply reply, List<long> rtts){
+            currentPingGroup.PacketsSent++;
             currentPingGroup.AveragePing += reply.RoundtripTime;
             
             if (reply.RoundtripTime < currentPingGroup.MinimumPing){ 
@@ -106,7 +105,7 @@ namespace PingBoard.Pinging{
             if (reply.RoundtripTime > currentPingGroup.MaximumPing){
                 currentPingGroup.MaximumPing = (short) reply.RoundtripTime; 
             }
-            rttArray[pingCounter] = reply.RoundtripTime;
+            rtts.Add(reply.RoundtripTime);
         }
 
         /// <summary>
@@ -118,10 +117,15 @@ namespace PingBoard.Pinging{
         /// <param name="reply">
         ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
         /// </param>
-        public static void ProcessHalt(PingGroupSummary currentPingGroup, PingReply reply){
+        public static void ProcessHalt(PingGroupSummary currentPingGroup, PingReply reply, List<long> rtts){
+            currentPingGroup.PacketsSent++;
             currentPingGroup.TerminatingIPStatus = reply.Status;
+            PingGroupSummary.SetIfMinPing(currentPingGroup, (short) reply.RoundtripTime);
+            PingGroupSummary.SetIfMaxPing(currentPingGroup, (short) reply.RoundtripTime);
+            rtts.Add(reply.RoundtripTime);
         }
-        
+
+
         /// <summary>
         ///     At the moment, pausing has the same behavior as ProcessStop, but it may not in the future.
         ///     For the time being this simply invokes the ProcessHalt() function.
@@ -129,8 +133,32 @@ namespace PingBoard.Pinging{
         /// <param name="currentPingGroup">
         ///     The PingGroupSummary object summarizing the ping group that SendPingGroupAsync is working on sending
         /// </param>
-        public static void ProcessPause(PingGroupSummary currentPingGroup, PingReply reply){
-            ProcessHalt(currentPingGroup, reply);
+        /// <param name="reply">
+        ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
+        /// </param>
+        /// <param name="rtts">
+        ///     The list of response times which is used to calculate jitter. It is declared and instantiated in
+        ///     SendPingGroupAsync.
+        /// </param>
+        public static void ProcessPause(PingGroupSummary currentPingGroup, PingReply reply, List<long> rtts){
+            ProcessHalt(currentPingGroup, reply, rtts);       
+        }
+
+
+        /// <summary>
+        ///     A helper method for SendPingGroupAsync, and which handles the logic in the event there is 
+        ///     a PacketLossCaution state. 
+        /// </summary>
+        /// <param name="currentPingGroup">
+        ///     The PingGroupSummary object summarizing the ping group that SendPingGroupAsync is working on sending
+        /// </param>
+        /// <param name="reply">
+        ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
+        /// </param>
+        public static void ProcessPacketLossCaution(PingGroupSummary currentPingGroup, PingReply reply){
+            currentPingGroup.PacketsSent++;
+            currentPingGroup.PacketsLost++;
+            currentPingGroup.ConsecutiveTimeouts++;
         }
 
     }

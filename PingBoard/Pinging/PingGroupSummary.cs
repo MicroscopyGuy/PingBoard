@@ -56,12 +56,19 @@ namespace PingBoard.Pinging{
         public IPStatus? TerminatingIPStatus {get; set;}
 
         /// <summary>
-        /// The number of consecutive timeouts reported by GroupPinger. Crucial to persist
-        /// this data as the number of required timeouts in order to be a possible outage
-        /// (see PossibleOutageAfterTimeouts in PingingThresholdsConfig.cs) may be split
-        /// across more than one ping group.
+        /// The number of consecutive timeouts reported by GroupPinger
         /// </summary>
-        //public short? ConsecutiveTimeouts {get; set;}
+        public byte? ConsecutiveTimeouts {get; set;}
+
+        /// <summary>
+        /// The number of packets sent by GroupPinger in one SendPingGroupAsync function call
+        /// </summary>
+        public byte? PacketsSent {get; set;}
+
+        /// <summary>
+        /// The number of packets lost in one SendPingGroupAsync function call
+        /// </summary>
+        public byte? PacketsLost {get; set;}
 
         /// <summary>
         /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
@@ -83,12 +90,16 @@ namespace PingBoard.Pinging{
                 MinimumPing         = short.MaxValue,
                 MaximumPing         = short.MinValue,
                 AveragePing         = 0,
+                PacketsLost         = 0,
+                PacketsSent         = 0,
+                PacketLoss          = 0F,
+                ConsecutiveTimeouts = 0,
                 PingQualityFlags = 0b00000000 // bitmask for PingQualityFlags
             };
         }
 
-        public static float CalculatePingStdDeviation(long[] responseTimes, float mean){
-            if (responseTimes.Length <= 1){ 
+        public static float CalculatePingStdDeviation(List<long> responseTimes, float mean){
+            if (responseTimes.Count <= 1){ 
                 return 0;
             }
 
@@ -97,21 +108,52 @@ namespace PingBoard.Pinging{
                 sumSquaredMeanDiff += (float) Math.Pow(rtt-mean, 2);
             }
 
-            return (float) Math.Sqrt(sumSquaredMeanDiff / responseTimes.Length);
+            return (float) Math.Sqrt(sumSquaredMeanDiff / responseTimes.Count);
         }
 
-        public static float CalculatePingJitter(long[] responseTimes){
-            if (responseTimes.Length <= 1){
+        public static float CalculatePingJitter(List<long> responseTimes){
+            if (responseTimes.Count <= 1){
                 return 0;
             }
             
             double jitter = 0;
-            for (int i = 0; i < responseTimes.Length-1; i++){
+            for (int i = 0; i < responseTimes.Count-1; i++){
                 jitter += Math.Abs(responseTimes[i] - responseTimes[i+1]);
             }
 
-            jitter /= responseTimes.Length-1;
+            jitter /= responseTimes.Count-1;
             return (float) Math.Round(jitter, 3);
+        }
+
+        public static float CalculateAveragePing(float cumulativePingTimes, int packetsSent, int packetsLost){
+            int numPingsToAverage = packetsSent - packetsLost;
+            if (numPingsToAverage == 0){
+                return 0;
+            }
+            
+            return (float) Math.Round(cumulativePingTimes/numPingsToAverage, 3);
+
+        }
+
+        public static float CalculatePacketLoss(int packetsSent, int packetsLost){
+            if (packetsLost == 0){
+                return 0;
+            }
+
+            float frac =  (float) packetsLost/packetsSent;
+            return 100 * (float) Math.Round(frac, 3);
+        }
+
+        public static void SetIfMaxPing(PingGroupSummary summary, short rtt){
+            if (rtt > summary.MaximumPing){
+                summary.MaximumPing = rtt;
+            }
+        }
+
+        public static void SetIfMinPing(PingGroupSummary summary, short rtt){
+            if (rtt < summary.MinimumPing){
+                summary.MinimumPing = rtt;
+            }
         }
     }
 }
