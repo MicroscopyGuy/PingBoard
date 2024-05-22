@@ -5,8 +5,12 @@ using FluentValidation;
 using MonitoringLimits = PingBoard.Monitoring.Configuration.MonitoringBehaviorConfigLimits;
 
 
-public class MonitoringBehaviorConfigValidator : AbstractValidator<MonitoringBehaviorConfig>{
-    public MonitoringBehaviorConfigValidator(IOptions<PingingBehaviorConfig> pingingBehaviorConfig){
+public class MonitoringBehaviorConfigValidator : AbstractValidator<MonitoringBehaviorConfig>
+{
+    private readonly PingingBehaviorConfig _pingingBehavior;
+    public MonitoringBehaviorConfigValidator(IOptions<PingingBehaviorConfig> pingingBehaviorConfig)
+    {
+        _pingingBehavior = pingingBehaviorConfig.Value;
         RuleFor(mbc => mbc.OutageAfterTimeouts)
             .InclusiveBetween(MonitoringLimits.FewestAllowedConsecutiveTimeoutsBeforeOutage, 
                               MonitoringLimits.MostAllowedConsecutiveTimeoutsBeforeOutage)

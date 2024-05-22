@@ -5,7 +5,7 @@ using PingBoard.Pinging.Configuration;
 
 namespace PingBoard.Pinging{
     /// <summary>
-    /// A class that assists GroupPinger by helping it evenly spread out Pings across the interval specified 
+    /// A class that assists (<see cref="GroupPinger"/> class) by helping it evenly spread out Pings across the interval specified 
     /// in appsettings.json as "WaitTimeMs". The result, under normal networking conditions, should be that
     /// one ping group is sent, received and passed to the calling service in as close to "WaitTimeMs" milliseconds
     /// as possible.
@@ -18,8 +18,8 @@ namespace PingBoard.Pinging{
     /// ping should be received and processed (again, ideally) within 500ms. Since the ping sending and processing
     /// has its own runtime, however, a PingScheduler object tracks this and adjusts the estimated wait time before the next
     /// individual ping is sent.
-    /// <~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~1000ms~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~>
-    /// <~~~~~~~~~~~~~~~~~~~~~~~500ms~~~~~~~~~~~~~~~~~~~> <~~~~~~~~~~~~~~~~~~~~~500ms~~~~~~~~~~~~~~~~~~~~~~>
+    /// |~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~1000ms~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~|
+    /// |~~~~~~~~~~~~~~~~~~~~~~~500ms~~~~~~~~~~~~~~~~~~~| |~~~~~~~~~~~~~~~~~~~~~500ms~~~~~~~~~~~~~~~~~~~~~~|
     /// ----------------------------------------------------------------------------------------------------
     /// |ping |                                          |ping |                                           |
     /// |sent |                                          |sent |                                           |
@@ -47,8 +47,8 @@ namespace PingBoard.Pinging{
 
         private readonly PingingBehaviorConfig _pingBehaviorConfig;
         private readonly Stopwatch _timer; 
-        private readonly TimeSpan _MinimumWaitBeforeNextPingMs = TimeSpan.FromMilliseconds(10);
-        private TimeSpan _estimatedWaitTimeInBetweenPingsMs;
+        private readonly TimeSpan _minimumWaitBeforeNextPingMs = TimeSpan.FromMilliseconds(10);
+        private readonly TimeSpan _estimatedWaitTimeInBetweenPingsMs;
         private TimeSpan _waitMinusPingTime; 
     
         public PingScheduler(IOptions<PingingBehaviorConfig> pingBehaviorConfig){
@@ -65,17 +65,25 @@ namespace PingBoard.Pinging{
         public void EndIntervalTracking(){
             _timer.Stop();
             _waitMinusPingTime = _estimatedWaitTimeInBetweenPingsMs - TimeSpan.FromMilliseconds(_timer.Elapsed.TotalMilliseconds);
-            //Console.WriteLine($"The waitMinusPingTime is: {_waitMinusPingTime}");
+
         }
 
-        public TimeSpan CalculateDelayToEvenlySpreadPings(){
-            TimeSpan adjustedWaitBeforeNextPing = _waitMinusPingTime > _MinimumWaitBeforeNextPingMs 
+        /// <summary>
+        /// Calculates 
+        /// </summary>
+        /// <returns>the amount of time the SendPingGroupAsync function should wait before sending another ping</returns>
+        private TimeSpan CalculateDelayToEvenlySpreadPings(){
+            TimeSpan adjustedWaitBeforeNextPing = _waitMinusPingTime > _minimumWaitBeforeNextPingMs 
                                                   ? _waitMinusPingTime 
-                                                  : _MinimumWaitBeforeNextPingMs;
+                                                  : _minimumWaitBeforeNextPingMs;
                                                   
             return adjustedWaitBeforeNextPing;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public async Task DelayPingingAsync(){
             Stopwatch delayTimer = new Stopwatch();
             delayTimer.Start();
@@ -86,9 +94,7 @@ namespace PingBoard.Pinging{
             
             // waits up to the last 16 milliseconds (since windows has timing accuracy of 15ms)
             // and then eats up the remaining time with the while loop, kind of a reverse 2 phase wait
-            int iterations = 0;
             while (delayTimer.ElapsedMilliseconds < adjustedWaitMsToLong){
-                iterations++;
                 remainingMs = adjustedWaitMsToLong - delayTimer.ElapsedMilliseconds;
                 if (remainingMs < 25) continue;
                 imprecisionBufferRemainingTimeMs = remainingMs - 16;

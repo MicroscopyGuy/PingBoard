@@ -87,7 +87,7 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// Quick and easy function to detect if all the flags are clear
         /// </summary>
-        /// <param name="pingQualityFlags"></param>
+        /// <param name="pingQualityFlags">A ThresholdExceededFlags enum</param>
         /// <returns></returns>
         public static bool PingQualityWithinThresholds(ThresholdExceededFlags pingQualityFlags){
             return pingQualityFlags == ThresholdExceededFlags.NotExceeded;

@@ -1,3 +1,5 @@
+using Microsoft.Extensions.Options;
+
 namespace PingBoard.Tests.MonitoringTests.ConfigurationTests;
 using PingBoard.Monitoring.Configuration;
 using PingBoard.Pinging.Configuration;
@@ -25,8 +27,8 @@ public class MonitoringBehaviorConfigValidatorTest{
         MonitoringBehaviorConfig testMonitoringBehavior = new MonitoringBehaviorConfig{
             OutageAfterTimeouts = MonitoringLimits.MostAllowedConsecutiveTimeoutsBeforeOutage
         };
-
-        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingBehavior);
+        var testPingingConfig = Options.Create(testPingingBehavior);
+        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingConfig);
         TestValidationResult<MonitoringBehaviorConfig> testResult = behaviorValidator.TestValidate(testMonitoringBehavior);
         testResult.ShouldNotHaveAnyValidationErrors();
     }
@@ -49,7 +51,8 @@ public class MonitoringBehaviorConfigValidatorTest{
             OutageAfterTimeouts = MonitoringLimits.MostAllowedConsecutiveTimeoutsBeforeOutage
         };
 
-        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingBehavior);
+        var testPingingConfig = Options.Create(testPingingBehavior);
+        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingConfig);
         TestValidationResult<MonitoringBehaviorConfig> testResult = behaviorValidator.TestValidate(testMonitoringBehavior);
         testResult.ShouldNotHaveAnyValidationErrors();
     }
@@ -72,11 +75,12 @@ public class MonitoringBehaviorConfigValidatorTest{
             OutageAfterTimeouts = MonitoringLimits.MostAllowedConsecutiveTimeoutsBeforeOutage
         };
         
-        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingBehavior);
+        var testPingingConfig = Options.Create(testPingingBehavior);
+        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingConfig);
         TestValidationResult<MonitoringBehaviorConfig> testResult = behaviorValidator.TestValidate(testMonitoringBehavior);
         testResult.ShouldHaveValidationErrorFor(test => test.OutageAfterTimeouts);
     }
-
+    
     [Fact]
     public void BehaviorIsInValidWhenOutageAfterTimeoutsIsBelowLowerLimit(){
         PingingLimits testLimits = new PingingBehaviorConfigLimits();
@@ -90,19 +94,13 @@ public class MonitoringBehaviorConfigValidatorTest{
             WaitMs       = PingingLimits.ShortestAllowedWaitMs-1,
             ReportBackAfterConsecutiveTimeouts = testLimits.MostAllowedConsecutiveTimeoutsBeforeReportBack+1 // matters
         };
-
+        var testPingingConfig = Options.Create(testPingingBehavior);
         MonitoringBehaviorConfig testMonitoringBehavior = new MonitoringBehaviorConfig{
             OutageAfterTimeouts = MonitoringLimits.MostAllowedConsecutiveTimeoutsBeforeOutage
         };
         
-        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingBehavior);
+        MonitoringBehaviorConfigValidator behaviorValidator = new MonitoringBehaviorConfigValidator(testPingingConfig);
         TestValidationResult<MonitoringBehaviorConfig> testResult = behaviorValidator.TestValidate(testMonitoringBehavior);
         testResult.ShouldHaveValidationErrorFor(test => test.OutageAfterTimeouts);
     }
-
-
-
-
-
-
 }

@@ -3,6 +3,10 @@ using System.Net;
 using System.Net.NetworkInformation;
 
 namespace PingBoard.Pinging{
+    /// <summary>
+    /// Defines a class meant to encapsulate the values returned by the SendPingGroupAsync() function
+    /// in the <see cref="GroupPinger"/> class.
+    /// </summary>
     public class PingGroupSummary{
 
         /// <summary>
@@ -14,12 +18,7 @@ namespace PingBoard.Pinging{
         /// The time the attempt to receive the group of pings ended
         /// </summary>
         public DateTime? End {get; set;} 
-        
-        /// <summary>
-        /// If an exception occurred during the SendPingAsync function call, this will indicate which
-        /// </summary>
-        public string? ExceptionDescription {get; set;}
-        
+
         /// <summary>
         /// Wherever the user said to ping, could be either a domain or an IP address
         /// </summary>
@@ -44,17 +43,24 @@ namespace PingBoard.Pinging{
         /// The variance of the pings in the group; how far apart from the average ping measurement the group was
         /// </summary>
         public float? Jitter {get; set;}
+        
         /// <summary>
         /// The percentage of packets that were sent and not received, ie, the resulted in a returned TimedOut IPStatus 
         /// </summary>
         public float? PacketLoss {get; set;}
-
+        
         /// <summary>
         /// If an IP status is returned that is mapped to the Halt state (in ICMPStatusCodes.json),
         /// this property will indicate which exact IPStatus was returned
         /// </summary>
         public IPStatus? TerminatingIPStatus {get; set;}
 
+        /// <summary>
+        /// Indicates the last received IPStatus which was neither "Success", nor one mapped to the "Pause"
+        /// or "Halt" states. <see cref="PingingStates"/> for more info.
+        /// </summary>
+        public IPStatus? LastAbnormalStatus { get; set; } 
+        
         /// <summary>
         /// The number of consecutive timeouts reported by GroupPinger
         /// </summary>
@@ -69,7 +75,14 @@ namespace PingBoard.Pinging{
         /// The number of packets lost in one SendPingGroupAsync function call
         /// </summary>
         public byte? PacketsLost {get; set;}
-
+/*
+        /// <summary>
+        /// The number of pings which did not time out, but which still cannot be used for calculating
+        /// MinimumPing, AveragePing, MaximumPing or Jitter, because they reflect pings which were
+        /// fundamentally unsuccessful.
+        /// </summary>
+        public byte? ExcludedPings { get; set; } */
+        
         /// <summary>
         /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
         /// For more information, see ThresholdExceededFlags.cs.
@@ -97,7 +110,14 @@ namespace PingBoard.Pinging{
                 PingQualityFlags = 0b00000000 // bitmask for PingQualityFlags
             };
         }
-
+    
+        /// <summary>
+        ///     Calculates and returns the standard deviation of a List of ping times
+        ///     Presently unused, and untested.
+        /// </summary>
+        /// <param name="responseTimes">A list of response times to be analyzed</param>
+        /// <param name="mean">The average of the ping times stored in responseTimes</param>
+        /// <returns>The standard deviation of the ping times in response times</returns>
         public static float CalculatePingStdDeviation(List<long> responseTimes, float mean){
             if (responseTimes.Count <= 1){ 
                 return 0;
@@ -111,6 +131,11 @@ namespace PingBoard.Pinging{
             return (float) Math.Sqrt(sumSquaredMeanDiff / responseTimes.Count);
         }
 
+        /// <summary>
+        /// Calculates and returns the jitter (sum of adjacent differences) of a List of ping times
+        /// </summary>
+        /// <param name="responseTimes">A List of ping times</param>
+        /// <returns>The calculated jitter of the List of pings</returns>
         public static float CalculatePingJitter(List<long> responseTimes){
             if (responseTimes.Count <= 1){
                 return 0;
@@ -125,6 +150,18 @@ namespace PingBoard.Pinging{
             return (float) Math.Round(jitter, 3);
         }
 
+        /// <summary>
+        /// Calculates and returns the average of a set of ping times, taking into account
+        /// those that were lost.
+        /// </summary>
+        /// <param name="cumulativePingTimes">The sum of a set of ping times</param>
+        /// <param name="packetsSent"> The number of ping times that were sent</param>
+        /// <param name="packetsLost">
+        ///     The number of ping times lost, ie, to be excluded from the calculation.
+        ///     Instead of avg = cumulativePingTimes/packetsSent,
+        ///           it is    = cumulativePingTimes/(packetsSent-PacketsLost)
+        /// </param>
+        /// <returns></returns>
         public static float CalculateAveragePing(float cumulativePingTimes, int packetsSent, int packetsLost){
             int numPingsToAverage = packetsSent - packetsLost;
             if (numPingsToAverage == 0){
@@ -135,6 +172,12 @@ namespace PingBoard.Pinging{
 
         }
 
+        /// <summary>
+        /// Calculates the % of packets lost from a set of attempted pings
+        /// </summary>
+        /// <param name="packetsSent"> The number of packets sent</param>
+        /// <param name="packetsLost"> The number of packets lost</param>
+        /// <returns>The calculated packet loss</returns>
         public static float CalculatePacketLoss(int packetsSent, int packetsLost){
             if (packetsLost == 0){
                 return 0;
@@ -144,12 +187,24 @@ namespace PingBoard.Pinging{
             return 100 * (float) Math.Round(frac, 3);
         }
 
+        /// <summary>
+        ///    Sets a new "MaximumPing" property on a PingGroupSummary object
+        ///    if the provided return time is greater than the one currently stored
+        /// </summary>
+        /// <param name="summary"> The PingGroupSummary object being worked on</param>
+        /// <param name="rtt"> A new ping time to be tested</param>
         public static void SetIfMaxPing(PingGroupSummary summary, short rtt){
             if (rtt > summary.MaximumPing){
                 summary.MaximumPing = rtt;
             }
         }
 
+        /// <summary>
+        ///    Sets a new "MaximumPing" property on a PingGroupSummary object
+        ///    if the provided return time is less than the one currently stored
+        /// </summary>
+        /// <param name="summary"> The PingGroupSummary object being worked on</param>
+        /// <param name="rtt"> A new ping time to be tested</param>
         public static void SetIfMinPing(PingGroupSummary summary, short rtt){
             if (rtt < summary.MinimumPing){
                 summary.MinimumPing = rtt;

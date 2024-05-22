@@ -104,27 +104,40 @@ public class GroupPingerTesting{
         Assert.Equal(12, testSummary.MaximumPing!.Value);
         Assert.Equal(4, rtts[rtts.Count-1]);
     }
+    
+    [Fact]
+    public void ProcessContinue_DoesntSaveUnsuccessfulPings(){
+        PingGroupSummary testSummary = PingGroupSummary.Empty();
+        List<long> rtts = new List<long>{};
+
+        PingReply fakeReply = MakePingReplyStub(0, IPStatus.DestinationNetworkUnreachable, new byte[]{});
+        GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
+
+        Assert.Equal(0, testSummary.AveragePing);
+        Assert.Equal(short.MaxValue, testSummary.MinimumPing!.Value);
+        Assert.Equal(short.MinValue, testSummary.MaximumPing!.Value);
+        Assert.Empty(rtts);
+    }
+    
+    
 
     [Fact]
     public void ProcessHalt_SavesTerminatingIPStatus_OnHaltingIPStatus(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
-        List<long> rtts = new List<long>();
         PingReply fakeReply = MakePingReplyStub(4, IPStatus.HardwareError, new byte[]{});
 
-        GroupPinger.ProcessHalt(testSummary, fakeReply, rtts);
+        GroupPinger.ProcessHalt(testSummary, fakeReply);
         Assert.Equal(IPStatus.HardwareError, testSummary.TerminatingIPStatus);
-        Assert.Equal(4, rtts[rtts.Count-1]);
     }
 
     [Fact]
-    public void ProcessHalt_SavesTerminatingIPStatus_OnPausingIPStatus(){
+    public void ProcessHalt_SavesLastAbnormalIPStatus_OnPausingIPStatus(){
         PingGroupSummary testSummary = PingGroupSummary.Empty();
-        List<long> rtts = new List<long>();
         PingReply fakeReply = MakePingReplyStub(7, IPStatus.SourceQuench, new byte[]{});
 
-        GroupPinger.ProcessPause(testSummary, fakeReply, rtts);
+        GroupPinger.ProcessPause(testSummary, fakeReply);
 
-        Assert.Equal(IPStatus.SourceQuench, testSummary.TerminatingIPStatus);
+        Assert.Equal(IPStatus.SourceQuench, testSummary.LastAbnormalStatus);
     }
 
     [Fact]
