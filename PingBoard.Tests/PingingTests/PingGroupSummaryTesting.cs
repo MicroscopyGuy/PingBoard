@@ -9,19 +9,19 @@ public class PingGroupSummaryTesting{
     #region "JitterTesting"
     [Fact]
     public void ProperPingJitterOnOnePing(){
-        List<long> rtts = new List<long>{ 7 };
+        List<long> rtts = [7];
         Assert.Equal(0, PingGroupSummary.CalculatePingJitter(rtts));
     }
 
     [Fact]
     public void ProperPingJitterOnTwoPings(){
-        List<long> rtts = new List<long>{ 7, 23 };
+        List<long> rtts = [7, 23];
         Assert.Equal(16, PingGroupSummary.CalculatePingJitter(rtts));
     }
 
     [Fact]
     public void ProperPingJitterOnSeveralPings(){
-        List<long> rtts = new List<long> { 7, 23, 48, 57, 6, 3, 9, 123, 115 };
+        List<long> rtts = [7, 23, 48, 57, 6, 3, 9, 123, 115];
         Assert.Equal(29, PingGroupSummary.CalculatePingJitter(rtts));
     }
     #endregion

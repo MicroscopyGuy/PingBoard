@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.5039" branch-rate="0.4936" version="1.9" timestamp="1716257220" lines-covered="191" lines-valid="379" branches-covered="39" branches-valid="79">
+<coverage line-rate="0.5065999999999999" branch-rate="0.4938" version="1.9" timestamp="1716439639" lines-covered="190" lines-valid="375" branches-covered="40" branches-valid="81">
   <sources>
     <source>C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\</source>
   </sources>
   <packages>
-    <package name="PingBoard" line-rate="0.5039" branch-rate="0.4936" complexity="132">
+    <package name="PingBoard" line-rate="0.5065999999999999" branch-rate="0.4938" complexity="133">
       <classes>
         <class name="Program" filename="Program.cs" line-rate="0" branch-rate="0" complexity="2">
           <methods>
@@ -242,49 +242,51 @@
             <line number="40" hits="0" branch="False" />
           </lines>
         </class>
-        <class name="PingBoard.Pinging.GroupPinger" filename="Pinging\GroupPinger.cs" line-rate="0.6" branch-rate="0.5" complexity="10">
+        <class name="PingBoard.Pinging.GroupPinger" filename="Pinging\GroupPinger.cs" line-rate="0.5652" branch-rate="0.5" complexity="11">
           <methods>
-            <method name="ProcessHalt" signature="(PingBoard.Pinging.PingGroupSummary,System.Net.NetworkInformation.PingReply,System.Collections.Generic.List`1&lt;System.Int64&gt;)" line-rate="1" branch-rate="0.5" complexity="2">
+            <method name="ProcessHalt" signature="(PingBoard.Pinging.PingGroupSummary,System.Net.NetworkInformation.PingReply)" line-rate="1" branch-rate="0.5" complexity="2">
               <lines>
-                <line number="118" hits="2" branch="False" />
-                <line number="119" hits="2" branch="True" condition-coverage="50% (1/2)">
+                <line number="118" hits="1" branch="False" />
+                <line number="119" hits="1" branch="True" condition-coverage="50% (1/2)">
                   <conditions>
                     <condition number="18" type="jump" coverage="50%" />
                   </conditions>
                 </line>
-                <line number="120" hits="2" branch="False" />
-                <line number="121" hits="2" branch="False" />
-                <line number="122" hits="2" branch="False" />
-                <line number="123" hits="2" branch="False" />
-                <line number="124" hits="2" branch="False" />
+                <line number="120" hits="1" branch="False" />
+                <line number="121" hits="1" branch="False" />
               </lines>
             </method>
-            <method name="ProcessPause" signature="(PingBoard.Pinging.PingGroupSummary,System.Net.NetworkInformation.PingReply,System.Collections.Generic.List`1&lt;System.Int64&gt;)" line-rate="1" branch-rate="1" complexity="1">
+            <method name="ProcessPause" signature="(PingBoard.Pinging.PingGroupSummary,System.Net.NetworkInformation.PingReply)" line-rate="1" branch-rate="0.5" complexity="2">
               <lines>
-                <line number="141" hits="1" branch="False" />
-                <line number="142" hits="1" branch="False" />
-                <line number="143" hits="1" branch="False" />
+                <line number="133" hits="1" branch="False" />
+                <line number="134" hits="1" branch="True" condition-coverage="50% (1/2)">
+                  <conditions>
+                    <condition number="18" type="jump" coverage="50%" />
+                  </conditions>
+                </line>
+                <line number="135" hits="1" branch="False" />
+                <line number="136" hits="1" branch="False" />
               </lines>
             </method>
             <method name="ProcessPacketLossCaution" signature="(PingBoard.Pinging.PingGroupSummary,System.Net.NetworkInformation.PingReply)" line-rate="1" branch-rate="0.5" complexity="6">
               <lines>
-                <line number="156" hits="1" branch="False" />
-                <line number="157" hits="1" branch="True" condition-coverage="50% (1/2)">
+                <line number="149" hits="1" branch="False" />
+                <line number="150" hits="1" branch="True" condition-coverage="50% (1/2)">
                   <conditions>
                     <condition number="18" type="jump" coverage="50%" />
                   </conditions>
                 </line>
-                <line number="158" hits="1" branch="True" condition-coverage="50% (1/2)">
+                <line number="151" hits="1" branch="True" condition-coverage="50% (1/2)">
                   <conditions>
                     <condition number="69" type="jump" coverage="50%" />
                   </conditions>
                 </line>
-                <line number="159" hits="1" branch="True" condition-coverage="50% (1/2)">
+                <line number="152" hits="1" branch="True" condition-coverage="50% (1/2)">
                   <conditions>
                     <condition number="120" type="jump" coverage="50%" />
                   </conditions>
                 </line>
-                <line number="160" hits="1" branch="False" />
+                <line number="153" hits="1" branch="False" />
               </lines>
             </method>
             <method name=".ctor" signature="(PingBoard.Pinging.IIndividualPinger,PingBoard.Pinging.PingQualification,PingBoard.Pinging.PingScheduler,Microsoft.Extensions.Options.IOptions`1&lt;PingBoard.Pinging.Configuration.PingingBehaviorConfig&gt;,Microsoft.Extensions.Options.IOptions`1&lt;PingBoard.Pinging.Configuration.PingingThresholdsConfig&gt;,Microsoft.Extensions.Logging.ILogger`1&lt;PingBoard.Pinging.IGroupPinger&gt;)" line-rate="0" branch-rate="1" complexity="1">
@@ -303,37 +305,39 @@
             </method>
           </methods>
           <lines>
-            <line number="118" hits="2" branch="False" />
-            <line number="119" hits="2" branch="True" condition-coverage="50% (1/2)">
+            <line number="118" hits="1" branch="False" />
+            <line number="119" hits="1" branch="True" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="18" type="jump" coverage="50%" />
               </conditions>
             </line>
-            <line number="120" hits="2" branch="False" />
-            <line number="121" hits="2" branch="False" />
-            <line number="122" hits="2" branch="False" />
-            <line number="123" hits="2" branch="False" />
-            <line number="124" hits="2" branch="False" />
-            <line number="141" hits="1" branch="False" />
-            <line number="142" hits="1" branch="False" />
-            <line number="143" hits="1" branch="False" />
-            <line number="156" hits="1" branch="False" />
-            <line number="157" hits="1" branch="True" condition-coverage="50% (1/2)">
+            <line number="120" hits="1" branch="False" />
+            <line number="121" hits="1" branch="False" />
+            <line number="133" hits="1" branch="False" />
+            <line number="134" hits="1" branch="True" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="18" type="jump" coverage="50%" />
               </conditions>
             </line>
-            <line number="158" hits="1" branch="True" condition-coverage="50% (1/2)">
+            <line number="135" hits="1" branch="False" />
+            <line number="136" hits="1" branch="False" />
+            <line number="149" hits="1" branch="False" />
+            <line number="150" hits="1" branch="True" condition-coverage="50% (1/2)">
+              <conditions>
+                <condition number="18" type="jump" coverage="50%" />
+              </conditions>
+            </line>
+            <line number="151" hits="1" branch="True" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="69" type="jump" coverage="50%" />
               </conditions>
             </line>
-            <line number="159" hits="1" branch="True" condition-coverage="50% (1/2)">
+            <line number="152" hits="1" branch="True" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="120" type="jump" coverage="50%" />
               </conditions>
             </line>
-            <line number="160" hits="1" branch="False" />
+            <line number="153" hits="1" branch="False" />
             <line number="23" hits="0" branch="False" />
             <line number="24" hits="0" branch="False" />
             <line number="25" hits="0" branch="False" />
@@ -390,9 +394,9 @@
                 <line number="47" hits="0" branch="False" />
                 <line number="53" hits="0" branch="True" condition-coverage="0% (0/6)">
                   <conditions>
-                    <condition number="798" type="jump" coverage="0%" />
-                    <condition number="765" type="jump" coverage="0%" />
-                    <condition number="778" type="jump" coverage="0%" />
+                    <condition number="786" type="jump" coverage="0%" />
+                    <condition number="753" type="jump" coverage="0%" />
+                    <condition number="766" type="jump" coverage="0%" />
                   </conditions>
                 </line>
                 <line number="54" hits="0" branch="False" />
@@ -429,9 +433,9 @@
             <line number="47" hits="0" branch="False" />
             <line number="53" hits="0" branch="True" condition-coverage="0% (0/6)">
               <conditions>
-                <condition number="798" type="jump" coverage="0%" />
-                <condition number="765" type="jump" coverage="0%" />
-                <condition number="778" type="jump" coverage="0%" />
+                <condition number="786" type="jump" coverage="0%" />
+                <condition number="753" type="jump" coverage="0%" />
+                <condition number="766" type="jump" coverage="0%" />
               </conditions>
             </line>
             <line number="54" hits="0" branch="False" />
@@ -496,300 +500,300 @@
             <line number="33" hits="0" branch="False" />
           </lines>
         </class>
-        <class name="PingBoard.Pinging.PingGroupSummary" filename="Pinging\PingGroupSummary.cs" line-rate="0.826" branch-rate="0.65" complexity="35">
+        <class name="PingBoard.Pinging.PingGroupSummary" filename="Pinging\PingGroupSummary.cs" line-rate="0.8405" branch-rate="0.65" complexity="35">
           <methods>
             <method name="get_Start" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="11" hits="9" branch="False" />
+                <line number="15" hits="10" branch="False" />
               </lines>
             </method>
             <method name="get_End" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="16" hits="9" branch="False" />
-              </lines>
-            </method>
-            <method name="get_ExceptionDescription" signature="()" line-rate="0" branch-rate="1" complexity="1">
-              <lines>
-                <line number="21" hits="0" branch="False" />
+                <line number="20" hits="10" branch="False" />
               </lines>
             </method>
             <method name="get_Target" signature="()" line-rate="0" branch-rate="1" complexity="1">
               <lines>
-                <line number="26" hits="0" branch="False" />
+                <line number="25" hits="0" branch="False" />
               </lines>
             </method>
             <method name="get_MinimumPing" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="31" hits="35" branch="False" />
+                <line number="30" hits="33" branch="False" />
               </lines>
             </method>
             <method name="get_AveragePing" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="36" hits="48" branch="False" />
+                <line number="35" hits="52" branch="False" />
               </lines>
             </method>
             <method name="get_MaximumPing" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="41" hits="35" branch="False" />
+                <line number="40" hits="33" branch="False" />
               </lines>
             </method>
             <method name="get_Jitter" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="46" hits="6" branch="False" />
+                <line number="45" hits="6" branch="False" />
               </lines>
             </method>
             <method name="get_PacketLoss" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="50" hits="15" branch="False" />
+                <line number="50" hits="16" branch="False" />
               </lines>
             </method>
             <method name="get_TerminatingIPStatus" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="56" hits="4" branch="False" />
+                <line number="56" hits="2" branch="False" />
+              </lines>
+            </method>
+            <method name="get_LastAbnormalStatus" signature="()" line-rate="1" branch-rate="1" complexity="1">
+              <lines>
+                <line number="62" hits="3" branch="False" />
               </lines>
             </method>
             <method name="get_ConsecutiveTimeouts" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="61" hits="12" branch="False" />
+                <line number="67" hits="13" branch="False" />
               </lines>
             </method>
             <method name="get_PacketsSent" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="66" hits="40" branch="False" />
+                <line number="72" hits="43" branch="False" />
               </lines>
             </method>
             <method name="get_PacketsLost" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="71" hits="26" branch="False" />
+                <line number="77" hits="27" branch="False" />
               </lines>
             </method>
             <method name="get_PingQualityFlags" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="77" hits="12" branch="False" />
+                <line number="90" hits="13" branch="False" />
               </lines>
             </method>
             <method name="Empty" signature="()" line-rate="1" branch-rate="1" complexity="1">
               <lines>
-                <line number="86" hits="9" branch="False" />
-                <line number="87" hits="9" branch="False" />
-                <line number="88" hits="9" branch="False" />
-                <line number="89" hits="9" branch="False" />
-                <line number="90" hits="9" branch="False" />
-                <line number="91" hits="9" branch="False" />
-                <line number="92" hits="9" branch="False" />
-                <line number="93" hits="9" branch="False" />
-                <line number="94" hits="9" branch="False" />
-                <line number="95" hits="9" branch="False" />
-                <line number="96" hits="9" branch="False" />
-                <line number="97" hits="9" branch="False" />
-                <line number="98" hits="9" branch="False" />
-                <line number="99" hits="9" branch="False" />
+                <line number="99" hits="10" branch="False" />
+                <line number="100" hits="10" branch="False" />
+                <line number="101" hits="10" branch="False" />
+                <line number="102" hits="10" branch="False" />
+                <line number="103" hits="10" branch="False" />
+                <line number="104" hits="10" branch="False" />
+                <line number="105" hits="10" branch="False" />
+                <line number="106" hits="10" branch="False" />
+                <line number="107" hits="10" branch="False" />
+                <line number="108" hits="10" branch="False" />
+                <line number="109" hits="10" branch="False" />
+                <line number="110" hits="10" branch="False" />
+                <line number="111" hits="10" branch="False" />
+                <line number="112" hits="10" branch="False" />
               </lines>
             </method>
             <method name="CalculatePingStdDeviation" signature="(System.Collections.Generic.List`1&lt;System.Int64&gt;,System.Single)" line-rate="0" branch-rate="0" complexity="4">
               <lines>
-                <line number="101" hits="0" branch="False" />
-                <line number="102" hits="0" branch="True" condition-coverage="0% (0/2)">
+                <line number="121" hits="0" branch="False" />
+                <line number="122" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
                     <condition number="15" type="jump" coverage="0%" />
                   </conditions>
                 </line>
-                <line number="103" hits="0" branch="False" />
-                <line number="106" hits="0" branch="False" />
-                <line number="107" hits="0" branch="True" condition-coverage="0% (0/2)">
+                <line number="123" hits="0" branch="False" />
+                <line number="126" hits="0" branch="False" />
+                <line number="127" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
                     <condition number="84" type="jump" coverage="0%" />
                   </conditions>
                 </line>
-                <line number="108" hits="0" branch="False" />
-                <line number="109" hits="0" branch="False" />
-                <line number="111" hits="0" branch="False" />
-                <line number="112" hits="0" branch="False" />
+                <line number="128" hits="0" branch="False" />
+                <line number="129" hits="0" branch="False" />
+                <line number="131" hits="0" branch="False" />
+                <line number="132" hits="0" branch="False" />
               </lines>
             </method>
             <method name="CalculatePingJitter" signature="(System.Collections.Generic.List`1&lt;System.Int64&gt;)" line-rate="1" branch-rate="1" complexity="4">
               <lines>
-                <line number="114" hits="3" branch="False" />
-                <line number="115" hits="4" branch="True" condition-coverage="100% (2/2)">
+                <line number="139" hits="3" branch="False" />
+                <line number="140" hits="4" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="15" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="116" hits="1" branch="False" />
-                <line number="119" hits="2" branch="False" />
-                <line number="120" hits="31" branch="True" condition-coverage="100% (2/2)">
+                <line number="141" hits="1" branch="False" />
+                <line number="144" hits="2" branch="False" />
+                <line number="145" hits="31" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="87" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="121" hits="9" branch="False" />
-                <line number="122" hits="9" branch="False" />
-                <line number="124" hits="2" branch="False" />
-                <line number="125" hits="2" branch="False" />
-                <line number="126" hits="3" branch="False" />
+                <line number="146" hits="9" branch="False" />
+                <line number="147" hits="9" branch="False" />
+                <line number="149" hits="2" branch="False" />
+                <line number="150" hits="2" branch="False" />
+                <line number="151" hits="3" branch="False" />
               </lines>
             </method>
             <method name="CalculateAveragePing" signature="(System.Single,System.Int32,System.Int32)" line-rate="0.8332999999999999" branch-rate="0.5" complexity="2">
               <lines>
-                <line number="128" hits="4" branch="False" />
-                <line number="129" hits="4" branch="False" />
-                <line number="130" hits="4" branch="True" condition-coverage="50% (1/2)">
+                <line number="165" hits="4" branch="False" />
+                <line number="166" hits="4" branch="False" />
+                <line number="167" hits="4" branch="True" condition-coverage="50% (1/2)">
                   <conditions>
                     <condition number="11" type="jump" coverage="50%" />
                   </conditions>
                 </line>
-                <line number="131" hits="0" branch="False" />
-                <line number="134" hits="4" branch="False" />
-                <line number="136" hits="4" branch="False" />
+                <line number="168" hits="0" branch="False" />
+                <line number="171" hits="4" branch="False" />
+                <line number="173" hits="4" branch="False" />
               </lines>
             </method>
             <method name="CalculatePacketLoss" signature="(System.Int32,System.Int32)" line-rate="1" branch-rate="1" complexity="2">
               <lines>
-                <line number="138" hits="3" branch="False" />
-                <line number="139" hits="4" branch="True" condition-coverage="100% (2/2)">
+                <line number="181" hits="3" branch="False" />
+                <line number="182" hits="4" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="7" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="140" hits="1" branch="False" />
-                <line number="143" hits="2" branch="False" />
-                <line number="144" hits="2" branch="False" />
-                <line number="145" hits="3" branch="False" />
+                <line number="183" hits="1" branch="False" />
+                <line number="186" hits="2" branch="False" />
+                <line number="187" hits="2" branch="False" />
+                <line number="188" hits="3" branch="False" />
               </lines>
             </method>
             <method name="SetIfMaxPing" signature="(PingBoard.Pinging.PingGroupSummary,System.Int16)" line-rate="1" branch-rate="0.75" complexity="4">
               <lines>
-                <line number="147" hits="2" branch="False" />
-                <line number="148" hits="4" branch="True" condition-coverage="75% (3/4)">
+                <line number="196" hits="5" branch="False" />
+                <line number="197" hits="7" branch="True" condition-coverage="75% (3/4)">
                   <conditions>
                     <condition number="16" type="jump" coverage="50%" />
                     <condition number="61" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="149" hits="2" branch="False" />
-                <line number="150" hits="2" branch="False" />
-                <line number="151" hits="2" branch="False" />
+                <line number="198" hits="2" branch="False" />
+                <line number="199" hits="2" branch="False" />
+                <line number="200" hits="5" branch="False" />
               </lines>
             </method>
             <method name="SetIfMinPing" signature="(PingBoard.Pinging.PingGroupSummary,System.Int16)" line-rate="1" branch-rate="0.75" complexity="4">
               <lines>
-                <line number="153" hits="2" branch="False" />
-                <line number="154" hits="4" branch="True" condition-coverage="75% (3/4)">
+                <line number="208" hits="5" branch="False" />
+                <line number="209" hits="7" branch="True" condition-coverage="75% (3/4)">
                   <conditions>
                     <condition number="16" type="jump" coverage="50%" />
                     <condition number="61" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="155" hits="2" branch="False" />
-                <line number="156" hits="2" branch="False" />
-                <line number="157" hits="2" branch="False" />
+                <line number="210" hits="2" branch="False" />
+                <line number="211" hits="2" branch="False" />
+                <line number="212" hits="5" branch="False" />
               </lines>
             </method>
           </methods>
           <lines>
-            <line number="11" hits="9" branch="False" />
-            <line number="16" hits="9" branch="False" />
-            <line number="21" hits="0" branch="False" />
-            <line number="26" hits="0" branch="False" />
-            <line number="31" hits="35" branch="False" />
-            <line number="36" hits="48" branch="False" />
-            <line number="41" hits="35" branch="False" />
-            <line number="46" hits="6" branch="False" />
-            <line number="50" hits="15" branch="False" />
-            <line number="56" hits="4" branch="False" />
-            <line number="61" hits="12" branch="False" />
-            <line number="66" hits="40" branch="False" />
-            <line number="71" hits="26" branch="False" />
-            <line number="77" hits="12" branch="False" />
-            <line number="86" hits="9" branch="False" />
-            <line number="87" hits="9" branch="False" />
-            <line number="88" hits="9" branch="False" />
-            <line number="89" hits="9" branch="False" />
-            <line number="90" hits="9" branch="False" />
-            <line number="91" hits="9" branch="False" />
-            <line number="92" hits="9" branch="False" />
-            <line number="93" hits="9" branch="False" />
-            <line number="94" hits="9" branch="False" />
-            <line number="95" hits="9" branch="False" />
-            <line number="96" hits="9" branch="False" />
-            <line number="97" hits="9" branch="False" />
-            <line number="98" hits="9" branch="False" />
-            <line number="99" hits="9" branch="False" />
-            <line number="101" hits="0" branch="False" />
-            <line number="102" hits="0" branch="True" condition-coverage="0% (0/2)">
+            <line number="15" hits="10" branch="False" />
+            <line number="20" hits="10" branch="False" />
+            <line number="25" hits="0" branch="False" />
+            <line number="30" hits="33" branch="False" />
+            <line number="35" hits="52" branch="False" />
+            <line number="40" hits="33" branch="False" />
+            <line number="45" hits="6" branch="False" />
+            <line number="50" hits="16" branch="False" />
+            <line number="56" hits="2" branch="False" />
+            <line number="62" hits="3" branch="False" />
+            <line number="67" hits="13" branch="False" />
+            <line number="72" hits="43" branch="False" />
+            <line number="77" hits="27" branch="False" />
+            <line number="90" hits="13" branch="False" />
+            <line number="99" hits="10" branch="False" />
+            <line number="100" hits="10" branch="False" />
+            <line number="101" hits="10" branch="False" />
+            <line number="102" hits="10" branch="False" />
+            <line number="103" hits="10" branch="False" />
+            <line number="104" hits="10" branch="False" />
+            <line number="105" hits="10" branch="False" />
+            <line number="106" hits="10" branch="False" />
+            <line number="107" hits="10" branch="False" />
+            <line number="108" hits="10" branch="False" />
+            <line number="109" hits="10" branch="False" />
+            <line number="110" hits="10" branch="False" />
+            <line number="111" hits="10" branch="False" />
+            <line number="112" hits="10" branch="False" />
+            <line number="121" hits="0" branch="False" />
+            <line number="122" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
                 <condition number="15" type="jump" coverage="0%" />
               </conditions>
             </line>
-            <line number="103" hits="0" branch="False" />
-            <line number="106" hits="0" branch="False" />
-            <line number="107" hits="0" branch="True" condition-coverage="0% (0/2)">
+            <line number="123" hits="0" branch="False" />
+            <line number="126" hits="0" branch="False" />
+            <line number="127" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
                 <condition number="84" type="jump" coverage="0%" />
               </conditions>
             </line>
-            <line number="108" hits="0" branch="False" />
-            <line number="109" hits="0" branch="False" />
-            <line number="111" hits="0" branch="False" />
-            <line number="112" hits="0" branch="False" />
-            <line number="114" hits="3" branch="False" />
-            <line number="115" hits="4" branch="True" condition-coverage="100% (2/2)">
+            <line number="128" hits="0" branch="False" />
+            <line number="129" hits="0" branch="False" />
+            <line number="131" hits="0" branch="False" />
+            <line number="132" hits="0" branch="False" />
+            <line number="139" hits="3" branch="False" />
+            <line number="140" hits="4" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="15" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="116" hits="1" branch="False" />
-            <line number="119" hits="2" branch="False" />
-            <line number="120" hits="31" branch="True" condition-coverage="100% (2/2)">
+            <line number="141" hits="1" branch="False" />
+            <line number="144" hits="2" branch="False" />
+            <line number="145" hits="31" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="87" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="121" hits="9" branch="False" />
-            <line number="122" hits="9" branch="False" />
-            <line number="124" hits="2" branch="False" />
-            <line number="125" hits="2" branch="False" />
-            <line number="126" hits="3" branch="False" />
-            <line number="128" hits="4" branch="False" />
-            <line number="129" hits="4" branch="False" />
-            <line number="130" hits="4" branch="True" condition-coverage="50% (1/2)">
+            <line number="146" hits="9" branch="False" />
+            <line number="147" hits="9" branch="False" />
+            <line number="149" hits="2" branch="False" />
+            <line number="150" hits="2" branch="False" />
+            <line number="151" hits="3" branch="False" />
+            <line number="165" hits="4" branch="False" />
+            <line number="166" hits="4" branch="False" />
+            <line number="167" hits="4" branch="True" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="11" type="jump" coverage="50%" />
               </conditions>
             </line>
-            <line number="131" hits="0" branch="False" />
-            <line number="134" hits="4" branch="False" />
-            <line number="136" hits="4" branch="False" />
-            <line number="138" hits="3" branch="False" />
-            <line number="139" hits="4" branch="True" condition-coverage="100% (2/2)">
+            <line number="168" hits="0" branch="False" />
+            <line number="171" hits="4" branch="False" />
+            <line number="173" hits="4" branch="False" />
+            <line number="181" hits="3" branch="False" />
+            <line number="182" hits="4" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="7" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="140" hits="1" branch="False" />
-            <line number="143" hits="2" branch="False" />
-            <line number="144" hits="2" branch="False" />
-            <line number="145" hits="3" branch="False" />
-            <line number="147" hits="2" branch="False" />
-            <line number="148" hits="4" branch="True" condition-coverage="75% (3/4)">
+            <line number="183" hits="1" branch="False" />
+            <line number="186" hits="2" branch="False" />
+            <line number="187" hits="2" branch="False" />
+            <line number="188" hits="3" branch="False" />
+            <line number="196" hits="5" branch="False" />
+            <line number="197" hits="7" branch="True" condition-coverage="75% (3/4)">
               <conditions>
                 <condition number="16" type="jump" coverage="50%" />
                 <condition number="61" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="149" hits="2" branch="False" />
-            <line number="150" hits="2" branch="False" />
-            <line number="151" hits="2" branch="False" />
-            <line number="153" hits="2" branch="False" />
-            <line number="154" hits="4" branch="True" condition-coverage="75% (3/4)">
+            <line number="198" hits="2" branch="False" />
+            <line number="199" hits="2" branch="False" />
+            <line number="200" hits="5" branch="False" />
+            <line number="208" hits="5" branch="False" />
+            <line number="209" hits="7" branch="True" condition-coverage="75% (3/4)">
               <conditions>
                 <condition number="16" type="jump" coverage="50%" />
                 <condition number="61" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="155" hits="2" branch="False" />
-            <line number="156" hits="2" branch="False" />
-            <line number="157" hits="2" branch="False" />
+            <line number="210" hits="2" branch="False" />
+            <line number="211" hits="2" branch="False" />
+            <line number="212" hits="5" branch="False" />
           </lines>
         </class>
         <class name="PingBoard.Pinging.PingQualification" filename="Pinging\PingQualification.cs" line-rate="1" branch-rate="0.9166" complexity="26">
@@ -1038,24 +1042,22 @@
                 <line number="91" hits="0" branch="False" />
                 <line number="92" hits="0" branch="False" />
                 <line number="93" hits="0" branch="False" />
-                <line number="97" hits="0" branch="False" />
-                <line number="98" hits="0" branch="True" condition-coverage="0% (0/2)">
+                <line number="97" hits="0" branch="True" condition-coverage="0% (0/2)">
                   <conditions>
-                    <condition number="302" type="jump" coverage="0%" />
+                    <condition number="278" type="jump" coverage="0%" />
                   </conditions>
                 </line>
-                <line number="99" hits="0" branch="False" />
+                <line number="98" hits="0" branch="False" />
+                <line number="99" hits="0" branch="True" condition-coverage="0% (0/2)">
+                  <conditions>
+                    <condition number="127" type="jump" coverage="0%" />
+                  </conditions>
+                </line>
                 <line number="100" hits="0" branch="False" />
-                <line number="101" hits="0" branch="True" condition-coverage="0% (0/2)">
-                  <conditions>
-                    <condition number="150" type="jump" coverage="0%" />
-                  </conditions>
-                </line>
+                <line number="101" hits="0" branch="False" />
                 <line number="102" hits="0" branch="False" />
                 <line number="103" hits="0" branch="False" />
-                <line number="104" hits="0" branch="False" />
                 <line number="105" hits="0" branch="False" />
-                <line number="107" hits="0" branch="False" />
               </lines>
             </method>
           </methods>
@@ -1066,24 +1068,22 @@
             <line number="91" hits="0" branch="False" />
             <line number="92" hits="0" branch="False" />
             <line number="93" hits="0" branch="False" />
-            <line number="97" hits="0" branch="False" />
-            <line number="98" hits="0" branch="True" condition-coverage="0% (0/2)">
+            <line number="97" hits="0" branch="True" condition-coverage="0% (0/2)">
               <conditions>
-                <condition number="302" type="jump" coverage="0%" />
+                <condition number="278" type="jump" coverage="0%" />
               </conditions>
             </line>
-            <line number="99" hits="0" branch="False" />
+            <line number="98" hits="0" branch="False" />
+            <line number="99" hits="0" branch="True" condition-coverage="0% (0/2)">
+              <conditions>
+                <condition number="127" type="jump" coverage="0%" />
+              </conditions>
+            </line>
             <line number="100" hits="0" branch="False" />
-            <line number="101" hits="0" branch="True" condition-coverage="0% (0/2)">
-              <conditions>
-                <condition number="150" type="jump" coverage="0%" />
-              </conditions>
-            </line>
+            <line number="101" hits="0" branch="False" />
             <line number="102" hits="0" branch="False" />
             <line number="103" hits="0" branch="False" />
-            <line number="104" hits="0" branch="False" />
             <line number="105" hits="0" branch="False" />
-            <line number="107" hits="0" branch="False" />
           </lines>
         </class>
         <class name="PingBoard.Pinging.IcmpStatusCodeEntry" filename="Pinging\StatusCodeEntry.cs" line-rate="0" branch-rate="1" complexity="4">

@@ -1,3 +1,5 @@
+using System.Diagnostics;
+
 namespace PingBoard.Tests.PingingTests;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -44,24 +46,14 @@ public class IndividualPingerStub : IIndividualPinger
     /// The List of stubbed PingReply objects, to be returned by SendPingAsync in
     /// order of ascending index.
     /// </summary>
-    private List<PingReply> _pingReplyStubs;
+    private List<PingReply> _pingReplyStubs = [];
     
-    /// <summary>
-    /// A (real) PingingBehaviorConfig object which contains values needed for the PingOptions object.
-    /// </summary>
-    private PingingBehaviorConfig _pingBehavior;
     
     /// <summary>
     /// The index of next PingReply from _pingReplyStubs that should be returned by
     /// a SendPingAsync function call. 
     /// </summary>
-    private int _pingReplyIndex;
-
-
-    public IndividualPingerStub(PingOptions options, IOptions<PingingBehaviorConfig> pingBehavior, 
-        ILogger<IIndividualPinger> logger){
-        _pingBehavior = pingBehavior.Value;
-    }
+    private int _pingReplyIndex = 0;
 
     /// <summary>
     /// Populates the private _pingReplyStubs property with stubbed PingReply objects,
@@ -74,32 +66,34 @@ public class IndividualPingerStub : IIndividualPinger
     /// to make testing SendPingGroupAsync possible. <see cref="GroupPinger"/>
     ///
     /// </summary>
-    /// <param name="rtts"></param>
-    /// <param name="ipstatuses"></param>
-    /// <param name="buffers"></param>
-    /// <param name="ipaddresses"></param>
-    /// <param name="ttls"></param>
+    /// <param name="rtts">A list of RoundtripTime property values for the PingReply objects to have set</param>
+    /// <param name="ipstatuses">A list of Status property values for the PingReply objects to have set</param>
+    /// <param name="buffers">A list of Buffer property values for the PingReply objects to have set</param>
+    /// <param name="ipaddresses">A list of Address property values for the PingReply objects to have set</param>
+    /// <param name="ttls">A list of ttl's for the PingReply's PingOptions objects to have set </param>
     public void PrepareStubbedPingReplies(List<long> rtts, List<IPStatus> ipstatuses, List<byte[]> buffers,
         List<IPAddress> ipaddresses, List<int> ttls) {
-        for (int i = 0; i< rtts.Count; i++){
+        for (int i = 0; i < rtts.Count; i++){
             _pingReplyStubs.Add(MakePingReplyStub(rtts[i], ipstatuses[i], buffers[i], ipaddresses[i], ttls[i]));
         }
     }
     
     public static PingReply MakePingReplyStub(long rtt, IPStatus status, byte[] buffer, 
                                               IPAddress ipaddress, int ttl = 0, bool dontFragment = true){
+        if (status != IPStatus.Success){
+            return MakeEmptyPingReplyStub(status);
+        }
+        
         BindingFlags bindingFlags = BindingFlags.Default | BindingFlags.CreateInstance | 
                                     BindingFlags.NonPublic | BindingFlags.Instance;
 
-        PingOptions optionsStub = MakePingOptionsStub(ttl, dontFragment);
-        
+        PingOptions optionsStub = MakePingOptions(ttl, dontFragment);
         PingReply stub = (PingReply) Activator.CreateInstance(
             typeof(PingReply),
             bindingFlags,
             null,
-            new object?[] { IPAddress.Any, optionsStub, status, rtt, buffer },
+            new object?[] { ipaddress, optionsStub, status, rtt, buffer },
             null)!;
-
         return stub;
     }
 
@@ -110,7 +104,7 @@ public class IndividualPingerStub : IIndividualPinger
     /// </summary>
     /// <param name="status">The desired IPStatus for the reply to contain, Unknown by default</param>
     /// <returns>A stubbed PingReply object, reflective of an unsuccessful ping</returns>
-    public static PingReply MakeEmptyReplyStub(IPStatus status = IPStatus.Unknown) {
+    public static PingReply MakeEmptyPingReplyStub(IPStatus status = IPStatus.Unknown){
         BindingFlags bindingFlags = BindingFlags.Default | BindingFlags.CreateInstance | 
                                     BindingFlags.NonPublic | BindingFlags.Instance;
         
@@ -118,28 +112,19 @@ public class IndividualPingerStub : IIndividualPinger
             typeof(PingReply),
             bindingFlags,
             null,
-            new object?[] { IPAddress.Any, null, status, 0, new byte[]{} },
+            new object?[] { IPAddress.Any, null, status, 0, Array.Empty<byte>() },
             null)!;
 
         return stub;
     }
     
-    public static PingOptions MakePingOptionsStub(int ttl, bool dontFragment){
-        BindingFlags bindingFlags = BindingFlags.Default | BindingFlags.CreateInstance | 
-                                    BindingFlags.NonPublic | BindingFlags.Instance; 
-     
-        PingOptions stub = (PingOptions) Activator.CreateInstance(
-            typeof(PingOptions),
-            bindingFlags,
-            null,
-            new object?[] {ttl, dontFragment},
-            null)!;
-
-        return stub;
+    public static PingOptions MakePingOptions(int ttl = 0, bool dontFragment = true, bool makeNull = false){
+        return (makeNull) ? null : new PingOptions(ttl, dontFragment);
+        
     }
 
     /// <summary>
-    /// Returned the next stubbed PingReply object from the private _pingReplyStubs property,
+    /// Returned the next stubbed Task|PingReply| object from the private _pingReplyStubs property,
     /// and then updates the index.
     /// </summary>
     /// <param name="target"></param>
@@ -162,6 +147,7 @@ public class IndividualPingerStub : IIndividualPinger
         await Task.Delay(1); // to return as Task<PingReply> instead of simply PingReply
         return _pingReplyStubs[_pingReplyIndex++];
     }
+    
 }
 
 
