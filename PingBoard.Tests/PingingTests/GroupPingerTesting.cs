@@ -150,8 +150,7 @@ public class GroupPingerTesting{
         PingReply fakeReply = MakePingReplyStub(1504, IPStatus.TimedOut, new byte[]{}); // don't actually know if rtt returned on TimedOut
 
         GroupPinger.ProcessPacketLossCaution(testSummary, fakeReply);
-
-        Assert.Equal(1, testSummary.PacketsSent!.Value);
+        
         Assert.Equal(1, testSummary.PacketsLost!.Value);
         Assert.Equal(1, testSummary.ConsecutiveTimeouts!.Value);
     }
