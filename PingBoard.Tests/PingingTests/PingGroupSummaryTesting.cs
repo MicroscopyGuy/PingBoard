@@ -41,10 +41,10 @@ public class PingGroupSummaryTesting{
         PingGroupSummary summary = new PingGroupSummary{
             AveragePing = 11, // say only one ping so
             PacketsLost = 0,
-            PacketsSent = 1 
+            PacketsSent = 1,
+            ExcludedPings = 0
         };
-        summary.AveragePing = PingGroupSummary.CalculateAveragePing(
-            summary.AveragePing!.Value, summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+        summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(11, summary.AveragePing!.Value);
     }
 
@@ -53,10 +53,10 @@ public class PingGroupSummaryTesting{
         PingGroupSummary summary = new PingGroupSummary{
             AveragePing = 187, 
             PacketsLost = 0,
-            PacketsSent = 34 
+            PacketsSent = 34,
+            ExcludedPings = 0
         };
-        summary.AveragePing = PingGroupSummary.CalculateAveragePing(
-            summary.AveragePing!.Value, summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+        summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(5.5, summary.AveragePing!.Value);
     }
 
@@ -65,25 +65,48 @@ public class PingGroupSummaryTesting{
         PingGroupSummary summary = new PingGroupSummary{
             AveragePing = 5,
             PacketsLost = 1,
-            PacketsSent = 2
+            PacketsSent = 2,
+            ExcludedPings = 0
         };
-        summary.AveragePing = PingGroupSummary.CalculateAveragePing(
-            summary.AveragePing!.Value, summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+        summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(5, summary.AveragePing!.Value);
     }
-
+    
     [Fact]
     public void ProperAveragePing_OnManyPings_WhenPreviousPacketLoss(){
         PingGroupSummary summary = new PingGroupSummary{
             AveragePing = 261.25F,
             PacketsLost = 13,
-            PacketsSent = 32
+            PacketsSent = 32,
+            ExcludedPings = 0
         };
-        float avg = PingGroupSummary.CalculateAveragePing(
-            summary.AveragePing!.Value, summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+        float avg = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(13.75, avg);
     }
-  
+    
+    [Fact]
+    public void ProperAveragePing_OnManyPings_WhenPacketLossAndExcluded(){
+        PingGroupSummary summary = new PingGroupSummary{
+            AveragePing = 50,
+            PacketsLost = 2,
+            PacketsSent = 10,
+            ExcludedPings = 3
+        };
+        float avg = PingGroupSummary.CalculateAveragePing(summary);
+        Assert.Equal(10, avg);
+    }
+    
+    [Fact]
+    public void ProperAveragePing_OnManyPings_ExcludedAndNoPacketLoss(){
+        PingGroupSummary summary = new PingGroupSummary{
+            AveragePing = 50,
+            PacketsLost = 0,
+            PacketsSent = 10,
+            ExcludedPings = 5
+        };
+        float avg = PingGroupSummary.CalculateAveragePing(summary);
+        Assert.Equal(10, avg);
+    }
     #endregion
     /********************************************************End Average Ping Testing****************************************/
 
