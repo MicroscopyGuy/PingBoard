@@ -6,9 +6,10 @@ namespace PingBoard.Pinging{
         ///  Provides a set of three Ping States which determine whether, and how the next *individual* ping should proceed
         /// </summary>
         public enum PingState{
-            Continue,    
-            Pause,       // requires waiting for something to resolve, like a SourceQuench ICMP error
-            Halt         // fatal issue which requires change of program input
+            Continue,         // Just keep going
+            Pause,            // requires waiting for something to resolve, like a SourceQuench ICMP error
+            Halt,             // fatal issue which requires change of program input
+            PacketLossCaution // Packet loss detected, update some 
         }
     }
 }

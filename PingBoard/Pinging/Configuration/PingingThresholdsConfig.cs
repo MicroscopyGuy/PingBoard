@@ -29,5 +29,6 @@ namespace PingBoard.Pinging.Configuration{
         /// A ping group's % of loss packets > than PacketLossPercentage is said to be problematic
         /// </summary>
         public int PacketLossPercentage {get; set;}
+
     }
 }

@@ -29,7 +29,7 @@ namespace PingBoard.Pinging.Configuration{
 
             RuleFor(ptc => ptc.MaximumPingMs)
                 .GreaterThan(ptc => ptc.MinimumPingMs)
-                .GreaterThan(ptc => (short) ptc.AveragePingMs)
+                .GreaterThan(ptc => (int) ptc.AveragePingMs)
                 .InclusiveBetween(Limits.LowestAllowedMaximumPingMs, Limits.HighestAllowedMaximumPingMs)
                 .WithMessage($"""
                                 The MinimumPingMs threshold must be >= {Limits.LowestAllowedMaximumPingMs} and 
