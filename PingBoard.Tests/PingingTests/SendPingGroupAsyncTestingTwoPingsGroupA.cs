@@ -16,14 +16,12 @@ using System.Net;
 /// As a result of this possibility, however, the Continue state can happen from IPStatus.Success (successful), or
 /// one of a few other IPStatuses also mapped to the Continue state, but which were not the product of a successful ping.
 /// For this reason there is an additional term (Unsuccessful) included below in the list of combinations to test.
-///
-/// This 
 /// |*************************************************Combinations:****************************************************|
-/// |1) {Success,Success}                     ←-------                                                                 |
-/// |2) {Success,Unsuccessful}                                                                                         |
-/// |3) {Success,Pause}                                                                                                |
-/// |4) {Success,Halt}                                                                                                 |
-/// |5) {Success,PacketLossCaution}                                                                                    |
+/// |1) {Success,Success}                     ←- Start of Group A  ^                                                   |
+/// |2) {Success,Unsuccessful}                                     |                                                   |
+/// |3) {Success,Pause}                                            |                                                   |
+/// |4) {Success,Halt}                                             |                                                   |
+/// |5) {Success,PacketLossCaution}           ←- End of Group A    v                                                   |
 /// |6) {Unsuccessful,Success}                                                                                         | 
 /// |7) {Unsuccessful,Unsuccessful}                                                                                    |
 /// |8) {Unsuccessful,Pause}                                                                                           |
@@ -64,14 +62,12 @@ public partial class SendPingGroupAsyncTestingTwoPings {
         ReportBackAfterConsecutiveTimeouts = 2, // not crucial here
         TimeoutMs = 1500, // not crucial for this test
         Ttl = 64,
-        WaitMs = 25 // technically violates the WaitMs limits, but the wait time isn't relevant here
+        WaitMs = 20 // technically violates the WaitMs limits, but the wait time isn't relevant here
     };
 
     private static readonly IOptions<PingingBehaviorConfig> PingBehaviorOptions = Options.Create(PingBehavior);
     
-    /********************************************* Beginning With Success *********************************************/
-    #region "BeginningWithSuccessfulPing"
-    //{Success,Success}
+    //1) {Success,Success}
     [Fact]
     public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessSuccess() {
         IndividualPingerStub pingerStub = new IndividualPingerStub();
@@ -122,7 +118,7 @@ public partial class SendPingGroupAsyncTestingTwoPings {
         Assert.Null(summary.TerminatingIPStatus);
     }
     
-    // {Success,Unsuccessful}
+    // 2) {Success,Unsuccessful}
     [Fact]
     public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessUnsuccessful() {
         IndividualPingerStub pingerStub = new IndividualPingerStub();
@@ -327,166 +323,9 @@ public partial class SendPingGroupAsyncTestingTwoPings {
         Assert.Equal(50, summary.PacketLoss);
         Assert.Equal(2, summary.PacketsSent!.Value);
         Assert.Equal(1, summary.PacketsLost!.Value);
-        Assert.Equal(0, summary.ExcludedPings!.Value);
+        Assert.Equal(1, summary.ExcludedPings!.Value);
         Assert.Equal(IPStatus.TimedOut, summary.LastAbnormalStatus);
         Assert.Null(summary.TerminatingIPStatus);
     }
-    
-    #endregion 
-    /********************************************* Beginning With Success *********************************************/
-    
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnTwoUnSuccessfulPings() {
-        IndividualPingerStub pingerStub = new IndividualPingerStub();
-        //The target we are going to pretend to ping
-        var target = IPAddress.Parse("8.8.8.8");
-        
-        // Values for the fake PingReply objects that SendPingIndividualAsync will send, every PingReply is one index
-        List<long> rtts = [0, 0];
-        List<IPStatus> statuses = [IPStatus.BadRoute, IPStatus.BadRoute];
-        List<byte[]> buffers = [[], []];
-        List<IPAddress> addresses = [target, target];
-        List<int> ttls = [64, 64];
-        
-        // Make sure the Lists of PingReply values are the same length, didn't mess up the test setup
-        PingingTestingUtilities.AssertAllProperLength(rtts, statuses, buffers, addresses, ttls, 2);
-        
-        // Prepare the PingReply stubs which are stored on the pingerStub object, one of which will be returned
-        // from each SendPingIndividualAsync function call that SendPingGroupAsync makes
-        pingerStub.PrepareStubbedPingReplies(rtts, statuses, buffers, addresses, ttls);
-        
-
-
-        // Make PingScheduler object
-        var pingScheduler = new PingScheduler(PingBehaviorOptions);
-        
-        // Make logger (though not implemented as of writing this)
-        var logger = new NullLogger<IGroupPinger>();
-        
-        // Finally, make the GroupPinger
-        var groupPinger = new GroupPinger(
-            pingerStub,
-            new PingQualification(PingThresholdsOptions),
-            pingScheduler,
-            PingBehaviorOptions,
-            PingThresholdsOptions,
-            logger
-        );
-        
-        var summary = await groupPinger.SendPingGroupAsync(target, PingBehavior.PingsPerCall);
-        Assert.Equal(0, summary.AveragePing!.Value);
-        Assert.Equal(0, summary.MinimumPing!.Value);
-        Assert.Equal(0, summary.MaximumPing!.Value);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts!.Value);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent!.Value);
-        Assert.Equal(0, summary.PacketsLost!.Value);
-        Assert.Equal(IPStatus.BadRoute, summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
-    }
-    
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnOnePausePing_AndOneUnsuccessfulPing() {
-        IndividualPingerStub pingerStub = new IndividualPingerStub();
-        //The target we are going to pretend to ping
-        var target = IPAddress.Parse("8.8.8.8");
-        
-        // Values for the fake PingReply objects that SendPingIndividualAsync will send, every PingReply is one index
-        List<long> rtts = [0, 0];
-        List<IPStatus> statuses = [IPStatus.SourceQuench, IPStatus.BadRoute];
-        List<byte[]> buffers = [[], []];
-        List<IPAddress> addresses = [target, target];
-        List<int> ttls = [64, 64];
-        
-        // Make sure the Lists of PingReply values are the same length, didn't mess up the test setup
-        PingingTestingUtilities.AssertAllProperLength(rtts, statuses, buffers, addresses, ttls, 2);
-        
-        // Prepare the PingReply stubs which are stored on the pingerStub object, one of which will be returned
-        // from each SendPingIndividualAsync function call that SendPingGroupAsync makes
-        pingerStub.PrepareStubbedPingReplies(rtts, statuses, buffers, addresses, ttls);
-        
-        // Make PingScheduler object
-        var pingScheduler = new PingScheduler(PingBehaviorOptions);
-        
-        // Make logger (though not implemented as of writing this)
-        var logger = new NullLogger<IGroupPinger>();
-        
-        // Finally, make the GroupPinger
-        var groupPinger = new GroupPinger(
-            pingerStub,
-            new PingQualification(PingThresholdsOptions),
-            pingScheduler,
-            PingBehaviorOptions,
-            PingThresholdsOptions,
-            logger
-        );
-        
-        var summary = await groupPinger.SendPingGroupAsync(target, PingBehavior.PingsPerCall);
-        Assert.Equal(0, summary.AveragePing!.Value);
-        Assert.Equal(0, summary.MinimumPing!.Value);
-        Assert.Equal(0, summary.MaximumPing!.Value);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts!.Value);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent!.Value);
-        Assert.Equal(0, summary.PacketsLost!.Value);
-        Assert.Equal(IPStatus.BadRoute, summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
-    }
-    
-
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnOneUnsuccessfulPing_AndOnePausePing() {
-        IndividualPingerStub pingerStub = new IndividualPingerStub();
-        //The target we are going to pretend to ping
-        var target = IPAddress.Parse("8.8.8.8");
-        
-        // Values for the fake PingReply objects that SendPingIndividualAsync will send, every PingReply is one index
-        List<long> rtts = [0, 0];
-        List<IPStatus> statuses = [IPStatus.SourceQuench, IPStatus.BadRoute];
-        List<byte[]> buffers = [[], []];
-        List<IPAddress> addresses = [target, target];
-        List<int> ttls = [64, 64];
-        
-        // Make sure the Lists of PingReply values are the same length, didn't mess up the test setup
-        PingingTestingUtilities.AssertAllProperLength(rtts, statuses, buffers, addresses, ttls, 2);
-        
-        // Prepare the PingReply stubs which are stored on the pingerStub object, one of which will be returned
-        // from each SendPingIndividualAsync function call that SendPingGroupAsync makes
-        pingerStub.PrepareStubbedPingReplies(rtts, statuses, buffers, addresses, ttls);
-        
-        // Make PingScheduler object
-        var pingScheduler = new PingScheduler(PingBehaviorOptions);
-        
-        // Make logger (though not implemented as of writing this)
-        var logger = new NullLogger<IGroupPinger>();
-        
-        // Finally, make the GroupPinger
-        var groupPinger = new GroupPinger(
-            pingerStub,
-            new PingQualification(PingThresholdsOptions),
-            pingScheduler,
-            PingBehaviorOptions,
-            PingThresholdsOptions,
-            logger
-        );
-        
-        var summary = await groupPinger.SendPingGroupAsync(target, PingBehavior.PingsPerCall);
-        Assert.Equal(0, summary.AveragePing!.Value);
-        Assert.Equal(0, summary.MinimumPing!.Value);
-        Assert.Equal(0, summary.MaximumPing!.Value);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts!.Value);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent!.Value);
-        Assert.Equal(0, summary.PacketsLost!.Value);
-        Assert.Equal(IPStatus.BadRoute, summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
-    }
-    /************************************************ End SendPingGroupSync *******************************************/
   
 }

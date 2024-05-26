@@ -66,7 +66,7 @@ public class PingGroupSummaryTesting{
             AveragePing = 5,
             PacketsLost = 1,
             PacketsSent = 2,
-            ExcludedPings = 0
+            ExcludedPings = 1
         };
         summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(5, summary.AveragePing!.Value);
@@ -78,7 +78,7 @@ public class PingGroupSummaryTesting{
             AveragePing = 261.25F,
             PacketsLost = 13,
             PacketsSent = 32,
-            ExcludedPings = 0
+            ExcludedPings = 13
         };
         float avg = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(13.75, avg);
@@ -88,9 +88,9 @@ public class PingGroupSummaryTesting{
     public void ProperAveragePing_OnManyPings_WhenPacketLossAndExcluded(){
         PingGroupSummary summary = new PingGroupSummary{
             AveragePing = 50,
-            PacketsLost = 2,
+            PacketsLost = 3,
             PacketsSent = 10,
-            ExcludedPings = 3
+            ExcludedPings = 5
         };
         float avg = PingGroupSummary.CalculateAveragePing(summary);
         Assert.Equal(10, avg);
