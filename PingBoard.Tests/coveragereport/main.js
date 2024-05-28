@@ -221,20 +221,22 @@ var assemblies = [
   {
     "name": "PingBoard",
     "classes": [
-      { "name": "NetworkMonitoringService", "rp": "PingBoard_NetworkMonitoringService.html", "cl": 0, "ucl": 30, "cal": 30, "tl": 52, "cb": 0, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.Configuration.PingingBehaviorConfig", "rp": "PingBoard_PingingBehaviorConfig.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 32, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.Configuration.PingingBehaviorConfigValidator", "rp": "PingBoard_PingingBehaviorConfigValidator.html", "cl": 12, "ucl": 0, "cal": 12, "tl": 28, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfig", "rp": "PingBoard_PingingThresholdsConfig.html", "cl": 5, "ucl": 1, "cal": 6, "tl": 61, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Monitoring.Configuration.MonitoringBehaviorConfig", "rp": "PingBoard_MonitoringBehaviorConfig.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Monitoring.Configuration.MonitoringBehaviorConfigValidator", "rp": "PingBoard_MonitoringBehaviorConfigValidator.html", "cl": 18, "ucl": 0, "cal": 18, "tl": 32, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Monitoring.OutageSentinel", "rp": "PingBoard_OutageSentinel.html", "cl": 0, "ucl": 7, "cal": 7, "tl": 18, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.Configuration.PingingBehaviorConfig", "rp": "PingBoard_PingingBehaviorConfig.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 59, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.Configuration.PingingBehaviorConfigLimits", "rp": "PingBoard_PingingBehaviorConfigLimits.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 74, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.Configuration.PingingBehaviorConfigValidator", "rp": "PingBoard_PingingBehaviorConfigValidator.html", "cl": 14, "ucl": 0, "cal": 14, "tl": 37, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfig", "rp": "PingBoard_PingingThresholdsConfig.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 34, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfigLimits", "rp": "PingBoard_PingingThresholdsConfigLimits.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 58, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfigValidator", "rp": "PingBoard_PingingThresholdsConfigValidator.html", "cl": 40, "ucl": 0, "cal": 40, "tl": 58, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.GroupPinger", "rp": "PingBoard_GroupPinger.html", "cl": 6, "ucl": 46, "cal": 52, "tl": 133, "cb": 7, "tb": 28, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.IcmpStatusCodeEntry", "rp": "PingBoard_IcmpStatusCodeEntry.html", "cl": 0, "ucl": 4, "cal": 4, "tl": 36, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.IcmpStatusCodeLookup", "rp": "PingBoard_IcmpStatusCodeLookup.html", "cl": 0, "ucl": 12, "cal": 12, "tl": 55, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Pingboard.Pinging.IndividualPinger", "rp": "PingBoard_IndividualPinger.html", "cl": 0, "ucl": 18, "cal": 18, "tl": 43, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.PingGroupSummary", "rp": "PingBoard_PingGroupSummary.html", "cl": 28, "ucl": 12, "cal": 40, "tl": 117, "cb": 4, "tb": 8, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.GroupPinger", "rp": "PingBoard_GroupPinger.html", "cl": 54, "ucl": 0, "cal": 54, "tl": 161, "cb": 19, "tb": 25, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.IcmpStatusCodeEntry", "rp": "PingBoard_IcmpStatusCodeEntry.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 36, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.IcmpStatusCodeLookup", "rp": "PingBoard_IcmpStatusCodeLookup.html", "cl": 12, "ucl": 0, "cal": 12, "tl": 55, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.PingGroupSummary", "rp": "PingBoard_PingGroupSummary.html", "cl": 66, "ucl": 10, "cal": 76, "tl": 228, "cb": 24, "tb": 30, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.PingQualification", "rp": "PingBoard_PingQualification.html", "cl": 31, "ucl": 0, "cal": 31, "tl": 97, "cb": 22, "tb": 24, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.PingScheduler", "rp": "PingBoard_PingScheduler.html", "cl": 0, "ucl": 35, "cal": 35, "tl": 101, "cb": 0, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "Program", "rp": "PingBoard_Program.html", "cl": 0, "ucl": 29, "cal": 29, "tl": 50, "cb": 0, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.PingScheduler", "rp": "PingBoard_PingScheduler.html", "cl": 30, "ucl": 3, "cal": 33, "tl": 107, "cb": 4, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "Program", "rp": "PingBoard_Program.html", "cl": 0, "ucl": 32, "cal": 32, "tl": 56, "cb": 0, "tb": 2, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
 ];
 
@@ -249,28 +251,16 @@ var riskHotspotMetrics = [
 
 var riskHotspots = [
   {
-    "assembly": "PingBoard", "class": "PingBoard.Pinging.GroupPinger", "reportPath": "PingBoard_GroupPinger.html", "methodName": "SendPingGroupAsync()", "methodShortName": "SendPingGroupAsync()", "fileIndex": 0, "line": 43,
-    "metrics": [
-      { "value": 342, "exceeded": true },
-      { "value": 18, "exceeded": false },
-    ]},
-  {
-    "assembly": "PingBoard", "class": "NetworkMonitoringService", "reportPath": "PingBoard_NetworkMonitoringService.html", "methodName": "ExecuteAsync()", "methodShortName": "ExecuteAsync()", "fileIndex": 0, "line": 28,
-    "metrics": [
-      { "value": 42, "exceeded": true },
-      { "value": 6, "exceeded": false },
-    ]},
-  {
-    "assembly": "PingBoard", "class": "PingBoard.Pinging.PingGroupSummary", "reportPath": "PingBoard_PingGroupSummary.html", "methodName": "CalculatePingStdDeviation(System.Int64[],System.Single)", "methodShortName": "CalculatePingStdDeviation(...)", "fileIndex": 0, "line": 90,
+    "assembly": "PingBoard", "class": "PingBoard.Pinging.PingGroupSummary", "reportPath": "PingBoard_PingGroupSummary.html", "methodName": "CalculatePingStdDeviation(System.Collections.Generic.List`1<System.Int64>,System.Single)", "methodShortName": "CalculatePingStdDeviation(...)", "fileIndex": 0, "line": 124,
     "metrics": [
       { "value": 20, "exceeded": true },
       { "value": 4, "exceeded": false },
     ]},
   {
-    "assembly": "PingBoard", "class": "PingBoard.Pinging.PingScheduler", "reportPath": "PingBoard_PingScheduler.html", "methodName": "DelayPingingAsync()", "methodShortName": "DelayPingingAsync()", "fileIndex": 0, "line": 79,
+    "assembly": "PingBoard", "class": "PingBoard.Pinging.GroupPinger", "reportPath": "PingBoard_GroupPinger.html", "methodName": "SendPingGroupAsync()", "methodShortName": "SendPingGroupAsync()", "fileIndex": 0, "line": 44,
     "metrics": [
-      { "value": 20, "exceeded": true },
-      { "value": 4, "exceeded": false },
+      { "value": 19, "exceeded": true },
+      { "value": 19, "exceeded": false },
     ]},
 ];
 
