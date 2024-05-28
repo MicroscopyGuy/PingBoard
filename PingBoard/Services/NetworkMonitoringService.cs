@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using FluentValidation.Results;
 using Microsoft.Extensions.Options;
@@ -5,6 +6,7 @@ using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
 using System.Net;
 
+[ExcludeFromCodeCoverage]
 public class NetworkMonitoringService : BackgroundService
 {
     private readonly ILogger<IGroupPinger> _logger;
@@ -37,7 +39,7 @@ public class NetworkMonitoringService : BackgroundService
                 if (true /*!PingQualification.PingQualityWithinThresholds(result.PingQualityFlags) || result.TerminatingIPStatus != null*/){
                     Console.WriteLine($"MinimumPing: {result.MinimumPing} AveragePing: {result.AveragePing} " +
                                     $"MaximumPing: {result.MaximumPing} Jitter: {result.Jitter} PacketLoss: {result.PacketLoss} " +
-                                    $"TerminatingIPStatus: {result.TerminatingIPStatus} EndTime: {result.End!.Value.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}");
+                                    $"TerminatingIPStatus: {result.TerminatingIPStatus} EndTime: {result.End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}");
                 }
 
                 await Task.Delay(0,stoppingToken);

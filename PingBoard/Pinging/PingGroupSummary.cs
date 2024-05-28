@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
 
@@ -12,12 +13,12 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// The time the attempt to send the group of pings either started, or attempted to start
         /// </summary>
-        public DateTime? Start { get; set;}
+        public DateTime Start { get; set;}
 
         /// <summary>
         /// The time the attempt to receive the group of pings ended
         /// </summary>
-        public DateTime? End {get; set;} 
+        public DateTime End {get; set;} 
 
         /// <summary>
         /// Wherever the user said to ping, could be either a domain or an IP address
@@ -27,27 +28,27 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// The lowest of the recorded pings in the group
         /// </summary>
-        public short? MinimumPing  {get; set;} 
+        public short MinimumPing  {get; set;} 
         
         /// <summary>
         /// The average measurement of all the pings in the group
         /// </summary>
-        public float? AveragePing {get; set;}
+        public float AveragePing {get; set;}
 
         /// <summary>
         /// The highest of the recorded pings in the group
         /// </summary>         
-        public short? MaximumPing {get; set;}
+        public short MaximumPing {get; set;}
         
         /// <summary>
-        /// The variance of the pings in the group; how far apart from the average ping measurement the group was
+        /// The sum of the adjacent differences in ping time for all pings in the group
         /// </summary>
-        public float? Jitter {get; set;}
+        public float Jitter {get; set;}
         
         /// <summary>
         /// The percentage of packets that were sent and not received, ie, the resulted in a returned TimedOut IPStatus 
         /// </summary>
-        public float? PacketLoss {get; set;}
+        public float PacketLoss {get; set;}
         
         /// <summary>
         /// If an IP status is returned that is mapped to the Halt state (in ICMPStatusCodes.json),
@@ -56,32 +57,33 @@ namespace PingBoard.Pinging{
         public IPStatus? TerminatingIPStatus {get; set;}
 
         /// <summary>
-        /// Indicates the last received IPStatus which was neither "Success", nor one mapped to the "Pause"
-        /// or "Halt" states. <see cref="PingingStates"/> for more info.
+        /// Indicates the last received IPStatus which was not "Success". 
         /// </summary>
         public IPStatus? LastAbnormalStatus { get; set; } 
         
         /// <summary>
         /// The number of consecutive timeouts reported by GroupPinger
         /// </summary>
-        public byte? ConsecutiveTimeouts {get; set;}
+        public byte ConsecutiveTimeouts {get; set;}
 
         /// <summary>
         /// The number of packets sent by GroupPinger in one SendPingGroupAsync function call
         /// </summary>
-        public byte? PacketsSent {get; set;}
+        public byte PacketsSent {get; set;}
 
         /// <summary>
         /// The number of packets lost in one SendPingGroupAsync function call
         /// </summary>
-        public byte? PacketsLost {get; set;}
-/*
+        public byte PacketsLost {get; set;}
+
         /// <summary>
-        /// The number of pings which did not time out, but which still cannot be used for calculating
-        /// MinimumPing, AveragePing, MaximumPing or Jitter, because they reflect pings which were
-        /// fundamentally unsuccessful.
+        /// The number of pings which cannot be used for calculating MinimumPing, AveragePing, MaximumPing or Jitter,
+        /// because they reflect pings which did not return "IPStatus.Success"
+        ///
+        /// Critically, this information is NOT to be included in PacketLoss calculations. Packetloss refers to a specific
+        /// scenario in which a packet is *lost*. Any other response is a valid, albeit possibly *unsuccessful* ping.
         /// </summary>
-        public byte? ExcludedPings { get; set; } */
+        public byte ExcludedPings { get; set; } 
         
         /// <summary>
         /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
@@ -107,7 +109,8 @@ namespace PingBoard.Pinging{
                 PacketsSent         = 0,
                 PacketLoss          = 0F,
                 ConsecutiveTimeouts = 0,
-                PingQualityFlags = 0b00000000 // bitmask for PingQualityFlags
+                ExcludedPings = 0,
+                PingQualityFlags = 0b0000_0000 // bitmask for PingQualityFlags
             };
         }
     
@@ -154,21 +157,20 @@ namespace PingBoard.Pinging{
         /// Calculates and returns the average of a set of ping times, taking into account
         /// those that were lost.
         /// </summary>
-        /// <param name="cumulativePingTimes">The sum of a set of ping times</param>
-        /// <param name="packetsSent"> The number of ping times that were sent</param>
-        /// <param name="packetsLost">
-        ///     The number of ping times lost, ie, to be excluded from the calculation.
-        ///     Instead of avg = cumulativePingTimes/packetsSent,
-        ///           it is    = cumulativePingTimes/(packetsSent-PacketsLost)
+        /// <param name="info">
+        ///         PingGroupSummary object which contains the cumulative ping sum so far, as well as information
+        ///         on how many pings should be excluded from the Avg calculation (excluded = lost + excluded)
         /// </param>
         /// <returns></returns>
-        public static float CalculateAveragePing(float cumulativePingTimes, int packetsSent, int packetsLost){
-            int numPingsToAverage = packetsSent - packetsLost;
-            if (numPingsToAverage == 0){
+        public static float CalculateAveragePing(PingGroupSummary info)
+        {
+            //ExcludedPings also contains any pings that were lost.
+            int numPingsToAverage = info.PacketsSent - info.ExcludedPings;
+            if (numPingsToAverage == 0) {
                 return 0;
             }
-            
-            return (float) Math.Round(cumulativePingTimes/numPingsToAverage, 3);
+
+            return (float) Math.Round(info.AveragePing / numPingsToAverage, 3);
 
         }
 
@@ -178,7 +180,7 @@ namespace PingBoard.Pinging{
         /// <param name="packetsSent"> The number of packets sent</param>
         /// <param name="packetsLost"> The number of packets lost</param>
         /// <returns>The calculated packet loss</returns>
-        public static float CalculatePacketLoss(int packetsSent, int packetsLost){
+        public static float CalculatePacketLoss(int packetsSent, int packetsLost) {
             if (packetsLost == 0){
                 return 0;
             }
@@ -209,6 +211,18 @@ namespace PingBoard.Pinging{
             if (rtt < summary.MinimumPing){
                 summary.MinimumPing = rtt;
             }
+        }
+
+        /// <summary>
+        /// Prevents initialized short.MaxValue, short.MinValue values for Min/Max pings, respectively,
+        /// from persisting after a SendPingGroupAsync function call. Useful in cases where
+        /// none of the pings in the group returned "IPStatus.Success"
+        /// </summary>
+        /// <param name="summary">The PingGroupSummary object being worked on</param>
+        public static void ResetMinMaxPingsIfUnused(PingGroupSummary summary) {
+            if (summary is not { MinimumPing: short.MaxValue, MaximumPing: short.MinValue }) return;
+            summary.MinimumPing = 0;
+            summary.MaximumPing = 0;
         }
     }
 }

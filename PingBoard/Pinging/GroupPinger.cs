@@ -1,10 +1,12 @@
+using Microsoft.Extensions.Logging.Abstractions;
+
 namespace PingBoard.Pinging;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.Extensions.Options;
-using Pingboard.Pinging;
+using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
 
 
@@ -45,16 +47,18 @@ public class GroupPinger : IGroupPinger{
         List<long> responseTimes = new List<long>();
         int pingCounter = 0;
         pingGroupInfo.Start = DateTime.UtcNow;
-        
-        Func<bool> hasRemainingPings    = () => pingCounter++ < numberOfPings;
-        Func<bool> pingStateIsContinue  = () => currentPingState == PingingStates.PingState.Continue;
-        Func<bool> belowReportThreshold = () => pingGroupInfo.ConsecutiveTimeouts < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
 
-        while(hasRemainingPings() && pingStateIsContinue() && belowReportThreshold()){
+        bool HasRemainingPings() => pingCounter++ < numberOfPings;
+        bool PingStateNotHalt() => currentPingState != PingingStates.PingState.Halt;
+        bool BelowReportThreshold() => pingGroupInfo.ConsecutiveTimeouts < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
+
+        while(HasRemainingPings() && PingStateNotHalt() && BelowReportThreshold()){
             _scheduler.StartIntervalTracking();
             PingReply response = await _individualPinger.SendPingIndividualAsync(target);
             pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
             currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
+            pingGroupInfo.PacketsSent++;
+            pingGroupInfo.ExcludedPings += (byte) ((response.Status == IPStatus.Success) ? 0 : 1);
             
             switch(currentPingState){
                 case PingingStates.PingState.Continue: ProcessContinue(pingGroupInfo, response, responseTimes); break;
@@ -62,16 +66,17 @@ public class GroupPinger : IGroupPinger{
                 case PingingStates.PingState.Pause:    ProcessPause(pingGroupInfo, response); break;
                 case PingingStates.PingState.PacketLossCaution: ProcessPacketLossCaution(pingGroupInfo, response); break;
             }
-
-            //pingCounter++;
+            
             _scheduler.EndIntervalTracking();
             await _scheduler.DelayPingingAsync();
         }
         
-        pingGroupInfo.AveragePing = PingGroupSummary.CalculateAveragePing(pingGroupInfo.AveragePing!.Value, pingGroupInfo.PacketsSent!.Value, pingGroupInfo.PacketsLost!.Value);
+        pingGroupInfo.AveragePing = PingGroupSummary.CalculateAveragePing(pingGroupInfo);
         pingGroupInfo.Jitter      = PingGroupSummary.CalculatePingJitter(responseTimes);
-        pingGroupInfo.PacketLoss  = PingGroupSummary.CalculatePacketLoss(pingGroupInfo.PacketsSent!.Value, pingGroupInfo.PacketsLost!.Value);
+        pingGroupInfo.PacketLoss  = PingGroupSummary.CalculatePacketLoss(pingGroupInfo.PacketsSent, pingGroupInfo.PacketsLost);
+        PingGroupSummary.ResetMinMaxPingsIfUnused(pingGroupInfo); // important to do this before setting the PingQuality flags
         pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
+        
         return pingGroupInfo;
     }
 
@@ -93,7 +98,7 @@ public class GroupPinger : IGroupPinger{
     /// </param>
     [ExcludeFromCodeCoverage]
     public static void ProcessContinue(PingGroupSummary currentPingGroup, PingReply reply, List<long> rtts) {
-        currentPingGroup.PacketsSent++;
+        currentPingGroup.ConsecutiveTimeouts = 0;
         currentPingGroup.AveragePing += reply.RoundtripTime;
         
         if (reply.Status != IPStatus.Success) {
@@ -116,8 +121,8 @@ public class GroupPinger : IGroupPinger{
     ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
     /// </param>
     public static void ProcessHalt(PingGroupSummary currentPingGroup, PingReply reply){
-        currentPingGroup.PacketsSent++;
         currentPingGroup.TerminatingIPStatus = reply.Status;
+        currentPingGroup.ConsecutiveTimeouts = 0;
     }
     
     /// <summary>
@@ -131,8 +136,8 @@ public class GroupPinger : IGroupPinger{
     ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
     /// </param>
     public static void ProcessPause(PingGroupSummary currentPingGroup, PingReply reply) {
-        currentPingGroup.PacketsSent++;
         currentPingGroup.LastAbnormalStatus = reply.Status;
+        currentPingGroup.ConsecutiveTimeouts = 0;
     }
 
 
@@ -147,9 +152,9 @@ public class GroupPinger : IGroupPinger{
     ///     The PingReply object retrieved from the IndividualPinger's latest ping function call
     /// </param>
     public static void ProcessPacketLossCaution(PingGroupSummary currentPingGroup, PingReply reply){
-        currentPingGroup.PacketsSent++;
         currentPingGroup.PacketsLost++;
         currentPingGroup.ConsecutiveTimeouts++;
+        currentPingGroup.LastAbnormalStatus = IPStatus.TimedOut;
     }
 
 }
