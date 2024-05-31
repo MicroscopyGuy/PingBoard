@@ -1,3 +1,5 @@
+using PingBoard.DatabaseUtilities;
+
 namespace PingBoard;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
@@ -44,6 +46,10 @@ public class Program
         builder.Services.AddTransient<MonitoringBehaviorConfigValidator>();
         builder.Services.AddHostedService<NetworkMonitoringService>();
 
+        // Database-related classes
+        builder.Services.AddTransient<DatabaseConstants>();
+        builder.Services.AddTransient<DatabaseStatementsGenerator>();
+        builder.Services.AddTransient<DatabaseHelper>();
 
         var app = builder.Build();
 
