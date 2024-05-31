@@ -27,7 +27,7 @@ public class Program
         builder.Services.AddTransient<IIndividualPinger, IndividualPinger>();
         builder.Services.AddTransient<Ping>();
         builder.Services.AddTransient<PingOptions>();
-        builder.Services.AddTransient<PingScheduler>();
+        builder.Services.AddTransient<IPingScheduler, PingScheduler>();
 
         // Pinging configuration-related classes
         builder.Services.AddTransient<PingingBehaviorConfigValidator>();

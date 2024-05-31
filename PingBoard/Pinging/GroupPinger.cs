@@ -20,9 +20,9 @@ public class GroupPinger : IGroupPinger{
     private readonly PingingThresholdsConfig _pingThresholds;
     private readonly PingQualification _pingQualifier; 
     private readonly IIndividualPinger _individualPinger;
-    private readonly PingScheduler _scheduler;
+    private readonly IPingScheduler _scheduler;
 
-    public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, PingScheduler scheduler,
+    public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, IPingScheduler scheduler,
                         IOptions<PingingBehaviorConfig> pingBehavior, IOptions<PingingThresholdsConfig> pingThresholds,
                         ILogger<IGroupPinger> logger){
         _pingQualifier    = pingQualifier;

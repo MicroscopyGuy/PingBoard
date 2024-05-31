@@ -121,7 +121,7 @@ public class DatabaseStatementsGenerator
     }
     
     /// <summary>
-    /// Constructs and returns a completed sql statement to insert a PingGroupSummary into the database
+    /// Constructs and returns a mostly completed sql statement to insert a PingGroupSummary into the database
     /// </summary>
     /// <param name="summary"></param>
     /// <returns> the completed sql statement</returns>
