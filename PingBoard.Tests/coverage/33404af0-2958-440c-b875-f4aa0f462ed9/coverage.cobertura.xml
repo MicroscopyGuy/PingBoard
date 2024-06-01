@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<coverage line-rate="0.6867" branch-rate="0.7970999999999999" version="1.9" timestamp="1717211402" lines-covered="285" lines-valid="415" branches-covered="55" branches-valid="69">
+<coverage line-rate="0.6867" branch-rate="0.7970999999999999" version="1.9" timestamp="1717211686" lines-covered="285" lines-valid="415" branches-covered="55" branches-valid="69">
   <sources>
     <source>C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\</source>
   </sources>
@@ -792,13 +792,13 @@
                 <line number="91" hits="12" branch="False" />
                 <line number="92" hits="12" branch="False" />
                 <line number="93" hits="12" branch="False" />
-                <line number="97" hits="2399166" branch="True" condition-coverage="100% (2/2)">
+                <line number="97" hits="2465876" branch="True" condition-coverage="100% (2/2)">
                   <conditions>
                     <condition number="278" type="jump" coverage="100%" />
                   </conditions>
                 </line>
-                <line number="98" hits="1199577" branch="False" />
-                <line number="99" hits="2399154" branch="True" condition-coverage="50% (1/2)">
+                <line number="98" hits="1232932" branch="False" />
+                <line number="99" hits="2465864" branch="True" condition-coverage="50% (1/2)">
                   <conditions>
                     <condition number="127" type="jump" coverage="50%" />
                   </conditions>
@@ -818,13 +818,13 @@
             <line number="91" hits="12" branch="False" />
             <line number="92" hits="12" branch="False" />
             <line number="93" hits="12" branch="False" />
-            <line number="97" hits="2399166" branch="True" condition-coverage="100% (2/2)">
+            <line number="97" hits="2465876" branch="True" condition-coverage="100% (2/2)">
               <conditions>
                 <condition number="278" type="jump" coverage="100%" />
               </conditions>
             </line>
-            <line number="98" hits="1199577" branch="False" />
-            <line number="99" hits="2399154" branch="True" condition-coverage="50% (1/2)">
+            <line number="98" hits="1232932" branch="False" />
+            <line number="99" hits="2465864" branch="True" condition-coverage="50% (1/2)">
               <conditions>
                 <condition number="127" type="jump" coverage="50%" />
               </conditions>
