@@ -45,7 +45,7 @@ public class PingGroupSummaryTesting{
             ExcludedPings = 0
         };
         summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
-        Assert.Equal(11, summary.AveragePing!.Value);
+        Assert.Equal(11, summary.AveragePing);
     }
 
     [Fact]
@@ -57,7 +57,7 @@ public class PingGroupSummaryTesting{
             ExcludedPings = 0
         };
         summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
-        Assert.Equal(5.5, summary.AveragePing!.Value);
+        Assert.Equal(5.5, summary.AveragePing);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class PingGroupSummaryTesting{
             ExcludedPings = 1
         };
         summary.AveragePing = PingGroupSummary.CalculateAveragePing(summary);
-        Assert.Equal(5, summary.AveragePing!.Value);
+        Assert.Equal(5, summary.AveragePing);
     }
     
     [Fact]
@@ -120,7 +120,7 @@ public class PingGroupSummaryTesting{
             PacketsSent = 2
         };
         float packetLoss = PingGroupSummary.CalculatePacketLoss(
-            summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+            summary.PacketsSent, summary.PacketsLost);
         Assert.Equal(0, packetLoss);
     }
 
@@ -131,7 +131,7 @@ public class PingGroupSummaryTesting{
             PacketsSent = 2
         };
         float packetLoss = PingGroupSummary.CalculatePacketLoss(
-            summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+            summary.PacketsSent, summary.PacketsLost);
         Assert.Equal(50, packetLoss);
     }
 
@@ -142,7 +142,7 @@ public class PingGroupSummaryTesting{
             PacketsSent = 16
         };
         float packetLoss = PingGroupSummary.CalculatePacketLoss(
-            summary.PacketsSent!.Value, summary.PacketsLost!.Value);
+            summary.PacketsSent, summary.PacketsLost);
         Assert.Equal(25, packetLoss);
     }
 

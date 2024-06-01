@@ -1,6 +1,6 @@
 using System.Diagnostics;
 
-namespace PingBoard.Tests.PingingTests;
+namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
@@ -15,7 +15,7 @@ using System.Net;
 /// All values used 
 ///
 /// FOR ADDITIONAL CONTEXT:
-/// In the Ping class source code, /// SendPingAsync() begins a chain of function calls eventually calls
+/// In the Ping class source code, SendPingAsync() begins a chain of function calls, and eventually calls
 /// CreatePingReply which invokes either CreatePingReplyFromIcmpEchoReply, or CreatePingReplyFromIcmp6EchoReply.
 /// Both functions create the PingReply objects returned by SendPing and SendPingAsync, and differ only
 /// by their use for IPv4 and IPv6 requests, respectively.

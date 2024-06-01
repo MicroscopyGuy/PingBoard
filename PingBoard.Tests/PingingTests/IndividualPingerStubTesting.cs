@@ -1,4 +1,5 @@
 ﻿namespace PingBoard.Tests.PingingTests;
+using PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using System.Net;
 using System.Net.NetworkInformation;
 
