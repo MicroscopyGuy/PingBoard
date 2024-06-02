@@ -73,9 +73,10 @@ public partial class SendPingGroupAsyncTestingTwoPings {
     [Fact]
     public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessSuccess()
     {
-        var summary = await PingGroupSummaryStub
-            .GenerateSuccessSuccess(PingBehaviorOptions, PingThresholdsOptions);
+        //var summary = await PingGroupSummaryStub
+            //.GenerateSuccessSuccess(PingBehaviorOptions, PingThresholdsOptions);
         
+        /*
         Assert.Equal(4.5, summary.AveragePing);
         Assert.Equal(4, summary.MinimumPing);
         Assert.Equal(5, summary.MaximumPing);
@@ -86,7 +87,14 @@ public partial class SendPingGroupAsyncTestingTwoPings {
         Assert.Equal(2, summary.PacketsSent);
         Assert.Equal(0, summary.PacketsLost);
         Assert.Null(summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
+        Assert.Null(summary.TerminatingIPStatus);*/
+        
+        PingGroupSummaryExpectedValues.AssertExpectedValues(
+            PingGroupSummaryExpectedValues.ExpectedSummaries["GenerateSuccessSuccess"], 
+            await PingGroupSummaryStub.GenerateSuccessSuccess(PingBehaviorOptions, PingThresholdsOptions)
+        );
+        
+        
     }
     
     // 2) {Success,Unsuccessful}
