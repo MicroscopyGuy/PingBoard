@@ -1,0 +1,376 @@
+﻿[
+  {
+    "Scenario" : "GenerateSuccessSucess",
+    "MinimumPing" : 4,
+    "AveragePing" : 4.5,
+    "MaximumPing" : 5,
+    "Jitter" : 1,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 0 
+  },
+
+  {
+    "Scenario" : "GenerateSuccessUnsucessful",
+    "MinimumPing" : 5,
+    "AveragePing" : 5,
+    "MaximumPing" : 5,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "DestinationPortUnreachable",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateSuccessPause",
+    "MinimumPing" : 5,
+    "AveragePing" : 5,
+    "MaximumPing" : 5,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "SourceQuench",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateSuccessHalt",
+    "MinimumPing" : 5,
+    "AveragePing" : 5,
+    "MaximumPing" : 5,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "BadHeader",
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateSuccessPacketLoss",
+    "MinimumPing" : 5,
+    "AveragePing" : 5,
+    "MaximumPing" : 5,
+    "Jitter" : 0,
+    "PacketLoss" : 50,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "TimedOut",
+    "ConsecutiveTimeouts" : 1,
+    "PacketsSent" : 2,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateUnsuccessfulSuccess",
+    "MinimumPing" : 4,
+    "AveragePing" : 4,
+    "MaximumPing" : 4,
+    "Jitter" : 0,
+    "PacketLoss" 0:  ,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "BadRoute",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateUnsuccessfulUnsuccessful",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "BadRoute",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GenerateUnsuccessfulPause",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "SourceQuench",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GenerateUnsuccessfulHalt",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "BadOption",
+    "LastAbnormalStatus"  : "BadRoute",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GenerateUnsuccessfulPacketLoss",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" : 50,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "TimedOut"",
+    "ConsecutiveTimeouts" : 1,
+    "PacketsSent" : 2,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GeneratePauseSuccess",
+    "MinimumPing" : 60,
+    "AveragePing" : 60,
+    "MaximumPing" : 60,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "SourceQuench",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GeneratePauseUnsuccessful",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "BadRoute",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GeneratePausePause",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "SourceQuench",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 2 
+  },
+  
+  {
+    "Scenario" : "GeneratePauseHalt",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : "SourceQuench",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GeneratePausePacketLoss",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  50,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "TimedOut",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GenerateHaltSuccess",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 1,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+
+  {
+    "Scenario" : "GenerateHaltUnsuccessful",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 1,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+
+  {
+    "Scenario" : "GenerateHaltPause",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 1,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateHaltHalt",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 1,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GenerateHaltPacketLoss",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  0,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : null,
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 1,
+    "PacketsLost" : 0,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GeneratePacketLossSuccess",
+    "MinimumPing" : 6,
+    "AveragePing" : 6,
+    "MaximumPing" : 6,
+    "Jitter" : 0,
+    "PacketLoss" : 50,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "TimedOut",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GeneratePacketLossUnsuccessful",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" : 50,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "BadRoute",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 1,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 1
+  },
+  
+  {
+    "Scenario" : "GeneratePacketLossPause",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" : 50,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "SourceQuench",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GeneratePacketLossHalt",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" : 50,
+    "TerminatingIPStatus" : "Unknown",
+    "LastAbnormalStatus"  : "TimedOut",
+    "ConsecutiveTimeouts" : 0,
+    "PacketsSent" : 2,
+    "PacketsLost" : 1,
+    "ExcludedPings" : 2
+  },
+  
+  {
+    "Scenario" : "GeneratePacketLossPacketLoss",
+    "MinimumPing" : 0,
+    "AveragePing" : 0,
+    "MaximumPing" : 0,
+    "Jitter" : 0,
+    "PacketLoss" :  100,
+    "TerminatingIPStatus" : null,
+    "LastAbnormalStatus"  : "TimedOut",
+    "ConsecutiveTimeouts" : 2,
+    "PacketsSent" : 2,
+    "PacketsLost" : 2,
+    "ExcludedPings" 2:
+  }
+]

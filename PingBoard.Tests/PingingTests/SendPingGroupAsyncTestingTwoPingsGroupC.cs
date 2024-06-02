@@ -130,13 +130,13 @@ public partial class SendPingGroupAsyncTestingTwoPings
         Assert.Equal(0, summary.MinimumPing);
         Assert.Equal(0, summary.MaximumPing);
         Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
+        Assert.Equal(1, summary.ConsecutiveTimeouts);
+        Assert.Equal(PingQualification.ThresholdExceededFlags.HighPacketLoss, summary.PingQualityFlags);
+        Assert.Equal(50, summary.PacketLoss);
         Assert.Equal(2, summary.PacketsSent);
-        Assert.Equal(0, summary.PacketsLost);
-        Assert.Equal(IPStatus.SourceQuench, summary.LastAbnormalStatus);
-        Assert.Equal(IPStatus.Unknown, summary.TerminatingIPStatus);
+        Assert.Equal(1, summary.PacketsLost);
+        Assert.Equal(IPStatus.TimedOut, summary.LastAbnormalStatus);
+        Assert.Null( summary.TerminatingIPStatus);
     }
     
     

@@ -222,7 +222,7 @@ static partial class PingGroupSummaryStub
         
         // Values for the fake PingReply objects that SendPingIndividualAsync will send, every PingReply is one index
         List<long> rtts = [0, 0];
-        List<IPStatus> statuses = [IPStatus.SourceQuench, IPStatus.Unknown];
+        List<IPStatus> statuses = [IPStatus.SourceQuench, IPStatus.TimedOut];
         List<byte[]> buffers = [[], []];
         List<IPAddress> addresses = [target, target];
         List<int> ttls = [64, 64];

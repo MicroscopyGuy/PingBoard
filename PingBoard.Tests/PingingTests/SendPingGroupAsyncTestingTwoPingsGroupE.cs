@@ -87,7 +87,6 @@ public partial class SendPingGroupAsyncTestingTwoPings{
    // 23) {PacketLossCaution,Pause}
    [Fact]
    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnPacketLossCautionPause() {
-        
         var summary = await PingGroupSummaryStub
              .GeneratePacketLossPause(PingBehaviorOptions, PingThresholdsOptions);
         Assert.Equal(0, summary.AveragePing);
