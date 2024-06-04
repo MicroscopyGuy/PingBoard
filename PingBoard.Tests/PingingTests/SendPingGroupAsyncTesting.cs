@@ -5,9 +5,11 @@ namespace PingBoard.Tests.PingingTests;
 using PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using PingBoard.Pinging.Configuration;
 using PingBoard.Pinging;
-using PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using System.Net.NetworkInformation;
-using System.Net;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.CompilerServices;
+using Xunit.Sdk;
 
 /// <summary>
 /// Ideal for testing proper PingGroupSummary return values for every combination of two states/behaviors.
@@ -47,7 +49,7 @@ using System.Net;
 /// |******************************************************************************************************************|
 /// </summary>
 
-public partial class SendPingGroupAsyncTestingTwoPings {
+public class SendPingGroupAsyncTesting {
     
     private static readonly PingingThresholdsConfig PingThresholds = new PingingThresholdsConfig() {
         MinimumPingMs = 5, 
@@ -68,111 +70,19 @@ public partial class SendPingGroupAsyncTestingTwoPings {
     };
 
     private static readonly IOptions<PingingBehaviorConfig> PingBehaviorOptions = Options.Create(PingBehavior);
-    
-    //1) {Success,Success}
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessSuccess()
-    {
-        //var summary = await PingGroupSummaryStub
-            //.GenerateSuccessSuccess(PingBehaviorOptions, PingThresholdsOptions);
-        
-        /*
-        Assert.Equal(4.5, summary.AveragePing);
-        Assert.Equal(4, summary.MinimumPing);
-        Assert.Equal(5, summary.MaximumPing);
-        Assert.Equal(1, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent);
-        Assert.Equal(0, summary.PacketsLost);
-        Assert.Null(summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);*/
-        
-        PingGroupSummaryExpectedValues.AssertExpectedValues(
-            PingGroupSummaryExpectedValues.ExpectedSummaries["GenerateSuccessSuccess"], 
-            await PingGroupSummaryStub.GenerateSuccessSuccess(PingBehaviorOptions, PingThresholdsOptions)
+
+    [Theory]
+    [MemberData(nameof(PingGroupSummaryTestGenerator.GetScenarioFunctions), MemberType = typeof(PingGroupSummaryTestGenerator))]
+    public async void TestAllScenarios(string scenarioName){
+
+        // use reflection to translate the scenarioName into the appropriate function, and then invoke it
+        PingGroupSummary actual = await PingGroupSummaryStub.RunFunctionByName(
+            scenarioName,
+            PingBehaviorOptions,
+            PingThresholdsOptions
         );
-        
-        
+        PingGroupSummary expected = PingGroupSummaryExpectedValues.ExpectedSummaries[scenarioName];
+        PingGroupSummaryExpectedValues.AssertExpectedValues(expected, actual);
     }
-    
-    // 2) {Success,Unsuccessful}
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessUnsuccessful(){
-        var summary = await PingGroupSummaryStub
-            .GenerateSuccessUnsuccessful(PingBehaviorOptions, PingThresholdsOptions);
-        
-        Assert.Equal(5, summary.AveragePing);
-        Assert.Equal(5, summary.MinimumPing);
-        Assert.Equal(5, summary.MaximumPing);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent);
-        Assert.Equal(0, summary.PacketsLost);
-        Assert.Equal(1, summary.ExcludedPings);
-        Assert.Equal(IPStatus.DestinationPortUnreachable, summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
-    }
-    
-    // 3) {Success,Pause}
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessPause(){
-        
-        var summary = await PingGroupSummaryStub
-            .GenerateSuccessPause(PingBehaviorOptions, PingThresholdsOptions);
-        Assert.Equal(5, summary.AveragePing);
-        Assert.Equal(5, summary.MinimumPing);
-        Assert.Equal(5, summary.MaximumPing);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent);
-        Assert.Equal(0, summary.PacketsLost);
-        Assert.Equal(1, summary.ExcludedPings);
-        Assert.Equal(IPStatus.SourceQuench, summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
-    }
-    
-    //4) {Success, Halt}
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessHalt() {
-        
-        var summary = await PingGroupSummaryStub
-            .GenerateSuccessHalt(PingBehaviorOptions, PingThresholdsOptions);
-        Assert.Equal(5, summary.AveragePing);
-        Assert.Equal(5, summary.MinimumPing);
-        Assert.Equal(5, summary.MaximumPing);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(0, summary.ConsecutiveTimeouts);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.NotExceeded, summary.PingQualityFlags);
-        Assert.Equal(0, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent);
-        Assert.Equal(0, summary.PacketsLost);
-        Assert.Equal(1, summary.ExcludedPings);
-        Assert.Null(summary.LastAbnormalStatus);
-        Assert.Equal(IPStatus.BadHeader, summary.TerminatingIPStatus);
-    }
-    
-    // 5) {Success,PacketLossCaution}
-    [Fact]
-    public async void SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessPacketLossCaution() {
-        var summary = await PingGroupSummaryStub
-            .GenerateSuccessPacketLoss(PingBehaviorOptions, PingThresholdsOptions);
-        Assert.Equal(5, summary.AveragePing);
-        Assert.Equal(5, summary.MinimumPing);
-        Assert.Equal(5, summary.MaximumPing);
-        Assert.Equal(0, summary.Jitter);
-        Assert.Equal(1, summary.ConsecutiveTimeouts);
-        Assert.Equal(PingQualification.ThresholdExceededFlags.HighPacketLoss, summary.PingQualityFlags);
-        Assert.Equal(50, summary.PacketLoss);
-        Assert.Equal(2, summary.PacketsSent);
-        Assert.Equal(1, summary.PacketsLost);
-        Assert.Equal(1, summary.ExcludedPings);
-        Assert.Equal(IPStatus.TimedOut, summary.LastAbnormalStatus);
-        Assert.Null(summary.TerminatingIPStatus);
-    }
+
 }

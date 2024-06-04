@@ -27,9 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="\PingingTests\PingingTestingUtilities\PingGroupSummaryExpectedValues.json">
+    <Content Include="PingingTests\PingingTestingUtilities\PingGroupSummaryExpectedValues.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    </Content>
   </ItemGroup>
 
 </Project>

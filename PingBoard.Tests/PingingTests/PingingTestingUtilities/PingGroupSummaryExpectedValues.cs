@@ -1,15 +1,37 @@
 ﻿namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using PingBoard.Pinging;
 using System.Text.Json;
+using System.Reflection;
+using System.Text.Json.Serialization;
+using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using System.Security.Cryptography.X509Certificates;
+
 public static class PingGroupSummaryExpectedValues
 {
-    public static Dictionary<string, PingGroupSummary> ExpectedSummaries;
+    public static readonly Dictionary<string, PingGroupSummary> ExpectedSummaries;
 
     static PingGroupSummaryExpectedValues()
     {
-        string path = Path.Combine(AppContext.BaseDirectory, "PingGroupSummaryExpectedValues.json");
-        string jsonText = File.ReadAllText(path);
-        ExpectedSummaries = JsonSerializer.Deserialize<Dictionary<string, PingGroupSummary>>(jsonText)!;
+        string assemblyPath = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location)!;
+        string filePath = Path.Combine(
+            assemblyPath, 
+            @"PingingTests\PingingTestingUtilities\PingGroupSummaryExpectedValues.json"
+            );
+            
+        if (!File.Exists(filePath))
+        {
+            Console.WriteLine($"The file can't be found. Current directory is: {Environment.CurrentDirectory}");
+        }
+
+        string jsonText = File.ReadAllText(filePath);
+        /*
+        ExpectedSummaries = JsonSerializer.Deserialize<Dictionary<string, PingGroupSummary>>(
+            jsonText,
+            new JsonSerializerOptions(){Converters = {new NullableIpStatusJsonConverter()}}
+        )!; */
+        ExpectedSummaries = JsonConvert.DeserializeObject<Dictionary<string, PingGroupSummary>>(jsonText);
+         
     }
 
     public static void AssertExpectedValues(PingGroupSummary expected, PingGroupSummary actual)
@@ -26,4 +48,6 @@ public static class PingGroupSummaryExpectedValues
         Assert.Equal(expected.LastAbnormalStatus, actual.LastAbnormalStatus);
         Assert.Equal(expected.TerminatingIPStatus, actual.TerminatingIPStatus);
     }
+
+    
 }
