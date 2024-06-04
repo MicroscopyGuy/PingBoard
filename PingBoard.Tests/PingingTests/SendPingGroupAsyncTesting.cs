@@ -21,13 +21,13 @@ using Xunit.Sdk;
 /// one of a few other IPStatuses also mapped to the Continue state, but which were not the product of a successful ping.
 /// For this reason there is an additional term (Unsuccessful) included below in the list of combinations to test.
 /// |*************************************************Combinations:****************************************************|
-/// |1) {Success,Success}                     ←- Start of Group A  ^                                                   |
-/// |2) {Success,Unsuccessful}                                     |                                                   |
-/// |3) {Success,Pause}                                            |                                                   |
-/// |4) {Success,Halt}                                             |                                                   |
-/// |5) {Success,PacketLossCaution}           ←- End of Group A    v                                                   |
+/// |1) {Success,Success}                                                                                              |
+/// |2) {Success,Unsuccessful}                                                                                         |
+/// |3) {Success,Pause}                                                                                                |
+/// |4) {Success,Halt}                                                                                                 |
+/// |5) {Success,PacketLossCaution}                                                                                    |
 /// |6) {Unsuccessful,Success}                                                                                         | 
-/// |7) {Unsuccessful,Unsuccessful}                                                                                                |
+/// |7) {Unsuccessful,Unsuccessful}                                                                                    |            |
 /// |8) {Unsuccessful,Pause}                                                                                           |
 /// |9) {Unsuccessful,Halt}                                                                                            |
 /// |10) {Unsuccessful,PacketLossCaution}                                                                              |
