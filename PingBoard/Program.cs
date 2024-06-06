@@ -1,3 +1,4 @@
+using Microsoft.Data.Sqlite;
 using PingBoard.DatabaseUtilities;
 
 namespace PingBoard;
@@ -50,6 +51,7 @@ public class Program
         builder.Services.AddTransient<DatabaseConstants>();
         builder.Services.AddTransient<DatabaseStatementsGenerator>();
         builder.Services.AddTransient<DatabaseHelper>();
+        builder.Services.AddTransient<SqliteConnection>();
 
         var app = builder.Build();
 

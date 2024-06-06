@@ -73,7 +73,12 @@ public class DatabaseStatementsGenerator
                                                              $excluded_pings
                                                          );
                                                       """;
-    
+
+    private readonly string _selectPingGroupSummaryById = """
+                                                          SELECT *
+                                                          FROM $summaries_table_name
+                                                          WHERE id = $id
+                                                          """;
 
     private readonly PingingThresholdsConfig _pingingThresholds;
     private readonly DatabaseConstants _databaseConstants;
@@ -141,4 +146,12 @@ public class DatabaseStatementsGenerator
             .Replace("$packets_lost", summary.PacketsLost.ToString())
             .Replace("$excluded_pings", summary.ExcludedPings.ToString());
     }
+
+    public string SelectPingGroupSummaryByIdStmt(int id)
+    {
+        return _selectPingGroupSummaryById
+            .Replace("$summaries_table_name", _databaseConstants.SummariesTableName)
+            .Replace("$id", id.ToString());
+    }
+    
 }

@@ -1,0 +1,6 @@
+﻿<wpf:ResourceDictionary xml:space="preserve" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:ss="urn:shemas-jetbrains-com:settings-storage-xaml" xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=592587bd_002D9087_002D4a8f_002D9ab3_002D21238af047dc/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SendPingGroupAsync_ReturnsProperPingGroupSummary_OnOnePausePingandOneUnsuccessfulPing" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;xUnit::028D1BCC-F177-4B44-A024-0BC8F11BD9CF::net8.0::PingBoard.Tests.PingingTests.SendPingGroupAsyncTestingTwoPings.SendPingGroupAsync_ReturnsProperPingGroupSummary_OnSuccessPacketLossCaution&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>

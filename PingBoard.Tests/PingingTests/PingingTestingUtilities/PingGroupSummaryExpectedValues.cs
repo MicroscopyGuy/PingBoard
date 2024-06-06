@@ -25,11 +25,6 @@ public static class PingGroupSummaryExpectedValues
         }
 
         string jsonText = File.ReadAllText(filePath);
-        /*
-        ExpectedSummaries = JsonSerializer.Deserialize<Dictionary<string, PingGroupSummary>>(
-            jsonText,
-            new JsonSerializerOptions(){Converters = {new NullableIpStatusJsonConverter()}}
-        )!; */
         ExpectedSummaries = JsonConvert.DeserializeObject<Dictionary<string, PingGroupSummary>>(jsonText);
          
     }
@@ -48,6 +43,5 @@ public static class PingGroupSummaryExpectedValues
         Assert.Equal(expected.LastAbnormalStatus, actual.LastAbnormalStatus);
         Assert.Equal(expected.TerminatingIPStatus, actual.TerminatingIPStatus);
     }
-
     
 }

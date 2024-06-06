@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("PingBoard.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+df1ac2962885e105fd867b1c4f6ef9cd999e8f7e")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ff6e30250febf47fef402ffe3388b9cc8f543c9c")]
 [assembly: System.Reflection.AssemblyProductAttribute("PingBoard.Tests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("PingBoard.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
