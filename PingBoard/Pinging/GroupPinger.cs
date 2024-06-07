@@ -43,6 +43,7 @@ public class GroupPinger : IGroupPinger{
     /// </returns>
     public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
+        pingGroupInfo.Target = target.ToString();
         PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
         List<long> responseTimes = new List<long>();
         int pingCounter = 0;
