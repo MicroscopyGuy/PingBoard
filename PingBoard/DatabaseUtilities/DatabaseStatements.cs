@@ -20,78 +20,80 @@ public class DatabaseStatementsGenerator
     /// Note that the longest IPStatus is 30 characters (DestinationProtocolUnreachable)
     /// </summary>
     private readonly string _groupSummariesTable = """
-                                                    CREATE TABLE IF NOT EXISTS $summaries_table_name(
-                                                    Id INTEGER PRIMARY KEY AUTOINCREMENT,
-                                                    Start TEXT UNIQUE NOT NULL,
-                                                    End TEXT UNIQUE NOT NULL,
-                                                    MinimumPing INTEGER,
-                                                    AveragePing FLOAT,
-                                                    MaximumPing INTEGER,
-                                                    Jitter FLOAT,
-                                                    PacketLoss FLOAT,
-                                                    TerminatingIPStatus VARCHAR(30),
-                                                    LastAbnormalStatus  VARCHAR(30),
-                                                    ConsecutiveTimeouts INTEGER,
-                                                    PacketsSent FLOAT,
-                                                    PacketsLost INTEGER,
-                                                    ExcludedPings INTEGER);
-                                                 """;
+                                                   CREATE TABLE IF NOT EXISTS @summaries_table_name(
+                                                   Id INTEGER PRIMARY KEY AUTOINCREMENT,
+                                                   Start TEXT UNIQUE NOT NULL,
+                                                   End TEXT UNIQUE NOT NULL,
+                                                   Target TEXT,
+                                                   MinimumPing INTEGER NOT NULL,
+                                                   AveragePing FLOAT NOT NULL,
+                                                   MaximumPing INTEGER NOT NULL,
+                                                   Jitter FLOAT NOT NULL,
+                                                   PacketLoss FLOAT NOT NULL,
+                                                   TerminatingIPStatus VARCHAR(30),
+                                                   LastAbnormalStatus  VARCHAR(30),
+                                                   ConsecutiveTimeouts INTEGER NOT NULL,
+                                                   PacketsSent FLOAT NOT NULL,
+                                                   PacketsLost INTEGER NOT NULL,
+                                                   ExcludedPings INTEGER NOT NULL);
+                                                   """;
     
     
     private readonly string _anomaliesIndex = """
-                                               CREATE INDEX IF NOT EXISTS $anomaly_index_name ON $summaries_table_name(
+                                               CREATE INDEX IF NOT EXISTS @anomaly_index_name ON @summaries_table_name(
                                                MinimumPing, AveragePing, PacketLoss, Jitter, LastAbnormalStatus)
                                                    WHERE
-                                                       MinimumPing   > $min_ping_threshold OR
-                                                       AveragePing   > $avg_ping_threshold OR
-                                                       MaximumPing   > $max_ping_threshold OR
-                                                       PacketLoss    > $packet_loss_threshold OR
-                                                       Jitter        > $jitter_threshold OR
+                                                       MinimumPing   > @min_ping_threshold OR
+                                                       AveragePing   > @avg_ping_threshold OR
+                                                       MaximumPing   > @max_ping_threshold OR
+                                                       PacketLoss    > @packet_loss_threshold OR
+                                                       Jitter        > @jitter_threshold OR
                                                        LastAbnormalStatus NOT NULL;
                                               """;
 
     private readonly string _dropAnomaliesIndex = """
-                                                  DROP INDEX IF EXISTS $anomaly_index_name;
+                                                  DROP INDEX IF EXISTS @anomaly_index_name;
                                                   """;
     
     private readonly string _insertPingGroupSummary = """
-                                                         INSERT INTO $summaries_table_name VALUES
-                                                         (
+                                                         INSERT INTO @summaries_table_name VALUES
+                                                         (   
                                                              NULL,
-                                                             $start_time,
-                                                             $end_time,
-                                                             $min_ping,
-                                                             $avg_ping,
-                                                             $max_ping,
-                                                             $jitter,
-                                                             $packet_loss,
-                                                             $terminating_ipstatus,
-                                                             $last_abnormal_status,
-                                                             $consecutive_timeouts,
-                                                             $packets_sent,
-                                                             $packets_lost,
-                                                             $excluded_pings
+                                                             @start_time,
+                                                             @end_time,
+                                                             @target,
+                                                             @min_ping,
+                                                             @avg_ping,
+                                                             @max_ping,
+                                                             @jitter,
+                                                             @packet_loss,
+                                                             @terminating_ipstatus,
+                                                             @last_abnormal_status,
+                                                             @consecutive_timeouts,
+                                                             @packets_sent,
+                                                             @packets_lost,
+                                                             @excluded_pings
                                                          );
                                                       """;
 
     private readonly string _selectPingGroupSummaryById = """
                                                           SELECT *
-                                                          FROM $summaries_table_name
-                                                          WHERE id = $id
+                                                          FROM @summaries_table_name
+                                                          WHERE id = @id
                                                           """;
 
     private readonly PingingThresholdsConfig _pingingThresholds;
     private readonly DatabaseConstants _databaseConstants;
 
-    public DatabaseStatementsGenerator(IOptions<PingingThresholdsConfig> pingingThresholds,
-                                       DatabaseConstants constants) {
+    public DatabaseStatementsGenerator(IOptions<PingingThresholdsConfig> pingingThresholds, 
+        DatabaseConstants constants) {
         _pingingThresholds = pingingThresholds.Value;
         _databaseConstants = constants;
     }
 
     public string SummariesTableDefinition() {
         return _groupSummariesTable
-            .Replace("$summaries_table_name", _databaseConstants.SummariesTableName);
+            .Replace("@summaries_table_name", _databaseConstants.SummariesTableName);
 
     }
     
@@ -106,13 +108,13 @@ public class DatabaseStatementsGenerator
     /// </returns>
     public string AnomaliesIndexDefinition(){
         return _anomaliesIndex
-            .Replace("$anomaly_index_name", _databaseConstants.AnomaliesIndexName)
-            .Replace("$summaries_table_name", _databaseConstants.SummariesTableName)
-            .Replace("$min_ping_threshold", _pingingThresholds.MinimumPingMs.ToString())
-            .Replace("$avg_ping_threshold", _pingingThresholds.AveragePingMs.ToString())
-            .Replace("$max_ping_threshold", _pingingThresholds.MaximumPingMs.ToString())
-            .Replace("$packet_loss_threshold", _pingingThresholds.PacketLossPercentage.ToString())
-            .Replace("$jitter_threshold", _pingingThresholds.JitterMs.ToString());
+            .Replace("@anomaly_index_name", _databaseConstants.AnomaliesIndexName)
+            .Replace("@summaries_table_name", _databaseConstants.SummariesTableName)
+            .Replace("@min_ping_threshold", _pingingThresholds.MinimumPingMs.ToString())
+            .Replace("@avg_ping_threshold", _pingingThresholds.AveragePingMs.ToString()!)
+            .Replace("@max_ping_threshold", _pingingThresholds.MaximumPingMs.ToString())
+            .Replace("@packet_loss_threshold", _pingingThresholds.PacketLossPercentage.ToString())
+            .Replace("@jitter_threshold", _pingingThresholds.JitterMs.ToString());
 
     }
 
@@ -122,7 +124,7 @@ public class DatabaseStatementsGenerator
     /// <returns>A completed SQL statement</returns>
     public string DropAnomaliesIndex() {
         return _dropAnomaliesIndex
-            .Replace("$anomaly_index_name", _databaseConstants.AnomaliesIndexName);
+            .Replace("@anomaly_index_name", _databaseConstants.AnomaliesIndexName);
     }
     
     /// <summary>
@@ -132,26 +134,27 @@ public class DatabaseStatementsGenerator
     /// <returns> the completed sql statement</returns>
     public string InsertPingGroupSummaryStmt(PingGroupSummary summary)
     {
-        return _insertPingGroupSummary
-            .Replace("$summaries_table_name", _databaseConstants.SummariesTableName)
-            .Replace("$min_ping", summary.MinimumPing.ToString())
-            .Replace("$avg_ping", summary.AveragePing.ToString())
-            .Replace("$max_ping", summary.MaximumPing.ToString())
-            .Replace("$jitter", summary.Jitter.ToString())
-            .Replace("$packet_loss", summary.PacketLoss.ToString())
-            .Replace("$terminating_ipstatus", summary.TerminatingIPStatus?.ToString() ?? "NULL")
-            .Replace("$last_abnormal_status", summary.LastAbnormalStatus?.ToString() ?? "NULL")
-            .Replace("$consecutive_timeouts", summary.ConsecutiveTimeouts.ToString())
-            .Replace("$packets_sent", summary.PacketsSent.ToString())
-            .Replace("$packets_lost", summary.PacketsLost.ToString())
-            .Replace("$excluded_pings", summary.ExcludedPings.ToString());
+        return _insertPingGroupSummary 
+            .Replace("@summaries_table_name", _databaseConstants.SummariesTableName);/*
+            .Replace("@target", summary.Target ?? "NULL")
+            .Replace("@min_ping", summary.MinimumPing.ToString())
+            .Replace("@avg_ping", summary.AveragePing.ToString())
+            .Replace("@max_ping", summary.MaximumPing.ToString())
+            .Replace("@jitter", summary.Jitter.ToString())
+            .Replace("@packet_loss", summary.PacketLoss.ToString())
+            .Replace("@terminating_ipstatus", summary.TerminatingIPStatus.ToString() ?? "NULL")
+            .Replace("@last_abnormal_status", summary.LastAbnormalStatus.ToString() ?? "NULL")
+            .Replace("@consecutive_timeouts", summary.ConsecutiveTimeouts.ToString())
+            .Replace("@packets_sent", summary.PacketsSent.ToString())
+            .Replace("@packets_lost", summary.PacketsLost.ToString())
+            .Replace("@excluded_pings", summary.ExcludedPings.ToString());*/
     }
 
     public string SelectPingGroupSummaryByIdStmt(int id)
     {
         return _selectPingGroupSummaryById
-            .Replace("$summaries_table_name", _databaseConstants.SummariesTableName)
-            .Replace("$id", id.ToString());
+            .Replace("@summaries_table_name", _databaseConstants.SummariesTableName)
+            .Replace("@id", id.ToString());
     }
     
 }

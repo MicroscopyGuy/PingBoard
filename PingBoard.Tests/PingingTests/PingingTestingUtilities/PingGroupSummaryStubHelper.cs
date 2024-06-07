@@ -3,8 +3,6 @@ using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
 using Microsoft.Extensions.Options;
 
-
-
 public static partial class PingGroupSummaryStub{
 
     public static IEnumerable<string> GetPingGroupScenarios(){

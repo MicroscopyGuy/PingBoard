@@ -1,3 +1,11 @@
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.csproj.AssemblyReference.cache
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.AssemblyInfoInputs.cache
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.AssemblyInfo.cs
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.csproj.CoreCompileInputs.cache
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.sourcelink.json
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\appsettings.Development.json
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\appsettings.json
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\Pinging\ICMPStatusCodes.json
@@ -35,14 +43,6 @@ C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\ru
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\runtimes\win-arm64\native\e_sqlite3.dll
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\runtimes\win-x64\native\e_sqlite3.dll
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\bin\Debug\net8.0\runtimes\win-x86\native\e_sqlite3.dll
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.csproj.AssemblyReference.cache
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.AssemblyInfoInputs.cache
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.AssemblyInfo.cs
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.csproj.CoreCompileInputs.cache
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.MvcApplicationPartsAssemblyInfo.cs
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\PingBoard.sourcelink.json
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\staticwebassets.build.json
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\staticwebassets.development.json
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard\obj\Debug\net8.0\staticwebassets\msbuild.PingBoard.Microsoft.AspNetCore.StaticWebAssets.props
