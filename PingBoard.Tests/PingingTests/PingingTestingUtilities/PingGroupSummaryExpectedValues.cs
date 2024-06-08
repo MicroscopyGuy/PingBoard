@@ -31,6 +31,7 @@ public static class PingGroupSummaryExpectedValues
 
     public static void AssertExpectedValues(PingGroupSummary expected, PingGroupSummary actual)
     {
+        Assert.Equal(expected.Target, actual.Target);
         Assert.Equal(expected.MinimumPing, actual.MinimumPing);
         Assert.Equal(expected.AveragePing, actual.AveragePing);
         Assert.Equal(expected.MaximumPing, actual.MaximumPing);

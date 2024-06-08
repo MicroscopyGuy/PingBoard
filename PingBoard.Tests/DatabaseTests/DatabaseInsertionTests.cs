@@ -35,7 +35,6 @@ public class DatabaseInsertionTests{
             pingQualifier
             );
         
-        
         // Want to keep parity with the tests for SendPingGroupAsync, since the same behavior is needed
         var result = await PingGroupSummaryStub.RunFunctionByName(
             scenario,
