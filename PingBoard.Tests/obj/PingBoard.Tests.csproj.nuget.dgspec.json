@@ -51,10 +51,6 @@
               "target": "Package",
               "version": "[17.1.0, )"
             },
-            "Moq": {
-              "target": "Package",
-              "version": "[4.20.70, )"
-            },
             "coverlet.collector": {
               "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
               "suppressParent": "All",
@@ -134,6 +130,10 @@
             "FluentValidation": {
               "target": "Package",
               "version": "[11.9.1, )"
+            },
+            "Microsoft.Data.Sqlite": {
+              "target": "Package",
+              "version": "[8.0.6, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",

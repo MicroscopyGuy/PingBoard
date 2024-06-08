@@ -1,7 +1,11 @@
+using System.Diagnostics.CodeAnalysis;
+
 namespace PingBoard.Monitoring;
 using Microsoft.Extensions.Options;
 using PingBoard.Monitoring.Configuration;
 
+
+[ExcludeFromCodeCoverage]
 public class OutageSentinel{
 
     public int consecutiveTimeouts {get; set;}

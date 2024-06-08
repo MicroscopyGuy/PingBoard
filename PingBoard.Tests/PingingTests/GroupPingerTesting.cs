@@ -40,8 +40,8 @@ public class GroupPingerTesting{
         GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(9, testSummary.AveragePing);
-        Assert.Equal(2, testSummary.MinimumPing.Value);
-        Assert.Equal(4, testSummary.MaximumPing.Value);
+        Assert.Equal(2, testSummary.MinimumPing);
+        Assert.Equal(4, testSummary.MaximumPing);
         Assert.Equal(3, rtts[rtts.Count-1]);
     }
 
@@ -57,8 +57,8 @@ public class GroupPingerTesting{
         GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(9, testSummary.AveragePing);
-        Assert.Equal(2, testSummary.MinimumPing.Value);
-        Assert.Equal(4, testSummary.MaximumPing.Value);
+        Assert.Equal(2, testSummary.MinimumPing);
+        Assert.Equal(4, testSummary.MaximumPing);
         Assert.Equal(2, rtts[rtts.Count-1]);
     }
 
@@ -74,8 +74,8 @@ public class GroupPingerTesting{
         GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(212, testSummary.AveragePing);
-        Assert.Equal(3, testSummary.MinimumPing.Value);
-        Assert.Equal(197, testSummary.MaximumPing.Value);
+        Assert.Equal(3, testSummary.MinimumPing);
+        Assert.Equal(197, testSummary.MaximumPing);
         Assert.Equal(197, rtts[rtts.Count-1]);
     }
 
@@ -88,8 +88,8 @@ public class GroupPingerTesting{
         GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(3, testSummary.AveragePing);
-        Assert.Equal(3, testSummary.MinimumPing!.Value);
-        Assert.Equal(3, testSummary.MaximumPing!.Value);
+        Assert.Equal(3, testSummary.MinimumPing);
+        Assert.Equal(3, testSummary.MaximumPing);
         Assert.Equal(3, rtts[rtts.Count-1]);
     }
 
@@ -105,8 +105,8 @@ public class GroupPingerTesting{
         GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(19, testSummary.AveragePing);
-        Assert.Equal(3, testSummary.MinimumPing!.Value);
-        Assert.Equal(12, testSummary.MaximumPing!.Value);
+        Assert.Equal(3, testSummary.MinimumPing);
+        Assert.Equal(12, testSummary.MaximumPing);
         Assert.Equal(4, rtts[rtts.Count-1]);
     }
     
@@ -119,8 +119,8 @@ public class GroupPingerTesting{
         GroupPinger.ProcessContinue(testSummary, fakeReply, rtts);
 
         Assert.Equal(0, testSummary.AveragePing);
-        Assert.Equal(short.MaxValue, testSummary.MinimumPing!.Value);
-        Assert.Equal(short.MinValue, testSummary.MaximumPing!.Value);
+        Assert.Equal(short.MaxValue, testSummary.MinimumPing);
+        Assert.Equal(short.MinValue, testSummary.MaximumPing);
         Assert.Empty(rtts);
     }
     
@@ -152,8 +152,8 @@ public class GroupPingerTesting{
 
         GroupPinger.ProcessPacketLossCaution(testSummary, fakeReply);
         
-        Assert.Equal(1, testSummary.PacketsLost!.Value);
-        Assert.Equal(1, testSummary.ConsecutiveTimeouts!.Value);
+        Assert.Equal(1, testSummary.PacketsLost);
+        Assert.Equal(1, testSummary.ConsecutiveTimeouts);
     }
     
 }

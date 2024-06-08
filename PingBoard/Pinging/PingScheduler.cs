@@ -43,7 +43,7 @@ namespace PingBoard.Pinging{
     ///     2) Per the Microsoft Ping documentation, pings cannot be sent very frequently. And from my own testing, can result
     ///        in erroneous 0ms ping times if sent too often.
     /// </summary>
-    public class PingScheduler{
+    public class PingScheduler : IPingScheduler{
 
         private readonly PingingBehaviorConfig _pingBehaviorConfig;
         private readonly Stopwatch _timer; 
@@ -81,7 +81,7 @@ namespace PingBoard.Pinging{
         }
 
         /// <summary>
-        /// 
+        /// Waits the appropriate time to maintain roughly even timing between pings
         /// </summary>
         /// <returns></returns>
         public async Task DelayPingingAsync(){
