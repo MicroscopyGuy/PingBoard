@@ -41,7 +41,7 @@ public class GroupPinger : IGroupPinger{
     /// <returns> 
     ///     A PingGroupSummary object which summarizes the results of the pings that were sent
     /// </returns>
-    public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
+    public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target){
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
         pingGroupInfo.Target = target.ToString();
         PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
@@ -49,7 +49,7 @@ public class GroupPinger : IGroupPinger{
         int pingCounter = 0;
         pingGroupInfo.Start = DateTime.UtcNow;
 
-        bool HasRemainingPings() => pingCounter++ < numberOfPings;
+        bool HasRemainingPings() => pingCounter++ < _pingBehavior.PingsPerCall;
         bool PingStateNotHalt() => currentPingState != PingingStates.PingState.Halt;
         bool BelowReportThreshold() => pingGroupInfo.ConsecutiveTimeouts < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
 
