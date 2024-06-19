@@ -29,6 +29,7 @@ public class IndividualPinger : IIndividualPinger{
     }
 
     public async Task<PingReply> SendPingIndividualAsync(IPAddress target){
+        _logger.LogDebug("IndividualPinger: Sending ping");
         PingReply response = await _pinger.SendPingAsync(
             target, 
             _pingBehavior.TimeoutMs,

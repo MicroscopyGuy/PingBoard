@@ -42,6 +42,8 @@ public class GroupPinger : IGroupPinger{
     ///     A PingGroupSummary object which summarizes the results of the pings that were sent
     /// </returns>
     public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target){
+        _logger.LogInformation("GroupPinger: Entered SendPingGroupAsync");
+        Console.WriteLine("GroupPinger: Entered SendPingGroupAsync");
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
         pingGroupInfo.Target = target.ToString();
         PingingStates.PingState currentPingState = PingingStates.PingState.Continue;

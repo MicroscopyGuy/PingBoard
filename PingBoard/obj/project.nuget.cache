@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "N8pbBO0nbGUFsN3o+oreLi0tIzQYT9FOdfdyhSc8x5nmL8j31aQZEYquCIsA9tgVpovopQd7EI/4iY/xeSBJ/Q==",
+  "dgSpecHash": "x+bRy/cAbWDeUw8bOSU0vHS/aomxzR3m23UUNHzMkHWVhNwWr6sFsaYwx2Ih9uVoKr7N1NUhAo2mOhINzqVGAw==",
   "success": true,
   "projectFilePath": "C:\\Users\\LeorGoldberg\\Documents\\Projects\\PingBoard\\PingBoard\\PingBoard.csproj",
   "expectedPackageFiles": [
@@ -8,7 +8,15 @@
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.data.sqlite\\8.0.6\\microsoft.data.sqlite.8.0.6.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.data.sqlite.core\\8.0.6\\microsoft.data.sqlite.core.8.0.6.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.dependencyinjection\\8.0.0\\microsoft.extensions.dependencyinjection.8.0.0.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.dependencyinjection.abstractions\\8.0.0\\microsoft.extensions.dependencyinjection.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.logging\\8.0.0\\microsoft.extensions.logging.8.0.0.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.0\\microsoft.extensions.logging.abstractions.8.0.0.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.options\\8.0.0\\microsoft.extensions.options.8.0.0.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\microsoft.openapi\\1.2.3\\microsoft.openapi.1.2.3.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\serilog\\3.1.1\\serilog.3.1.1.nupkg.sha512",
+    "C:\\Users\\LeorGoldberg\\.nuget\\packages\\serilog.extensions.logging\\8.0.0\\serilog.extensions.logging.8.0.0.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\sqlitepclraw.bundle_e_sqlite3\\2.1.6\\sqlitepclraw.bundle_e_sqlite3.2.1.6.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\sqlitepclraw.core\\2.1.6\\sqlitepclraw.core.2.1.6.nupkg.sha512",
     "C:\\Users\\LeorGoldberg\\.nuget\\packages\\sqlitepclraw.lib.e_sqlite3\\2.1.6\\sqlitepclraw.lib.e_sqlite3.2.1.6.nupkg.sha512",

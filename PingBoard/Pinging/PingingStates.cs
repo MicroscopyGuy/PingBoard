@@ -8,8 +8,8 @@ namespace PingBoard.Pinging{
         public enum PingState{
             Continue,         // Just keep going
             Pause,            // requires waiting for something to resolve, like a SourceQuench ICMP error
-            Halt,             // fatal issue which requires change of program input
-            PacketLossCaution // Packet loss detected, update some 
+            Halt,             // fatal issue which may require a change of program input
+            PacketLossCaution // Perhaps keep going, depending on the amount of previous packet loss
         }
     }
 }

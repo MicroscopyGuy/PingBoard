@@ -1,24 +1,22 @@
-﻿using System.Net;
+﻿namespace PingBoard.Controllers;
+using PingBoard.Services;
 using Microsoft.AspNetCore.Mvc;
 
-namespace PingBoard.Controllers;
+
 
 [ApiController]
-//[Route("/PingingController")]
+[Route("PingingController")]
 public class PingingController : ControllerBase
 {
     private static ILogger<PingingController> _logger;
+    private static PingMonitoringJobManager _pingMonitoringJobManager;
 
-    public PingingController(ILogger<PingingController> logger)
+    public PingingController(PingMonitoringJobManager pingMonitoringJobManager, ILogger<PingingController> logger)
     {
         _logger = logger;
+        _pingMonitoringJobManager = pingMonitoringJobManager;
     }
-
-
-
-
-
-
+    
 
     public enum OperationType
     {
@@ -26,6 +24,7 @@ public class PingingController : ControllerBase
         MULTIPLY
     };
 
+    /*
     public record Operation(int number1, int number2);
     [HttpPost]
     [Route("/")]
@@ -46,25 +45,32 @@ public class PingingController : ControllerBase
     [HttpPut]
     [Route("/status")]
     public string Get([FromQuery] string? x = null) => "asdf";
+    */
     
-    /*
-    [HttpPut(Name = "StartPinging")]
-    [Route("Pinging/Start")]
-    public IActionResult StartPinging([FromQuery] string target)
+    [HttpPut("StartPinging/{target}", Name = "StartPinging")]
+    public IActionResult StartPinging(string target)
     {
-        for (int i = 0; i < 20; i++)
+        try
         {
-            Console.WriteLine("Pinging");
+            _logger.LogDebug($"PingingController: /StartPinging/{target}");
+            _pingMonitoringJobManager.StartPinging(target);
+            return Ok();
         }
 
+        catch (Exception e)
+        {
+            Console.WriteLine($"{e}");
+            return BadRequest();
+        }
+    }
+
+    [HttpPost("StopPinging", Name = "StopPinging")]
+    public IActionResult StopPinging()
+    {
+        _logger.LogDebug($"PingingController: /StopPinging");
+        _pingMonitoringJobManager.StopPinging();
         return Ok();
     }
     
-    [HttpPut(Name = "StopPinging")]
-    [Route("/Pinging/Stop")]
-    public void StopPinging()
-    {
-        Console.WriteLine("Pinging stopped");
-    }*/
 
 }

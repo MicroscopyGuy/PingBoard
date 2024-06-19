@@ -225,5 +225,13 @@ namespace PingBoard.Pinging{
             summary.MinimumPing = 0;
             summary.MaximumPing = 0;
         }
+
+        [ExcludeFromCodeCoverage]
+        public override string ToString()
+        {
+            return  $"MinimumPing: {MinimumPing} AveragePing: {AveragePing} " +
+                    $"MaximumPing: {MaximumPing} Jitter: {Jitter} PacketLoss: {PacketLoss} " +
+                    $"TerminatingIPStatus: {TerminatingIPStatus} EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}";
+        }
     }
 }
