@@ -30,7 +30,7 @@ public class IndividualPinger : IIndividualPinger{
 
     public async Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
         _logger.LogDebug("IndividualPinger: Sending ping");
-        
+
         PingReply response = await _pinger.SendPingAsync(
             target, 
             TimeSpan.FromMilliseconds(_pingBehavior.TimeoutMs),
@@ -38,6 +38,10 @@ public class IndividualPinger : IIndividualPinger{
             _pingOptions,
             stoppingToken
         );
+        
+        if (stoppingToken.IsCancellationRequested){
+            _logger.LogDebug("IndividualPinger: Pinging cancelled");
+        }
 
         return response;
     }
