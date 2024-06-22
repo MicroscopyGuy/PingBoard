@@ -1234,11 +1234,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\LeorGoldberg\\Documents\\Projects\\PingBoard\\PingBoard\\PingBoard.csproj",
+      "projectUniqueName": "C:\\Users\\LeorGoldberg\\Documents\\PingBoard\\PingBoard\\PingBoard\\PingBoard.csproj",
       "projectName": "PingBoard",
-      "projectPath": "C:\\Users\\LeorGoldberg\\Documents\\Projects\\PingBoard\\PingBoard\\PingBoard.csproj",
+      "projectPath": "C:\\Users\\LeorGoldberg\\Documents\\PingBoard\\PingBoard\\PingBoard\\PingBoard.csproj",
       "packagesPath": "C:\\Users\\LeorGoldberg\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\LeorGoldberg\\Documents\\Projects\\PingBoard\\PingBoard\\obj\\",
+      "outputPath": "C:\\Users\\LeorGoldberg\\Documents\\PingBoard\\PingBoard\\PingBoard\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\LeorGoldberg\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -1259,6 +1259,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
