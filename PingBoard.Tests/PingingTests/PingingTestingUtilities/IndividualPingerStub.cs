@@ -130,7 +130,7 @@ public class IndividualPingerStub : IIndividualPinger
     /// <param name="target"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<PingReply> SendPingIndividualAsync(IPAddress target) {
+    public async Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)) {
         if (_pingReplyStubs.Count == 0) {
             throw new Exception("""
                                           _pingReplyStubs accessed without proper intialization by
