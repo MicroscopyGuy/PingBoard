@@ -23,7 +23,7 @@ namespace PingBoard.Pinging{
         /// <summary>
         /// Wherever the user said to ping, could be either a domain or an IP address
         /// </summary>
-        public string? Target {get; set;}
+        public string Target {get; set;}
 
         /// <summary>
         /// The lowest of the recorded pings in the group
@@ -121,6 +121,7 @@ namespace PingBoard.Pinging{
         /// <param name="responseTimes">A list of response times to be analyzed</param>
         /// <param name="mean">The average of the ping times stored in responseTimes</param>
         /// <returns>The standard deviation of the ping times in response times</returns>
+        [ExcludeFromCodeCoverage]
         public static float CalculatePingStdDeviation(List<long> responseTimes, float mean){
             if (responseTimes.Count <= 1){ 
                 return 0;
@@ -223,6 +224,14 @@ namespace PingBoard.Pinging{
             if (summary is not { MinimumPing: short.MaxValue, MaximumPing: short.MinValue }) return;
             summary.MinimumPing = 0;
             summary.MaximumPing = 0;
+        }
+
+        [ExcludeFromCodeCoverage]
+        public override string ToString()
+        {
+            return  $"MinimumPing: {MinimumPing} AveragePing: {AveragePing} " +
+                    $"MaximumPing: {MaximumPing} Jitter: {Jitter} PacketLoss: {PacketLoss} " +
+                    $"TerminatingIPStatus: {TerminatingIPStatus} EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}";
         }
     }
 }

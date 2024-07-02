@@ -41,7 +41,9 @@ public class GroupPinger : IGroupPinger{
     /// <returns> 
     ///     A PingGroupSummary object which summarizes the results of the pings that were sent
     /// </returns>
-    public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, int numberOfPings){
+    public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
+        _logger.LogInformation("GroupPinger: Entered SendPingGroupAsync");
+        Console.WriteLine("GroupPinger: Entered SendPingGroupAsync");
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
         pingGroupInfo.Target = target.ToString();
         PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
@@ -49,13 +51,14 @@ public class GroupPinger : IGroupPinger{
         int pingCounter = 0;
         pingGroupInfo.Start = DateTime.UtcNow;
 
-        bool HasRemainingPings() => pingCounter++ < numberOfPings;
+        bool HasRemainingPings() => pingCounter++ < _pingBehavior.PingsPerCall;
         bool PingStateNotHalt() => currentPingState != PingingStates.PingState.Halt;
         bool BelowReportThreshold() => pingGroupInfo.ConsecutiveTimeouts < _pingBehavior.ReportBackAfterConsecutiveTimeouts;
+        bool NotCancelled() => !stoppingToken.IsCancellationRequested;
 
-        while(HasRemainingPings() && PingStateNotHalt() && BelowReportThreshold()){
+        while(HasRemainingPings() && PingStateNotHalt() && BelowReportThreshold() && NotCancelled()){
             _scheduler.StartIntervalTracking();
-            PingReply response = await _individualPinger.SendPingIndividualAsync(target);
+            PingReply response = await _individualPinger.SendPingIndividualAsync(target, stoppingToken);
             pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
             currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
             pingGroupInfo.PacketsSent++;

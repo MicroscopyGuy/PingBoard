@@ -1,12 +1,16 @@
-using Microsoft.Data.Sqlite;
-using PingBoard.DatabaseUtilities;
+using System.Diagnostics;
+using Microsoft.Extensions.Options;
 
 namespace PingBoard;
-using System.Diagnostics.CodeAnalysis;
-using System.Net.NetworkInformation;
+using Microsoft.Data.Sqlite;
 using PingBoard.Pinging;
 using PingBoard.Monitoring.Configuration;
 using PingBoard.Pinging.Configuration;
+using PingBoard.DatabaseUtilities;
+using PingBoard.Services;
+using System.Diagnostics.CodeAnalysis;
+using System.Net.NetworkInformation;
+
 
 
 [ExcludeFromCodeCoverage]
@@ -45,7 +49,7 @@ public class Program
         builder.Services.AddTransient<MonitoringBehaviorConfig>();
         builder.Services.AddTransient<MonitoringBehaviorConfigLimits>();
         builder.Services.AddTransient<MonitoringBehaviorConfigValidator>();
-        builder.Services.AddHostedService<NetworkMonitoringService>();
+        
 
         // Database-related classes
         builder.Services.AddTransient<DatabaseConstants>();
@@ -53,8 +57,34 @@ public class Program
         builder.Services.AddTransient<DatabaseHelper>();
         builder.Services.AddTransient<SqliteConnection>();
 
-        var app = builder.Build();
+        // Service-related information
+        //builder.Services.AddHostedService<PingMonitoringService>();
+        builder.Services.AddSingleton<PingMonitoringJobManager>();
+        builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
+            => svc.GetRequiredService<PingMonitoringJobManager>());
+        
+        builder.Services.AddTransient<CancellationTokenSource>();
+        builder.Services.AddTransient<Func<string, PingMonitoringJobRunner>>((svc) => 
+        {
+            var groupPinger = svc.GetRequiredService<IGroupPinger>();
+            var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();
+            var pingingThresholds = svc.GetRequiredService<IOptions<PingingThresholdsConfig>>();
+            var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
+            var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
+            var databaseHelper = svc.GetRequiredService<DatabaseHelper>();
+            var cancellationTokenSource = svc.GetRequiredService<CancellationTokenSource>();
+            var logger = svc.GetRequiredService<ILogger<IGroupPinger>>();
 
+            return (str) => new PingMonitoringJobRunner(
+                groupPinger, pingingBehavior, pingingThresholds, 
+                behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper, 
+                cancellationTokenSource, str, logger);
+        });
+        
+        builder.Logging.AddConsole();
+        var app = builder.Build();
+        
+        
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {

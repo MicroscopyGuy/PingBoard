@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.WebUtilities;
@@ -50,12 +51,11 @@ public class DatabaseHelper : IDisposable
 
     public void InsertPingGroupSummary(PingGroupSummary summary)
     {
-
         var insertSummaryCommand = _databaseConnection.CreateCommand();
         insertSummaryCommand.CommandText = _statements.InsertPingGroupSummaryStmt(summary);
         insertSummaryCommand.Parameters.AddWithValue("@start_time", summary.Start.ToString("yyyy-MM-dd HH:mm:ss.fff"));
         insertSummaryCommand.Parameters.AddWithValue("@end_time", summary.End.ToString("yyyy-MM-dd HH:mm:ss.fff"));
-        insertSummaryCommand.Parameters.AddWithValue("@target", summary.Target?.ToString() ?? string.Empty);
+        insertSummaryCommand.Parameters.AddWithValue("@target", summary.Target.ToString());
         insertSummaryCommand.Parameters.AddWithValue("@min_ping", summary.MinimumPing.ToString());
         insertSummaryCommand.Parameters.AddWithValue("@avg_ping", summary.AveragePing.ToString());
         insertSummaryCommand.Parameters.AddWithValue("@max_ping", summary.MaximumPing.ToString());
@@ -95,7 +95,7 @@ public class DatabaseHelper : IDisposable
             var summary = new PingGroupSummary();
             summary.Start               = DateTime.ParseExact(reader[nameof(PingGroupSummary.Start)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
             summary.End                 = DateTime.ParseExact(reader[nameof(PingGroupSummary.End)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            summary.Target              = reader[nameof(PingGroupSummary.Target)] == DBNull.Value ? null : reader[nameof(PingGroupSummary.Target)].ToString();
+            summary.Target              = reader[nameof(PingGroupSummary.Target)].ToString()!;
             summary.MinimumPing         = short.Parse(reader[nameof(PingGroupSummary.MinimumPing)].ToString()!);
             summary.AveragePing         = float.Parse(reader[nameof(PingGroupSummary.AveragePing)].ToString()!);
             summary.MaximumPing         = short.Parse(reader[nameof(PingGroupSummary.MaximumPing)].ToString()!);
@@ -123,6 +123,7 @@ public class DatabaseHelper : IDisposable
         return summaries;
     }
     
+    [ExcludeFromCodeCoverage]
     public void Dispose()
     {
         _databaseConnection.Dispose();

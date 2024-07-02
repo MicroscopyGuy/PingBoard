@@ -4,6 +4,6 @@ using System.Net.NetworkInformation;
 
 
 public interface IIndividualPinger{
-    public Task<PingReply> SendPingIndividualAsync(IPAddress target);
+    public Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken));
 }
 

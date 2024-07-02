@@ -28,13 +28,21 @@ public class IndividualPinger : IIndividualPinger{
         _pingOptions.DontFragment = true; // Crucial, and not configurable
     }
 
-    public async Task<PingReply> SendPingIndividualAsync(IPAddress target){
+    public async Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
+        _logger.LogDebug("IndividualPinger: Sending ping");
+
         PingReply response = await _pinger.SendPingAsync(
             target, 
-            _pingBehavior.TimeoutMs,
+            TimeSpan.FromMilliseconds(_pingBehavior.TimeoutMs),
             Encoding.ASCII.GetBytes(_pingBehavior.PayloadStr!), 
-            _pingOptions
+            _pingOptions,
+            stoppingToken
         );
+        
+        if (stoppingToken.IsCancellationRequested){
+            _logger.LogDebug("IndividualPinger: Pinging cancelled");
+        }
+
         return response;
     }
 }

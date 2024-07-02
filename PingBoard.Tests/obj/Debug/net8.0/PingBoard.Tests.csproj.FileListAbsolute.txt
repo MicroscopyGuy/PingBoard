@@ -137,3 +137,5 @@ C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net8.0\PingBoard.Tests.pdb
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net8.0\PingBoard.Tests.genruntimeconfig.cache
 C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\obj\Debug\net8.0\ref\PingBoard.Tests.dll
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\bin\Debug\net8.0\Serilog.dll
+C:\Users\LeorGoldberg\Documents\Projects\PingBoard\PingBoard.Tests\bin\Debug\net8.0\Serilog.Extensions.Logging.dll

@@ -87,7 +87,7 @@ public static partial class PingGroupSummaryStub{
             logger
         );
         
-        var summary = await groupPinger.SendPingGroupAsync(target, behaviorOptions.Value.PingsPerCall);
+        var summary = await groupPinger.SendPingGroupAsync(target);
         return summary;
    }
    
@@ -128,7 +128,7 @@ public static partial class PingGroupSummaryStub{
             logger
         );
         
-        var summary = await groupPinger.SendPingGroupAsync(target, behaviorOptions.Value.PingsPerCall);
+        var summary = await groupPinger.SendPingGroupAsync(target);
         return summary;
    }
    
@@ -169,7 +169,7 @@ public static partial class PingGroupSummaryStub{
             logger
         );
         
-        var summary = await groupPinger.SendPingGroupAsync(target, behaviorOptions.Value.PingsPerCall);
+        var summary = await groupPinger.SendPingGroupAsync(target);
         return summary;
    }
    
@@ -210,7 +210,7 @@ public static partial class PingGroupSummaryStub{
             logger
         );
         
-        var summary = await groupPinger.SendPingGroupAsync(target, behaviorOptions.Value.PingsPerCall);
+        var summary = await groupPinger.SendPingGroupAsync(target);
         return summary;
    }
    
@@ -251,7 +251,7 @@ public static partial class PingGroupSummaryStub{
             logger
         );
         
-        var summary = await groupPinger.SendPingGroupAsync(target, behaviorOptions.Value.PingsPerCall);
+        var summary = await groupPinger.SendPingGroupAsync(target);
         return summary;
    }
    
