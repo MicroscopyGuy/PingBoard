@@ -103,8 +103,6 @@ public class PingMonitoringJobManager : BackgroundService
                 ResetJobRunner();
             }
         }
-        
-        
     }
 
     public void ResetJobRunner()

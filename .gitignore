@@ -1,1 +1,5 @@
 **/PingInfo
+*/obj
+*/bin
+PingBoard.Tests/coverage
+PingBoard.Tests/coveragereport
