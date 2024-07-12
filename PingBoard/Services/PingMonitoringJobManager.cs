@@ -26,7 +26,7 @@ public class PingMonitoringJobManager : BackgroundService
             string pingingTarget = "";
             lock (lockingObject)
             {
-                if (AnyJobsRunning())
+                if (IsPinging())
                 {
                     pingingTask = _currentJobRunner!.GetPingingTask();
                     pingingTarget = _currentJobRunner.GetTarget();
@@ -71,7 +71,7 @@ public class PingMonitoringJobManager : BackgroundService
     /// Returns whether any jobs are running
     /// </summary>
     /// <returns>true if a job is running, and false otherwise</returns>
-    public bool AnyJobsRunning()
+    public bool IsPinging()
     {
         return _currentJobRunner != null;
     }
@@ -115,8 +115,13 @@ public class PingMonitoringJobManager : BackgroundService
                 _currentJobRunner = null;
             }
         }
+    }
 
-        
+    public bool IsPingAlreadyRunning(){
+        lock (lockingObject)
+        {
+            return _currentJobRunner != null;
+        }
     }
 }
     

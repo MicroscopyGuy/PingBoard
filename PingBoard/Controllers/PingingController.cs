@@ -21,9 +21,15 @@ public class PingingController : ControllerBase
     {
         try
         {
+            if (_pingMonitoringJobManager.IsPinging())
+            {
+                return StatusCode(409);
+            }
+            
             _logger.LogDebug($"PingingController: /StartPinging/{target}");
             _pingMonitoringJobManager.StartPinging(target);
-            return Ok();
+            //return Ok();
+            return StatusCode(204);
         }
 
         catch (Exception e)

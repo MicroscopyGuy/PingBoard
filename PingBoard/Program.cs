@@ -12,7 +12,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
 
 
-
 [ExcludeFromCodeCoverage]
 public class Program
 {
@@ -49,7 +48,6 @@ public class Program
         builder.Services.AddTransient<MonitoringBehaviorConfig>();
         builder.Services.AddTransient<MonitoringBehaviorConfigLimits>();
         builder.Services.AddTransient<MonitoringBehaviorConfigValidator>();
-        
 
         // Database-related classes
         builder.Services.AddTransient<DatabaseConstants>();
@@ -62,9 +60,9 @@ public class Program
         builder.Services.AddSingleton<PingMonitoringJobManager>();
         builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());
-        
+
         builder.Services.AddTransient<CancellationTokenSource>();
-        builder.Services.AddTransient<Func<string, PingMonitoringJobRunner>>((svc) => 
+        builder.Services.AddTransient<Func<string, PingMonitoringJobRunner>>((svc) =>
         {
             var groupPinger = svc.GetRequiredService<IGroupPinger>();
             var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();
@@ -76,14 +74,29 @@ public class Program
             var logger = svc.GetRequiredService<ILogger<IGroupPinger>>();
 
             return (str) => new PingMonitoringJobRunner(
-                groupPinger, pingingBehavior, pingingThresholds, 
-                behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper, 
+                groupPinger, pingingBehavior, pingingThresholds,
+                behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper,
                 cancellationTokenSource, str, logger);
+        });
+
+        //Enable Cors Support
+        var allowCorsPolicy = "_allowCorsPolicy";
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy(name: allowCorsPolicy,
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
         });
         
         builder.Logging.AddConsole();
-        var app = builder.Build();
         
+        /***********************************************Build the application *****************************************/
+        var app = builder.Build();
+        app.UseCors(allowCorsPolicy);
         
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
@@ -92,7 +105,7 @@ public class Program
             app.UseSwaggerUI();
         }
 
-        app.UseHttpsRedirection();
+        //app.UseHttpsRedirection();
 
         app.UseAuthorization();
 
