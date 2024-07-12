@@ -9,12 +9,11 @@ working on.
 The plan is to incorporate a charting library and package this all up as a desktop application using Electron.
 
 One thing that is different about this pinging functionality is that it sends a configurable number of pings
-every time interval that the user selects. This results in an inherent summary across the inverval defined 
-by the user.
+every specified amount of time. This results in an inherent summary defined across the inverval of time
+specified by the user.
 
 What this means is that these PingGroupSummary objects have statistics that more expressively summarize
-what happened in that interval of time, while reducing clutter on the charts.
-
+what happened in that interval of time, and which will reduce chart clutter.
 
 The configurability of many aspects of pinging is already supported by the C# backend, including:
     A) Behavior: Responsiveness to TimeOuts, how many pings to send per group, etc
