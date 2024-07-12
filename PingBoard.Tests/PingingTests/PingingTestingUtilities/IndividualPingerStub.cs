@@ -141,7 +141,7 @@ public class IndividualPingerStub : IIndividualPinger
         if (_pingReplyIndex >= _pingReplyStubs.Count) {
             throw new Exception("""
                                           There are no additional PingReply objects to be returned.
-                                       """);
+                                        """);
         }
         
         await Task.Delay(1); // to return as Task<PingReply> instead of simply PingReply
