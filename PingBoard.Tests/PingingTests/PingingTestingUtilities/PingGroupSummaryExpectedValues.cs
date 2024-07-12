@@ -1,11 +1,9 @@
 ﻿namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using PingBoard.Pinging;
-using System.Text.Json;
 using System.Reflection;
-using System.Text.Json.Serialization;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-using System.Security.Cryptography.X509Certificates;
+
 
 public static class PingGroupSummaryExpectedValues
 {
