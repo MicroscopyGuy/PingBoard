@@ -63,6 +63,7 @@ public class PingMonitoringJobRunner : IDisposable
                 Console.WriteLine(result.ToString());
                 _databaseHelper.InsertPingGroupSummary(result);
             }
+            _databaseHelper.Dispose();
         }
         
         catch (Exception e)
@@ -109,9 +110,8 @@ public class PingMonitoringJobRunner : IDisposable
                 _cancellationTokenSource.GetHashCode());
             _cancellationTokenSource.Dispose();
             _cancellationTokenSource = null;
-            
-            //_databaseHelper.Dispose(); // newly added
         }
+        
         catch (System.ObjectDisposedException oDE)
         {
             _logger.LogError($"PingMonitoringJobRunner: Dispose: {oDE}");
