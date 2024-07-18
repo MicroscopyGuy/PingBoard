@@ -4,8 +4,8 @@ public class PingMonitoringJobManager : BackgroundService
 {
     private readonly Func<string, PingMonitoringJobRunner> _getPingMonitoringJobRunner;
     private readonly ILogger<PingMonitoringJobManager> _logger;
-    private PingMonitoringJobRunner? _currentJobRunner;
-    private int _checkRunningJobsDelayMs = 20;
+    private volatile PingMonitoringJobRunner? _currentJobRunner;
+    private int _checkRunningJobsDelayMs = 100;
     private readonly object lockingObject = new object();
     
     public PingMonitoringJobManager(Func<string, PingMonitoringJobRunner> pingMonitoringJobRunnerSource,
@@ -18,38 +18,33 @@ public class PingMonitoringJobManager : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogDebug("PingMonitoringJobManager: Started");
-        await Task.Delay(Timeout.Infinite, stoppingToken);
+        _logger.LogDebug("PingMonitoringJobManager: ExecuteAsync: Entered");
         while (true)
         {
             Task? pingingTask;
             string pingingTarget = "";
-            lock (lockingObject)
-            {
-                if (IsPinging())
-                {
+            lock (lockingObject) {
+                if (IsPinging()) {
+                    //_logger.LogDebug("PingMonitoringJobManager: ExecuteAsync: AlreadyPinging");
                     pingingTask = _currentJobRunner!.GetPingingTask();
                     pingingTarget = _currentJobRunner.GetTarget();
                 }
 
-                else
-                {
+                else {
                     pingingTask = null;
                 }
             }
 
             if (pingingTask != null)
             {
+               //logger.LogDebug($"PingMonitoringJobManager: ExecuteAsync: Currently pinging {pingingTarget}");
                 var completedTask = await Task.WhenAny(pingingTask);
 
                 // if job is done, reset _currentJobRunner and the pinging target
                 if (completedTask.IsCompleted)
                 {
-                    _logger.LogDebug($"""
-                                                PingMonitoringJobManager: PingingJob of target {pingingTarget}
-                                                has completed
-                                              """);
-                    ResetJobRunner();
+                    _logger.LogDebug($"PingMonitoringJobManager: PingingJob of target {pingingTarget} has completed");
+                    ResetJobRunner(); //dont want to do this twice, endpoint already calls StopPinging() -> ResetJobRunner() -> Dispose()
                 }
                 
                 if (completedTask.Exception != null)
@@ -73,30 +68,35 @@ public class PingMonitoringJobManager : BackgroundService
     /// <returns>true if a job is running, and false otherwise</returns>
     public bool IsPinging()
     {
-        return _currentJobRunner != null;
+        //_logger.LogDebug("PingMonitoringJobManager: IsPinging: Entered");
+        lock (lockingObject) {
+            return _currentJobRunner != null;
+        }
     }
     
     public void StartPinging(string target)
     {
         lock (lockingObject)
         {
+            _logger.LogDebug($"PingMonitoringJobManager: StartPinging: Entered with target:{target}"); 
             // simply do nothing if the target is already being pinged
             if (_currentJobRunner != null)
             {
+                _logger.LogDebug($"PingMonitoringJobManager: StartPinging: Already pinging"); 
                 return;
             }
-
-            _logger.LogDebug("PingMonitoringJobManager: StartPinging: Entered");
+            
             _currentJobRunner = _getPingMonitoringJobRunner(target);
+            //_logger.LogDebug($"PingMonitoringJobManager: StartPinging: new job runner created:{_currentJobRunner.GetHashCode()}");
             _currentJobRunner.StartPinging();
         }
     }
 
     public void StopPinging()
     {
-        _logger.LogDebug("PingMonitoringJobManager: StopPinging: Entered");
         lock (lockingObject)
         {
+            _logger.LogDebug("PingMonitoringJobManager: StopPinging: Entered");
             if (_currentJobRunner != null)
             {
                 _currentJobRunner.CancelTokenSource();
@@ -109,18 +109,15 @@ public class PingMonitoringJobManager : BackgroundService
     {
         lock (lockingObject)
         {
-            if (_currentJobRunner != null && !_currentJobRunner.CancellationTokenSourceIsNull())
+            _logger.LogDebug("PingMonitoringJobManager: ResetJobRunner: Entered");
+            
+            if (_currentJobRunner != null)
             {
-                _currentJobRunner.Dispose();
-                _currentJobRunner = null;
+                _logger.LogDebug("PingMonitoringJobManager: ResetJobRunner: Going to dispose of job runner");
+                var cjr = _currentJobRunner;
+                _currentJobRunner = null; // defensive measure to prevent intermediate state of disposed job runner, but non-null currentJObRunner
+                cjr.Dispose();
             }
-        }
-    }
-
-    public bool IsPingAlreadyRunning(){
-        lock (lockingObject)
-        {
-            return _currentJobRunner != null;
         }
     }
 }

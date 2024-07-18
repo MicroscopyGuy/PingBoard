@@ -23,6 +23,7 @@ public class PingingController : ControllerBase
         {
             if (_pingMonitoringJobManager.IsPinging())
             {
+                _logger.LogDebug($"PingingController: /StartPinging/{target}: Was already pinging");
                 return StatusCode(409);
             }
             
@@ -42,8 +43,24 @@ public class PingingController : ControllerBase
     [HttpPost("StopPinging", Name = "StopPinging")]
     public IActionResult StopPinging()
     {
-        _logger.LogDebug($"PingingController: /StopPinging");
-        _pingMonitoringJobManager.StopPinging();
-        return Ok();
+        try
+        {
+            if (!_pingMonitoringJobManager.IsPinging())
+            {
+                _logger.LogDebug("PingingController: /StopPinging: Was not pinging");
+                return StatusCode(409);
+            }
+
+            _logger.LogDebug($"PingingController: /StopPinging");
+            _pingMonitoringJobManager.StopPinging();
+            return Ok();
+        }
+
+        catch (Exception e)
+        {
+            _logger.LogError($"PingingController: /StopPinging: {e}");
+            Console.WriteLine($"{e}");
+            return BadRequest();
+        }
     }
 }

@@ -61,22 +61,28 @@ public class Program
         builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());
 
-        builder.Services.AddTransient<CancellationTokenSource>();
-        builder.Services.AddTransient<Func<string, PingMonitoringJobRunner>>((svc) =>
+        //builder.Services.AddTransient<CancellationTokenSource>();
+        builder.Services.AddSingleton<Func<string, PingMonitoringJobRunner>>((svc) =>
         {
-            var groupPinger = svc.GetRequiredService<IGroupPinger>();
-            var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();
-            var pingingThresholds = svc.GetRequiredService<IOptions<PingingThresholdsConfig>>();
-            var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
-            var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
-            var databaseHelper = svc.GetRequiredService<DatabaseHelper>();
-            var cancellationTokenSource = svc.GetRequiredService<CancellationTokenSource>();
-            var logger = svc.GetRequiredService<ILogger<IGroupPinger>>();
+            return (str) =>
+            {
+                var groupPinger = svc.GetRequiredService<IGroupPinger>();
+                var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();
+                var pingingThresholds = svc.GetRequiredService<IOptions<PingingThresholdsConfig>>();
+                var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
+                var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
+                var databaseHelper = svc.GetRequiredService<DatabaseHelper>();
+                var cancellationTokenSource = new CancellationTokenSource();
+                var logger = svc.GetRequiredService<ILogger<IGroupPinger>>();
+                logger.LogDebug(
+                    "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
+                    cancellationTokenSource.GetHashCode());
 
-            return (str) => new PingMonitoringJobRunner(
-                groupPinger, pingingBehavior, pingingThresholds,
-                behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper,
-                cancellationTokenSource, str, logger);
+                return new PingMonitoringJobRunner(
+                    groupPinger, pingingBehavior, pingingThresholds,
+                    behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper,
+                    new CancellationTokenSource(), str, logger);
+            };
         });
 
         //Enable Cors Support
@@ -93,7 +99,6 @@ public class Program
         });
         
         builder.Logging.AddConsole();
-        
         /***********************************************Build the application *****************************************/
         var app = builder.Build();
         app.UseCors(allowCorsPolicy);
