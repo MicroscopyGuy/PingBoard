@@ -29,7 +29,7 @@ public class IndividualPinger : IIndividualPinger{
     }
 
     public async Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
-        _logger.LogDebug("IndividualPinger: Sending ping");
+        _logger.LogTrace("IndividualPinger: Sending ping");
 
         PingReply response = await _pinger.SendPingAsync(
             target, 
