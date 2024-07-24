@@ -13,7 +13,8 @@ every specified amount of time. This results in an inherent summary defined acro
 specified by the user.
 
 What this means is that these PingGroupSummary objects have statistics that more expressively summarize
-what happened in that interval of time, and which will reduce chart clutter.
+what happened in that interval of time, which will simultaneously reduce chart clutter and enable
+a more granular analysis of the data.
 
 The configurability of many aspects of pinging is already supported by the C# backend, including:
     A) Behavior: Responsiveness to TimeOuts, how many pings to send per group, etc
