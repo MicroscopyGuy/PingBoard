@@ -1,3 +1,5 @@
+using PingBoard.Database.Models;
+
 namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;

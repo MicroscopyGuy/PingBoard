@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.NetworkInformation;
+using PingBoard.Database.Models;
 
 namespace PingBoard.Pinging{
     public interface IGroupPinger{

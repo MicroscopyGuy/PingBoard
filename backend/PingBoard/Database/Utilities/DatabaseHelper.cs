@@ -3,8 +3,9 @@ using System.Globalization;
 using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.AspNetCore.WebUtilities;
+using PingBoard.Database.Models;
 
-namespace PingBoard.DatabaseUtilities;
+namespace PingBoard.Database.Utilities;
 
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging.Configuration;
@@ -93,14 +94,14 @@ public class DatabaseHelper : IDisposable
         while (reader.Read())
         {
             var summary = new PingGroupSummary();
-            summary.Start               = DateTime.ParseExact(reader[nameof(PingGroupSummary.Start)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            summary.End                 = DateTime.ParseExact(reader[nameof(PingGroupSummary.End)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            summary.Target              = reader[nameof(PingGroupSummary.Target)].ToString()!;
-            summary.MinimumPing         = short.Parse(reader[nameof(PingGroupSummary.MinimumPing)].ToString()!);
-            summary.AveragePing         = float.Parse(reader[nameof(PingGroupSummary.AveragePing)].ToString()!);
-            summary.MaximumPing         = short.Parse(reader[nameof(PingGroupSummary.MaximumPing)].ToString()!);
-            summary.Jitter              = float.Parse(reader[nameof(PingGroupSummary.Jitter)].ToString()!);
-            summary.PacketLoss          = float.Parse(reader[nameof(PingGroupSummary.PacketLoss)].ToString()!);
+            summary.Start       = DateTime.ParseExact(reader[nameof(PingGroupSummary.Start)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+            summary.End         = DateTime.ParseExact(reader[nameof(PingGroupSummary.End)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
+            summary.Target      = reader[nameof(PingGroupSummary.Target)].ToString()!;
+            summary.MinimumPing = short.Parse(reader[nameof(PingGroupSummary.MinimumPing)].ToString()!);
+            summary.AveragePing = float.Parse(reader[nameof(PingGroupSummary.AveragePing)].ToString()!);
+            summary.MaximumPing = short.Parse(reader[nameof(PingGroupSummary.MaximumPing)].ToString()!);
+            summary.Jitter      = float.Parse(reader[nameof(PingGroupSummary.Jitter)].ToString()!);
+            summary.PacketLoss  = float.Parse(reader[nameof(PingGroupSummary.PacketLoss)].ToString()!);
 
             var terminatingIpStatus = reader[nameof(PingGroupSummary.TerminatingIPStatus)];
             summary.TerminatingIPStatus = Convert.IsDBNull(terminatingIpStatus)
@@ -123,41 +124,6 @@ public class DatabaseHelper : IDisposable
         return summaries;
     }
     
-    public Dictionary<int, PingGroupSummary> ReadPingGroupSummariesFromReader(SqliteDataReader reader)
-    {
-        var summaries = new Dictionary<int, PingGroupSummary>();
-        while (reader.Read())
-        {
-            var summary = new PingGroupSummary();
-            summary.Start               = DateTime.ParseExact(reader[nameof(PingGroupSummary.Start)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            summary.End                 = DateTime.ParseExact(reader[nameof(PingGroupSummary.End)].ToString()!, "yyyy-MM-dd HH:mm:ss.fff", CultureInfo.InvariantCulture);
-            summary.Target              = reader[nameof(PingGroupSummary.Target)].ToString()!;
-            summary.MinimumPing         = short.Parse(reader[nameof(PingGroupSummary.MinimumPing)].ToString()!);
-            summary.AveragePing         = float.Parse(reader[nameof(PingGroupSummary.AveragePing)].ToString()!);
-            summary.MaximumPing         = short.Parse(reader[nameof(PingGroupSummary.MaximumPing)].ToString()!);
-            summary.Jitter              = float.Parse(reader[nameof(PingGroupSummary.Jitter)].ToString()!);
-            summary.PacketLoss          = float.Parse(reader[nameof(PingGroupSummary.PacketLoss)].ToString()!);
-
-            var terminatingIpStatus = reader[nameof(PingGroupSummary.TerminatingIPStatus)];
-            summary.TerminatingIPStatus = Convert.IsDBNull(terminatingIpStatus)
-                    ? null 
-                    : Enum.Parse<IPStatus>(terminatingIpStatus.ToString()!);
-
-            var abnormalStatus = reader[nameof(PingGroupSummary.LastAbnormalStatus)];
-            summary.LastAbnormalStatus  = Convert.IsDBNull(abnormalStatus)
-                    ? null
-                    : Enum.Parse<IPStatus>(abnormalStatus.ToString()!);
-            
-            summary.ConsecutiveTimeouts = byte.Parse(reader[nameof(PingGroupSummary.ConsecutiveTimeouts)].ToString()!);
-            summary.PacketsSent         = byte.Parse(reader[nameof(PingGroupSummary.PacketsSent)].ToString()!);
-            summary.PacketsLost         = byte.Parse(reader[nameof(PingGroupSummary.PacketsLost)].ToString()!);
-            summary.ExcludedPings       = byte.Parse(reader[nameof(PingGroupSummary.ExcludedPings)].ToString()!);
-            summary.PingQualityFlags    = _pingQualifier.CalculatePingQualityFlags(summary);
-            summaries.Add(int.Parse(reader["id"].ToString()!), summary);
-        }
-
-        return summaries;
-    }
     
     [ExcludeFromCodeCoverage]
     public void Dispose()

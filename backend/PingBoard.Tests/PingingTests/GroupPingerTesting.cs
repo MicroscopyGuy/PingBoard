@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization.Infrastructure;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
+using PingBoard.Database.Models;
 
 namespace PingBoard.Tests.PingingTests;
 using PingBoard.Pinging.Configuration;

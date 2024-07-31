@@ -1,0 +1,28 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+service PingBoardService {
+
+  rpc StartPinging (PingTarget) returns (google.protobuf.Empty);
+  rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
+}
+
+message PingTarget {
+  string target = 1;
+}
+
+message PingGroupSummaryPublic {
+  google.protobuf.Timestamp start = 1;
+  google.protobuf.Timestamp end = 2;
+  string target = 3;
+  int32 minimumPing = 4;
+  float averagePing = 5;
+  int32 maximumPing = 6;
+  float jitter = 7;
+  float packetLoss = 8;
+  optional int32 terminatingIPStatus = 9;
+  optional int32 lastAbnormalStatus = 10;
+}
+

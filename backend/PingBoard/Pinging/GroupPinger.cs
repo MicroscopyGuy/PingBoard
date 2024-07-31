@@ -1,15 +1,11 @@
-using Microsoft.Extensions.Logging.Abstractions;
-
 namespace PingBoard.Pinging;
-using System.Diagnostics;
+using Microsoft.Extensions.Logging.Abstractions;
+using PingBoard.Database.Models;
 using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
 using Microsoft.Extensions.Options;
-using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
-
-
 
 /// <summary>
 /// A class which allows the sending of *groups* of pings, an abstraction of the IndividualPinger class.
@@ -21,7 +17,7 @@ public class GroupPinger : IGroupPinger{
     private readonly PingQualification _pingQualifier; 
     private readonly IIndividualPinger _individualPinger;
     private readonly IPingScheduler _scheduler;
-
+    
     public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, IPingScheduler scheduler,
                         IOptions<PingingBehaviorConfig> pingBehavior, IOptions<PingingThresholdsConfig> pingThresholds,
                         ILogger<IGroupPinger> logger){
@@ -34,10 +30,11 @@ public class GroupPinger : IGroupPinger{
     }
 
     /// <summary>
-    ///     An asynchronous function which sends a group of pings and reports back their metrics.
+    ///     A function which asynchronously sends a group of pings and reports back a summary of their trips
     /// </summary>
     /// <param name="target">A domain or IP Address that the user wishes to send pings to</param>
-    /// <param name="numberOfPings">The number of pings to be sent in the group</param>
+    /// <param name="stoppingToken">An optional CancellationToken which if cancelled, indicates a user's desire to stop pinging</param>
+    /// 
     /// <returns> 
     ///     A PingGroupSummary object which summarizes the results of the pings that were sent
     /// </returns>
@@ -78,8 +75,7 @@ public class GroupPinger : IGroupPinger{
         pingGroupInfo.AveragePing = PingGroupSummary.CalculateAveragePing(pingGroupInfo);
         pingGroupInfo.Jitter      = PingGroupSummary.CalculatePingJitter(responseTimes);
         pingGroupInfo.PacketLoss  = PingGroupSummary.CalculatePacketLoss(pingGroupInfo.PacketsSent, pingGroupInfo.PacketsLost);
-        PingGroupSummary.ResetMinMaxPingsIfUnused(pingGroupInfo); // important to do this before setting the PingQuality flags
-        pingGroupInfo.PingQualityFlags = _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
+        pingGroupInfo.ResetMinMaxPingsIfUnused();
         
         return pingGroupInfo;
     }

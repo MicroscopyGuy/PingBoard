@@ -1,5 +1,6 @@
 using System.Text;
 using Microsoft.Extensions.Options;
+using PingBoard.Database.Models;
 using PingBoard.Pinging.Configuration;
 
 namespace PingBoard.Pinging{

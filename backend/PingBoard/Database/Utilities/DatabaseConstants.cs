@@ -1,4 +1,4 @@
-﻿namespace PingBoard.DatabaseUtilities;
+﻿namespace PingBoard.Database.Utilities;
 
 public class DatabaseConstants
 {

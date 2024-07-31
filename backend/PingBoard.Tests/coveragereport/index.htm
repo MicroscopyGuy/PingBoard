@@ -665,15 +665,15 @@ a.percentagebar {
 </tr>
 <tr>
 <th>Classes:</th>
-<td class="limit-width right" title="19">19</td>
+<td class="limit-width right" title="21">21</td>
 </tr>
 <tr>
 <th>Files:</th>
-<td class="limit-width right" title="19">19</td>
+<td class="limit-width right" title="21">21</td>
 </tr>
 <tr>
 <th>Coverage date:</th>
-<td class="limit-width " title="7/20/2024 - 11:24:25 PM">7/20/2024 - 11:24:25 PM</td>
+<td class="limit-width " title="7/23/2024 - 5:27:40 PM">7/23/2024 - 5:27:40 PM</td>
 </tr>
 </table>
 </div>
@@ -682,28 +682,28 @@ a.percentagebar {
 <div class="card">
 <div class="card-header">Line coverage</div>
 <div class="card-body">
-<div class="large cardpercentagebar cardpercentagebar20">79%</div>
+<div class="large cardpercentagebar cardpercentagebar28">72%</div>
 <div class="table">
 <table>
 <tr>
 <th>Covered lines:</th>
-<td class="limit-width right" title="462">462</td>
+<td class="limit-width right" title="461">461</td>
 </tr>
 <tr>
 <th>Uncovered lines:</th>
-<td class="limit-width right" title="119">119</td>
+<td class="limit-width right" title="177">177</td>
 </tr>
 <tr>
 <th>Coverable lines:</th>
-<td class="limit-width right" title="581">581</td>
+<td class="limit-width right" title="638">638</td>
 </tr>
 <tr>
 <th>Total lines:</th>
-<td class="limit-width right" title="1543">1543</td>
+<td class="limit-width right" title="1762">1762</td>
 </tr>
 <tr>
 <th>Line coverage:</th>
-<td class="limit-width right" title="462 of 581">79.5%</td>
+<td class="limit-width right" title="461 of 638">72.2%</td>
 </tr>
 </table>
 </div>
@@ -712,7 +712,7 @@ a.percentagebar {
 <div class="card">
 <div class="card-header">Branch coverage</div>
 <div class="card-body">
-<div class="large cardpercentagebar cardpercentagebar15">84%</div>
+<div class="large cardpercentagebar cardpercentagebar30">69%</div>
 <div class="table">
 <table>
 <tr>
@@ -721,11 +721,11 @@ a.percentagebar {
 </tr>
 <tr>
 <th>Total branches:</th>
-<td class="limit-width right" title="85">85</td>
+<td class="limit-width right" title="103">103</td>
 </tr>
 <tr>
 <th>Branch coverage:</th>
-<td class="limit-width right" title="72 of 85">84.7%</td>
+<td class="limit-width right" title="72 of 103">69.9%</td>
 </tr>
 </table>
 </div>
@@ -743,8 +743,38 @@ a.percentagebar {
 </div>
 <h1>Risk Hotspots</h1>
 <risk-hotspots>
+<div class="table-responsive">
+<table class="overview table-fixed stripped">
+<colgroup>
+<col class="column-min-200" />
+<col class="column-min-200" />
+<col class="column-min-200" />
+<col class="column105" />
+<col class="column105" />
+</colgroup>
+<thead><tr><th>Assembly</th>
+<th>Class</th>
+<th>Method</th>
+<th>Crap Score <a href="https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" target="_blank"><i class="icon-info-circled"></i></a></th>
+<th>Cyclomatic complexity <a href="https://en.wikipedia.org/wiki/Cyclomatic_complexity" target="_blank"><i class="icon-info-circled"></i></a></th>
+</tr></thead>
+<tbody>
+<tr>
+<td>PingBoard</td>
+<td><a href="PingBoard_PingGroupSummaryExtension.html">PingBoard.Pinging.PingGroupSummaryExtension</a></td>
+<td title="ResetMinMaxPingsIfUnused(PingBoard.Database.Models.PingGroupSummary)"><a href="PingBoard_PingGroupSummaryExtension.html#file0_line130">ResetMinMaxPingsIfUnused(...)</a></td><td class="lightred right">42</td>
+<td class="lightgreen right">6</td>
+</tr>
+<tr>
+<td>PingBoard</td>
+<td><a href="PingBoard_PingGroupSummaryExtension.html">PingBoard.Pinging.PingGroupSummaryExtension</a></td>
+<td title="CalculatePingJitter(System.Collections.Generic.List`1&lt;System.Int64&gt;)"><a href="PingBoard_PingGroupSummaryExtension.html#file0_line50">CalculatePingJitter(...)</a></td><td class="lightred right">20</td>
+<td class="lightgreen right">4</td>
+</tr>
+</tbody>
+</table>
+</div>
 </risk-hotspots>
-<p>No risk hotspots found.</p>
 <h1>Coverage</h1>
 <coverage-info>
 <div class="table-responsive">
@@ -766,11 +796,13 @@ a.percentagebar {
 <tr class="header"><th></th><th colspan="6" class="center">Line coverage</th><th colspan="4" class="center">Branch coverage</th></tr>
 <tr><th>Name</th><th class="right">Covered</th><th class="right">Uncovered</th><th class="right">Coverable</th><th class="right">Total</th><th class="center" colspan="2">Percentage</th><th class="right">Covered</th><th class="right">Total</th><th class="center" colspan="2">Percentage</th></tr></thead>
 <tbody>
-<tr><th>PingBoard</th><th class="right">462</th><th class="right">119</th><th class="right">581</th><th class="right">1543</th><th title="462/581" class="right">79.5%</th><th><table class="coverage"><tr><td class="green covered80">&nbsp;</td><td class="red covered20">&nbsp;</td></tr></table></th><th class="right">72</th><th class="right">85</th><th class="right" title="72/85">84.7%</th><th><table class="coverage"><tr><td class="green covered85">&nbsp;</td><td class="red covered15">&nbsp;</td></tr></table></th></tr>
+<tr><th>PingBoard</th><th class="right">461</th><th class="right">177</th><th class="right">638</th><th class="right">1762</th><th title="461/638" class="right">72.2%</th><th><table class="coverage"><tr><td class="green covered72">&nbsp;</td><td class="red covered28">&nbsp;</td></tr></table></th><th class="right">72</th><th class="right">103</th><th class="right" title="72/103">69.9%</th><th><table class="coverage"><tr><td class="green covered70">&nbsp;</td><td class="red covered30">&nbsp;</td></tr></table></th></tr>
 <tr><td><a href="PingBoard_PingingController.html">PingBoard.Controllers.PingingController</a></td><td class="right">0</td><td class="right">34</td><td class="right">34</td><td class="right">66</td><td title="0/34" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">4</td><td class="right" title="0/4">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="PingBoard_DatabaseConstants.html">PingBoard.DatabaseUtilities.DatabaseConstants</a></td><td class="right">3</td><td class="right">0</td><td class="right">3</td><td class="right">8</td><td title="3/3" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="PingBoard_DatabaseHelper.html">PingBoard.DatabaseUtilities.DatabaseHelper</a></td><td class="right">80</td><td class="right">2</td><td class="right">82</td><td class="right">132</td><td title="80/82" class="right">97.5%</td><td><table class="coverage"><tr><td class="green covered98">&nbsp;</td><td class="red covered2">&nbsp;</td></tr></table></td><td class="right">15</td><td class="right">16</td><td class="right" title="15/16">93.7%</td><td><table class="coverage"><tr><td class="green covered94">&nbsp;</td><td class="red covered6">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="PingBoard_DatabaseStatementsGenerator.html">PingBoard.DatabaseUtilities.DatabaseStatementsGenerator</a></td><td class="right">89</td><td class="right">0</td><td class="right">89</td><td class="right">160</td><td title="89/89" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_PingGroupSummary.html">PingBoard.Database.Models.PingGroupSummary</a></td><td class="right">67</td><td class="right">0</td><td class="right">67</td><td class="right">236</td><td title="67/67" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">18</td><td class="right">18</td><td class="right" title="18/18">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_PingGroupSummaryPublic.html">PingBoard.Database.Models.PingGroupSummaryPublic</a></td><td class="right">0</td><td class="right">21</td><td class="right">21</td><td class="right">76</td><td title="0/21" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_DatabaseConstants.html">PingBoard.Database.Utilities.DatabaseConstants</a></td><td class="right">3</td><td class="right">0</td><td class="right">3</td><td class="right">8</td><td title="3/3" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_DatabaseHelper.html">PingBoard.Database.Utilities.DatabaseHelper</a></td><td class="right">80</td><td class="right">2</td><td class="right">82</td><td class="right">134</td><td title="80/82" class="right">97.5%</td><td><table class="coverage"><tr><td class="green covered98">&nbsp;</td><td class="red covered2">&nbsp;</td></tr></table></td><td class="right">15</td><td class="right">16</td><td class="right" title="15/16">93.7%</td><td><table class="coverage"><tr><td class="green covered94">&nbsp;</td><td class="red covered6">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_DatabaseStatementsGenerator.html">PingBoard.Database.Utilities.DatabaseStatementsGenerator</a></td><td class="right">89</td><td class="right">0</td><td class="right">89</td><td class="right">161</td><td title="89/89" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_MonitoringBehaviorConfig.html">PingBoard.Monitoring.Configuration.MonitoringBehaviorConfig</a></td><td class="right">1</td><td class="right">0</td><td class="right">1</td><td class="right">4</td><td title="1/1" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_MonitoringBehaviorConfigValidator.html">PingBoard.Monitoring.Configuration.MonitoringBehaviorConfigValidator</a></td><td class="right">18</td><td class="right">0</td><td class="right">18</td><td class="right">32</td><td title="18/18" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_PingingBehaviorConfig.html">PingBoard.Pinging.Configuration.PingingBehaviorConfig</a></td><td class="right">6</td><td class="right">0</td><td class="right">6</td><td class="right">59</td><td title="6/6" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
@@ -779,18 +811,18 @@ a.percentagebar {
 <tr><td><a href="PingBoard_PingingThresholdsConfig.html">PingBoard.Pinging.Configuration.PingingThresholdsConfig</a></td><td class="right">5</td><td class="right">0</td><td class="right">5</td><td class="right">34</td><td title="5/5" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_PingingThresholdsConfigLimits.html">PingBoard.Pinging.Configuration.PingingThresholdsConfigLimits</a></td><td class="right">2</td><td class="right">0</td><td class="right">2</td><td class="right">58</td><td title="2/2" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_PingingThresholdsConfigValidator.html">PingBoard.Pinging.Configuration.PingingThresholdsConfigValidator</a></td><td class="right">40</td><td class="right">0</td><td class="right">40</td><td class="right">58</td><td title="40/40" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="PingBoard_GroupPinger.html">PingBoard.Pinging.GroupPinger</a></td><td class="right">58</td><td class="right">0</td><td class="right">58</td><td class="right">165</td><td title="58/58" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">15</td><td class="right">15</td><td class="right" title="15/15">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_GroupPinger.html">PingBoard.Pinging.GroupPinger</a></td><td class="right">57</td><td class="right">0</td><td class="right">57</td><td class="right">162</td><td title="57/57" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">15</td><td class="right">15</td><td class="right" title="15/15">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_IcmpStatusCodeEntry.html">PingBoard.Pinging.IcmpStatusCodeEntry</a></td><td class="right">4</td><td class="right">0</td><td class="right">4</td><td class="right">36</td><td title="4/4" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_IcmpStatusCodeLookup.html">PingBoard.Pinging.IcmpStatusCodeLookup</a></td><td class="right">12</td><td class="right">0</td><td class="right">12</td><td class="right">55</td><td title="12/12" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">0</td><td class="right" title="-"></td><td><table class="coverage"><tr><td class="gray covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="PingBoard_PingGroupSummary.html">PingBoard.Pinging.PingGroupSummary</a></td><td class="right">67</td><td class="right">0</td><td class="right">67</td><td class="right">237</td><td title="67/67" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">18</td><td class="right">18</td><td class="right" title="18/18">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td></tr>
-<tr><td><a href="PingBoard_PingQualification.html">PingBoard.Pinging.PingQualification</a></td><td class="right">31</td><td class="right">0</td><td class="right">31</td><td class="right">97</td><td title="31/31" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">20</td><td class="right">20</td><td class="right" title="20/20">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_PingGroupSummaryExtension.html">PingBoard.Pinging.PingGroupSummaryExtension</a></td><td class="right">0</td><td class="right">37</td><td class="right">37</td><td class="right">143</td><td title="0/37" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">18</td><td class="right" title="0/18">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td></tr>
+<tr><td><a href="PingBoard_PingQualification.html">PingBoard.Pinging.PingQualification</a></td><td class="right">31</td><td class="right">0</td><td class="right">31</td><td class="right">98</td><td title="31/31" class="right">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td><td class="right">20</td><td class="right">20</td><td class="right" title="20/20">100%</td><td><table class="coverage"><tr><td class="green covered100">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_PingScheduler.html">PingBoard.Pinging.PingScheduler</a></td><td class="right">30</td><td class="right">3</td><td class="right">33</td><td class="right">107</td><td title="30/33" class="right">90.9%</td><td><table class="coverage"><tr><td class="green covered91">&nbsp;</td><td class="red covered9">&nbsp;</td></tr></table></td><td class="right">4</td><td class="right">6</td><td class="right" title="4/6">66.6%</td><td><table class="coverage"><tr><td class="green covered67">&nbsp;</td><td class="red covered33">&nbsp;</td></tr></table></td></tr>
 <tr><td><a href="PingBoard_PingMonitoringJobManager.html">PingBoard.Services.PingMonitoringJobManager</a></td><td class="right">0</td><td class="right">80</td><td class="right">80</td><td class="right">124</td><td title="0/80" class="right">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td><td class="right">0</td><td class="right">6</td><td class="right" title="0/6">0%</td><td><table class="coverage"><tr><td class="red covered100">&nbsp;</td></tr></table></td></tr>
 </tbody>
 </table>
 </div>
 </coverage-info>
-<div class="footer">Generated by: ReportGenerator 5.3.0.0<br />7/20/2024 - 11:24:26 PM<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="https://reportgenerator.io">reportgenerator.io</a></div></div></div>
+<div class="footer">Generated by: ReportGenerator 5.3.0.0<br />7/23/2024 - 5:27:40 PM<br /><a href="https://github.com/danielpalme/ReportGenerator">GitHub</a> | <a href="https://reportgenerator.io">reportgenerator.io</a></div></div></div>
 <script type="text/javascript">/* <![CDATA[ */ /* Chartist.js 0.11.4
  * Copyright © 2019 Gion Kunz
  * Free to use under either the WTFPL license or the MIT license.
@@ -1015,9 +1047,11 @@ var assemblies = [
     "name": "PingBoard",
     "classes": [
       { "name": "PingBoard.Controllers.PingingController", "rp": "PingBoard_PingingController.html", "cl": 0, "ucl": 34, "cal": 34, "tl": 66, "cb": 0, "tb": 4, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.DatabaseUtilities.DatabaseConstants", "rp": "PingBoard_DatabaseConstants.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.DatabaseUtilities.DatabaseHelper", "rp": "PingBoard_DatabaseHelper.html", "cl": 80, "ucl": 2, "cal": 82, "tl": 132, "cb": 15, "tb": 16, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.DatabaseUtilities.DatabaseStatementsGenerator", "rp": "PingBoard_DatabaseStatementsGenerator.html", "cl": 89, "ucl": 0, "cal": 89, "tl": 160, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Database.Models.PingGroupSummary", "rp": "PingBoard_PingGroupSummary.html", "cl": 67, "ucl": 0, "cal": 67, "tl": 236, "cb": 18, "tb": 18, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Database.Models.PingGroupSummaryPublic", "rp": "PingBoard_PingGroupSummaryPublic.html", "cl": 0, "ucl": 21, "cal": 21, "tl": 76, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Database.Utilities.DatabaseConstants", "rp": "PingBoard_DatabaseConstants.html", "cl": 3, "ucl": 0, "cal": 3, "tl": 8, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Database.Utilities.DatabaseHelper", "rp": "PingBoard_DatabaseHelper.html", "cl": 80, "ucl": 2, "cal": 82, "tl": 134, "cb": 15, "tb": 16, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Database.Utilities.DatabaseStatementsGenerator", "rp": "PingBoard_DatabaseStatementsGenerator.html", "cl": 89, "ucl": 0, "cal": 89, "tl": 161, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Monitoring.Configuration.MonitoringBehaviorConfig", "rp": "PingBoard_MonitoringBehaviorConfig.html", "cl": 1, "ucl": 0, "cal": 1, "tl": 4, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Monitoring.Configuration.MonitoringBehaviorConfigValidator", "rp": "PingBoard_MonitoringBehaviorConfigValidator.html", "cl": 18, "ucl": 0, "cal": 18, "tl": 32, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.Configuration.PingingBehaviorConfig", "rp": "PingBoard_PingingBehaviorConfig.html", "cl": 6, "ucl": 0, "cal": 6, "tl": 59, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
@@ -1026,11 +1060,11 @@ var assemblies = [
       { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfig", "rp": "PingBoard_PingingThresholdsConfig.html", "cl": 5, "ucl": 0, "cal": 5, "tl": 34, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfigLimits", "rp": "PingBoard_PingingThresholdsConfigLimits.html", "cl": 2, "ucl": 0, "cal": 2, "tl": 58, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.Configuration.PingingThresholdsConfigValidator", "rp": "PingBoard_PingingThresholdsConfigValidator.html", "cl": 40, "ucl": 0, "cal": 40, "tl": 58, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.GroupPinger", "rp": "PingBoard_GroupPinger.html", "cl": 58, "ucl": 0, "cal": 58, "tl": 165, "cb": 15, "tb": 15, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.GroupPinger", "rp": "PingBoard_GroupPinger.html", "cl": 57, "ucl": 0, "cal": 57, "tl": 162, "cb": 15, "tb": 15, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.IcmpStatusCodeEntry", "rp": "PingBoard_IcmpStatusCodeEntry.html", "cl": 4, "ucl": 0, "cal": 4, "tl": 36, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.IcmpStatusCodeLookup", "rp": "PingBoard_IcmpStatusCodeLookup.html", "cl": 12, "ucl": 0, "cal": 12, "tl": 55, "cb": 0, "tb": 0, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.PingGroupSummary", "rp": "PingBoard_PingGroupSummary.html", "cl": 67, "ucl": 0, "cal": 67, "tl": 237, "cb": 18, "tb": 18, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
-      { "name": "PingBoard.Pinging.PingQualification", "rp": "PingBoard_PingQualification.html", "cl": 31, "ucl": 0, "cal": 31, "tl": 97, "cb": 20, "tb": 20, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.PingGroupSummaryExtension", "rp": "PingBoard_PingGroupSummaryExtension.html", "cl": 0, "ucl": 37, "cal": 37, "tl": 143, "cb": 0, "tb": 18, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
+      { "name": "PingBoard.Pinging.PingQualification", "rp": "PingBoard_PingQualification.html", "cl": 31, "ucl": 0, "cal": 31, "tl": 98, "cb": 20, "tb": 20, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Pinging.PingScheduler", "rp": "PingBoard_PingScheduler.html", "cl": 30, "ucl": 3, "cal": 33, "tl": 107, "cb": 4, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
       { "name": "PingBoard.Services.PingMonitoringJobManager", "rp": "PingBoard_PingMonitoringJobManager.html", "cl": 0, "ucl": 80, "cal": 80, "tl": 124, "cb": 0, "tb": 6, "cm": 0, "tm": 0, "lch": [], "bch": [], "mch": [], "hc": [], "metrics": { } },
     ]},
@@ -1041,9 +1075,23 @@ var metrics = [{ "name": "Crap Score", "abbreviation": "crp", "explanationUrl": 
 var historicCoverageExecutionTimes = [];
 
 var riskHotspotMetrics = [
+      { "name": "Crap Score", "explanationUrl": "https://googletesting.blogspot.de/2011/02/this-code-is-crap.html" },
+      { "name": "Cyclomatic complexity", "explanationUrl": "https://en.wikipedia.org/wiki/Cyclomatic_complexity" },
 ];
 
 var riskHotspots = [
+  {
+    "assembly": "PingBoard", "class": "PingBoard.Pinging.PingGroupSummaryExtension", "reportPath": "PingBoard_PingGroupSummaryExtension.html", "methodName": "ResetMinMaxPingsIfUnused(PingBoard.Database.Models.PingGroupSummary)", "methodShortName": "ResetMinMaxPingsIfUnused(...)", "fileIndex": 0, "line": 130,
+    "metrics": [
+      { "value": 42, "exceeded": true },
+      { "value": 6, "exceeded": false },
+    ]},
+  {
+    "assembly": "PingBoard", "class": "PingBoard.Pinging.PingGroupSummaryExtension", "reportPath": "PingBoard_PingGroupSummaryExtension.html", "methodName": "CalculatePingJitter(System.Collections.Generic.List`1<System.Int64>)", "methodShortName": "CalculatePingJitter(...)", "fileIndex": 0, "line": 50,
+    "metrics": [
+      { "value": 20, "exceeded": true },
+      { "value": 4, "exceeded": false },
+    ]},
 ];
 
 var branchCoverageAvailable = true;

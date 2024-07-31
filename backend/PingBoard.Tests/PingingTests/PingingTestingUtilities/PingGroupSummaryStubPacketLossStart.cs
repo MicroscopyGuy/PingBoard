@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.Options;
+using PingBoard.Database.Models;
 
 namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using Microsoft.Extensions.Logging.Abstractions;

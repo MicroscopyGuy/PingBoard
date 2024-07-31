@@ -1,4 +1,6 @@
-﻿namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
+﻿using PingBoard.Database.Models;
+
+namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging.Configuration;

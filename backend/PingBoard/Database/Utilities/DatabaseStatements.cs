@@ -1,6 +1,7 @@
 ﻿using System.Text;
+using PingBoard.Database.Models;
 
-namespace PingBoard.DatabaseUtilities;
+namespace PingBoard.Database.Utilities;
 using PingBoard.Pinging;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging.Configuration;

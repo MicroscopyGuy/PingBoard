@@ -1,5 +1,6 @@
 using System.Net.NetworkInformation;
 using Microsoft.Extensions.Options;
+using PingBoard.Database.Models;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
 

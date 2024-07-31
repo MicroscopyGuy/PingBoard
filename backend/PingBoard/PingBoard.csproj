@@ -8,17 +8,33 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
-    <PackageReference Include="Serilog.Extensions.Logging" Version="8.0.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-  </ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
 
+  </ItemGroup>
+  
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.1" />
   </ItemGroup>
-
+  
   <ItemGroup>
     <None Remove="Pinging\ICMPStatusCodes.json" />
     <EmbeddedResource Include="Pinging\ICMPStatusCodes.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Grpc.AspNetCore" Version="2.65.0" />
+    <PackageReference Include="Grpc.AspNetCore.Web" Version="2.65.0" />
+    <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.65.0" />
+    <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.65.0" />
+    <PackageReference Include="Grpc.StatusProto" Version="2.65.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Protobuf Include="..\..\protos\service.proto" GrpcServices="Server" />
   </ItemGroup>
 
 </Project>

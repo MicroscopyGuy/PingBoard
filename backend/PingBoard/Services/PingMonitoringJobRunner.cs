@@ -1,3 +1,5 @@
+using PingBoard.Database.Models;
+
 namespace PingBoard.Services;
 using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
@@ -5,7 +7,7 @@ using FluentValidation.Results;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
-using PingBoard.DatabaseUtilities;
+using Database.Utilities;
 using System.Net;
 
 [ExcludeFromCodeCoverage]

@@ -3,7 +3,7 @@ using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
 
 namespace PingBoard.Tests.DatabaseTests;
-using PingBoard.DatabaseUtilities;
+using Database.Utilities;
 using PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using PingBoard.Tests.PingingTests;
 
