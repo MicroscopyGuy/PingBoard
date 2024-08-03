@@ -3,3 +3,5 @@
 **/bin
 PingBoard.Tests/coverage
 PingBoard.Tests/coveragereport
+node_modules
+**/node_modules
