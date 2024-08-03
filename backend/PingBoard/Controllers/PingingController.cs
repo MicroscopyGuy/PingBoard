@@ -15,8 +15,4 @@ public class PingingController : ControllerBase
         _pingMonitoringJobManager = pingMonitoringJobManager;
     }
     
-    
-    
-    
-    
 }
