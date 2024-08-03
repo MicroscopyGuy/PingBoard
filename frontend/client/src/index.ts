@@ -1,5 +1,5 @@
 ﻿import { createPromiseClient } from "@connectrpc/connect";
-import { PingBoardService } from "./gen/service_connect";
+import { PingBoardService } from "./gen/service_connect.js";
 import { createGrpcWebTransport } from "@connectrpc/connect-web";
 
 const createClient = (url: string) => {

@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const connect_1 = require("@connectrpc/connect");
-const service_connect_1 = require("./gen/service_connect");
-const connect_web_1 = require("@connectrpc/connect-web");
+import { createPromiseClient } from "@connectrpc/connect";
+import { PingBoardService } from "./gen/service_connect.js";
+import { createGrpcWebTransport } from "@connectrpc/connect-web";
 const createClient = (url) => {
-    const transport = (0, connect_web_1.createGrpcWebTransport)({
+    const transport = createGrpcWebTransport({
         baseUrl: url
     });
-    return (0, connect_1.createPromiseClient)(service_connect_1.PingBoardService, transport);
+    return createPromiseClient(PingBoardService, transport);
 };
-exports.default = createClient;
+export default createClient;

@@ -3,7 +3,7 @@ declare const createClient: (url: string) => import("@connectrpc/connect").Promi
     readonly methods: {
         readonly startPinging: {
             readonly name: "StartPinging";
-            readonly I: typeof import("./gen/service_pb").PingTarget;
+            readonly I: typeof import("./gen/service_pb.js").PingTarget;
             readonly O: typeof import("@bufbuild/protobuf").Empty;
             readonly kind: import("@bufbuild/protobuf").MethodKind.Unary;
         };

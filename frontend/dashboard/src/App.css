@@ -5,6 +5,10 @@
   text-align: center;
 }
 
+.flex-container dash{
+  display:flex
+}
+
 .ping-start-stop-menu{
   display: grid;
   grid-template-columns: 1fr 1fr 5fr;
@@ -70,4 +74,3 @@
   font-weight: bold;
   color: #009879;
 }
-
