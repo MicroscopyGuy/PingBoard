@@ -1,7 +1,7 @@
 **/PingInfo
 **/obj
 **/bin
-PingBoard.Tests/coverage
-PingBoard.Tests/coveragereport
+backend/PingBoard.Tests/coverage
+backend/PingBoard.Tests/coveragereport
 node_modules
 **/node_modules
