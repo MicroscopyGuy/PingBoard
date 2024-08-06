@@ -8,9 +8,9 @@ working on.
 
 The plan is to incorporate a charting library and package this all up as a desktop application using Electron.
 
-One thing that is different about this pinging functionality is that it sends a configurable number of pings
-every specified amount of time. This results in an inherent summary defined across the inverval of time
-specified by the user.
+One thing that is different about this pinging functionality vs other available utilities is that it sends 
+a configurable number of pings every specified amount of time, which results in an inherent summary defined 
+across the inverval of time specified by the user.
 
 What this means is that these PingGroupSummary objects have statistics that more expressively summarize
 what happened in that interval of time, which will simultaneously reduce chart clutter and enable
