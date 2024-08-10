@@ -1,16 +1,20 @@
-﻿using Google.Protobuf.WellKnownTypes;
+﻿using System.Threading.Channels;
+
 namespace PingBoard.Services;
+using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+//using "PingBoard/protos/service.proto";
 
 public class PingBoardService : global::PingBoardService.PingBoardServiceBase
 {
     private readonly ILogger<PingBoardService> _logger;
     private PingMonitoringJobManager _pingMonitoringJobManager;
-    
-    public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager,
+    private PingStatusIndicator _pingStatusIndicator;
+    public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager, PingStatusIndicator pingStatusIndicator,
         ILogger<PingBoardService> logger)
     {
         _pingMonitoringJobManager = pingMonitoringJobManager;
+        _pingStatusIndicator = pingStatusIndicator;
         _logger = logger;
     }
     
@@ -73,5 +77,18 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         }
 
         return new Empty();
+    }
+    
+    public override async Task GetPingingStatus(Empty request, IServerStreamWriter<PingStatusMessage> responseStream, ServerCallContext context)
+    {
+        while (await _pingStatusIndicator.Reader.WaitToReadAsync(context.CancellationToken))
+        {
+            while (_pingStatusIndicator.Reader.TryRead(out PingStatusMessage message))
+            {
+                await responseStream.WriteAsync(message, context.CancellationToken);
+            }
+        }
+        
+        //return base.GetPingingStatus(request, responseStream, context);
     }
 }

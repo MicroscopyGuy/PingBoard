@@ -1,4 +1,4 @@
-import { PingTarget } from "./service_pb.js";
+import { PingAnomalies, PingTarget } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service PingBoardService
@@ -23,6 +23,15 @@ export declare const PingBoardService: {
             readonly I: typeof Empty;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc PingBoardService.GetAnomalies
+         */
+        readonly getAnomalies: {
+            readonly name: "GetAnomalies";
+            readonly I: typeof PingTarget;
+            readonly O: typeof PingAnomalies;
+            readonly kind: MethodKind.ServerStreaming;
         };
     };
 };

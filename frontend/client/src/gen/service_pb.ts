@@ -134,3 +134,40 @@ export class PingGroupSummaryPublic extends Message<PingGroupSummaryPublic> {
   }
 }
 
+/**
+ * @generated from message PingAnomalies
+ */
+export class PingAnomalies extends Message<PingAnomalies> {
+  /**
+   * @generated from field: repeated PingGroupSummaryPublic pingAnomaly = 1;
+   */
+  pingAnomaly: PingGroupSummaryPublic[] = [];
+
+  constructor(data?: PartialMessage<PingAnomalies>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "PingAnomalies";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingAnomaly", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingAnomalies {
+    return new PingAnomalies().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PingAnomalies {
+    return new PingAnomalies().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingAnomalies {
+    return new PingAnomalies().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: PingAnomalies | PlainMessage<PingAnomalies> | undefined, b: PingAnomalies | PlainMessage<PingAnomalies> | undefined): boolean {
+    return proto3.util.equals(PingAnomalies, a, b);
+  }
+}
+

@@ -1,3 +1,5 @@
+using System.Threading.Channels;
+
 namespace PingBoard;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -67,6 +69,11 @@ public class Program
         builder.Services.AddHostedService<DatabaseInitializer>((svc) =>
             svc.GetRequiredService<DatabaseInitializer>());
         
+        builder.Services.AddSingleton<ChannelReader<PingStatusMessage>>();
+        builder.Services.AddSingleton<ChannelWriter<PingStatusMessage>>();
+        builder.Services.AddSingleton<Channel<PingStatusMessage>>();
+        builder.Services.AddSingleton<PingStatusIndicator>();
+        
         builder.Services.AddSingleton<PingMonitoringJobManager>();
         builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());
@@ -95,6 +102,8 @@ public class Program
         });
 
         
+
+
         //EFCore Framework related information
         var databaseName = "Summaries";
         var folder = Environment.SpecialFolder.LocalApplicationData;

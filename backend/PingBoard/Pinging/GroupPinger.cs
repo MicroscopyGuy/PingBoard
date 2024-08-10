@@ -19,8 +19,8 @@ public class GroupPinger : IGroupPinger{
     private readonly IPingScheduler _scheduler;
     
     public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, IPingScheduler scheduler,
-                        IOptions<PingingBehaviorConfig> pingBehavior, IOptions<PingingThresholdsConfig> pingThresholds,
-                        ILogger<IGroupPinger> logger){
+                       IOptions<PingingBehaviorConfig> pingBehavior, IOptions<PingingThresholdsConfig> pingThresholds,
+                       ILogger<IGroupPinger> logger){
         _pingQualifier    = pingQualifier;
         _pingBehavior     = pingBehavior.Value;
         _pingThresholds   = pingThresholds.Value;
@@ -40,7 +40,6 @@ public class GroupPinger : IGroupPinger{
     /// </returns>
     public async Task<PingGroupSummary> SendPingGroupAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
         _logger.LogInformation("GroupPinger: Entered SendPingGroupAsync");
-        Console.WriteLine("GroupPinger: Entered SendPingGroupAsync");
         PingGroupSummary pingGroupInfo = PingGroupSummary.Empty();
         pingGroupInfo.Target = target.ToString();
         PingingStates.PingState currentPingState = PingingStates.PingState.Continue;

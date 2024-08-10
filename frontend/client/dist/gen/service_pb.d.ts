@@ -70,3 +70,20 @@ export declare class PingGroupSummaryPublic extends Message<PingGroupSummaryPubl
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingGroupSummaryPublic;
     static equals(a: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined, b: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined): boolean;
 }
+/**
+ * @generated from message PingAnomalies
+ */
+export declare class PingAnomalies extends Message<PingAnomalies> {
+    /**
+     * @generated from field: repeated PingGroupSummaryPublic pingAnomaly = 1;
+     */
+    pingAnomaly: PingGroupSummaryPublic[];
+    constructor(data?: PartialMessage<PingAnomalies>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "PingAnomalies";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingAnomalies;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PingAnomalies;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingAnomalies;
+    static equals(a: PingAnomalies | PlainMessage<PingAnomalies> | undefined, b: PingAnomalies | PlainMessage<PingAnomalies> | undefined): boolean;
+}

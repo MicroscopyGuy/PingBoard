@@ -2,7 +2,7 @@
 // @generated from file service.proto (syntax proto3)
 /* eslint-disable */
 // @ts-nocheck
-import { PingTarget } from "./service_pb.js";
+import { PingAnomalies, PingTarget } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service PingBoardService
@@ -27,6 +27,15 @@ export const PingBoardService = {
             I: Empty,
             O: Empty,
             kind: MethodKind.Unary,
+        },
+        /**
+         * @generated from rpc PingBoardService.GetAnomalies
+         */
+        getAnomalies: {
+            name: "GetAnomalies",
+            I: PingTarget,
+            O: PingAnomalies,
+            kind: MethodKind.ServerStreaming,
         },
     }
 };

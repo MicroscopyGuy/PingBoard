@@ -92,3 +92,33 @@ PingGroupSummaryPublic.fields = proto3.util.newFieldList(() => [
     { no: 9, name: "terminatingIPStatus", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
     { no: 10, name: "lastAbnormalStatus", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
 ]);
+/**
+ * @generated from message PingAnomalies
+ */
+export class PingAnomalies extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: repeated PingGroupSummaryPublic pingAnomaly = 1;
+         */
+        this.pingAnomaly = [];
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new PingAnomalies().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new PingAnomalies().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new PingAnomalies().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(PingAnomalies, a, b);
+    }
+}
+PingAnomalies.runtime = proto3;
+PingAnomalies.typeName = "PingAnomalies";
+PingAnomalies.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingAnomaly", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+]);
