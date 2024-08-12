@@ -87,3 +87,24 @@ export declare class PingAnomalies extends Message<PingAnomalies> {
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingAnomalies;
     static equals(a: PingAnomalies | PlainMessage<PingAnomalies> | undefined, b: PingAnomalies | PlainMessage<PingAnomalies> | undefined): boolean;
 }
+/**
+ * @generated from message PingStatusMessage
+ */
+export declare class PingStatusMessage extends Message<PingStatusMessage> {
+    /**
+     * @generated from field: PingTarget pingTarget = 1;
+     */
+    pingTarget?: PingTarget;
+    /**
+     * @generated from field: bool active = 2;
+     */
+    active: boolean;
+    constructor(data?: PartialMessage<PingStatusMessage>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "PingStatusMessage";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingStatusMessage;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PingStatusMessage;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingStatusMessage;
+    static equals(a: PingStatusMessage | PlainMessage<PingStatusMessage> | undefined, b: PingStatusMessage | PlainMessage<PingStatusMessage> | undefined): boolean;
+}

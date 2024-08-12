@@ -2,7 +2,7 @@ import { useState } from 'react'
 import createClient from 'client'
 import './App.css'
 import { ConnectError } from '@connectrpc/connect';
-
+import PingBackendProvider from './PingBackendContext';
 
 // Need pinging state (active | inactive) to be globally accessible
 // Perhaps create PingStateManager?
@@ -38,7 +38,6 @@ function PingStopButton(){
   const [isDisabled, setDisabled] = useState<boolean>(false);
   //
   function stopPinging(){
-
     // if already pinging, should do something to prevent it, front-end validation, etc
     client.stopPinging({}) // check on this, empty type
       .then(() => setDisabled(true))
@@ -129,7 +128,10 @@ function DashboardLayout(){
 function App() {
 
   return (
-    <DashboardLayout/>
+    <PingBackendProvider>
+      <DashboardLayout/>
+    </PingBackendProvider>
+    
   )
 }
 

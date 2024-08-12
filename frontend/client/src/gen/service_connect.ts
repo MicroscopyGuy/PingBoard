@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { PingAnomalies, PingTarget } from "./service_pb.js";
+import { PingAnomalies, PingStatusMessage, PingTarget } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -37,6 +37,15 @@ export const PingBoardService = {
       name: "GetAnomalies",
       I: PingTarget,
       O: PingAnomalies,
+      kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * @generated from rpc PingBoardService.GetPingingStatus
+     */
+    getPingingStatus: {
+      name: "GetPingingStatus",
+      I: Empty,
+      O: PingStatusMessage,
       kind: MethodKind.ServerStreaming,
     },
   }

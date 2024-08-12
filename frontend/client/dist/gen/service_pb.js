@@ -122,3 +122,34 @@ PingAnomalies.typeName = "PingAnomalies";
 PingAnomalies.fields = proto3.util.newFieldList(() => [
     { no: 1, name: "pingAnomaly", kind: "message", T: PingGroupSummaryPublic, repeated: true },
 ]);
+/**
+ * @generated from message PingStatusMessage
+ */
+export class PingStatusMessage extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: bool active = 2;
+         */
+        this.active = false;
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new PingStatusMessage().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new PingStatusMessage().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new PingStatusMessage().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(PingStatusMessage, a, b);
+    }
+}
+PingStatusMessage.runtime = proto3;
+PingStatusMessage.typeName = "PingStatusMessage";
+PingStatusMessage.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+]);

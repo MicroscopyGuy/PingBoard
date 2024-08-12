@@ -28,7 +28,6 @@ message PingGroupSummaryPublic {
   optional int32 lastAbnormalStatus = 10;
 }
 
-
 message PingAnomalies{
   repeated PingGroupSummaryPublic pingAnomaly = 1;
 }

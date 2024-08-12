@@ -69,9 +69,10 @@ public class Program
         builder.Services.AddHostedService<DatabaseInitializer>((svc) =>
             svc.GetRequiredService<DatabaseInitializer>());
         
-        builder.Services.AddSingleton<ChannelReader<PingStatusMessage>>();
-        builder.Services.AddSingleton<ChannelWriter<PingStatusMessage>>();
-        builder.Services.AddSingleton<Channel<PingStatusMessage>>();
+        builder.Services.AddSingleton<Channel<PingStatusMessage>>(
+            Channel.CreateBounded<PingStatusMessage>(
+            new BoundedChannelOptions(100)
+        ));
         builder.Services.AddSingleton<PingStatusIndicator>();
         
         builder.Services.AddSingleton<PingMonitoringJobManager>();

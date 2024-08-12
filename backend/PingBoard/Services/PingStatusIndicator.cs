@@ -7,14 +7,12 @@ public class PingStatusIndicator
     private Channel<PingStatusMessage> _channel;
     public ChannelReader<PingStatusMessage> Reader;
     public ChannelWriter<PingStatusMessage> Writer;
-    private const int _ChannelCapacity = 100;
     
-    public PingStatusIndicator(Channel<PingStatusMessage> channel, ChannelReader<PingStatusMessage> reader,
-                               ChannelWriter<PingStatusMessage> writer)
+    public PingStatusIndicator(Channel<PingStatusMessage> channel)
     {
-        _channel = Channel.CreateBounded<PingStatusMessage>(
-            new BoundedChannelOptions(_ChannelCapacity)
-        );
+        _channel = channel;
+        this.Reader = channel.Reader;
+        this.Writer = channel.Writer;
     }
     
     

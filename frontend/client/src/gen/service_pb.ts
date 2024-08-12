@@ -171,3 +171,46 @@ export class PingAnomalies extends Message<PingAnomalies> {
   }
 }
 
+/**
+ * @generated from message PingStatusMessage
+ */
+export class PingStatusMessage extends Message<PingStatusMessage> {
+  /**
+   * @generated from field: PingTarget pingTarget = 1;
+   */
+  pingTarget?: PingTarget;
+
+  /**
+   * @generated from field: bool active = 2;
+   */
+  active = false;
+
+  constructor(data?: PartialMessage<PingStatusMessage>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "PingStatusMessage";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingStatusMessage {
+    return new PingStatusMessage().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PingStatusMessage {
+    return new PingStatusMessage().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingStatusMessage {
+    return new PingStatusMessage().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: PingStatusMessage | PlainMessage<PingStatusMessage> | undefined, b: PingStatusMessage | PlainMessage<PingStatusMessage> | undefined): boolean {
+    return proto3.util.equals(PingStatusMessage, a, b);
+  }
+}
+
