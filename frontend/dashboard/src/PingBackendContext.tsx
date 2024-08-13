@@ -8,7 +8,7 @@ type DatabaseContext = {
     client?: BackendClient
 }
 
-const DatabaseContext = createContext<DatabaseContext>({});
+export const DatabaseContext = createContext<DatabaseContext>({});
 
 type PingBackendProviderProps = {
     children : ReactNode
@@ -29,7 +29,7 @@ export default function PingBackendProvider(p : PingBackendProviderProps){
         const statusStream = backendClient.current!.getPingingStatus([], { signal : signal });
         for await (const pingStatus of statusStream) {
             setPingStatusMessage(pingStatus);
-            console.log(`You've got mail:`);
+            console.log(`You've got mail: target:${pingStatusMessage?.pingTarget?.target} active:${pingStatusMessage?.active}`);
             console.log(pingStatus);
         }
         console.log("WARNING: No longer listening for PingStatusMessages");
@@ -39,7 +39,14 @@ export default function PingBackendProvider(p : PingBackendProviderProps){
         const abortToken = new AbortController();
         grabPingStatusMessages(abortToken.signal)
 
-        return ()=>{ abortToken.abort("I'm just here so I dont get fined") };
+        return ()=>{
+            try{
+                abortToken.abort("I'm just here so I dont get fined");
+            }
+            catch(error){
+                console.log(`PingStatusStream aborted.: ${error}`);
+            }
+        };
     }, [grabPingStatusMessages]);
 
     return (

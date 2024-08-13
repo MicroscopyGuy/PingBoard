@@ -143,7 +143,7 @@ public class PingMonitoringJobManager : BackgroundService
             var writeSuccess = _pingStatusIndicator.Writer.TryWrite(new PingStatusMessage
             {
                 PingTarget = new PingTarget { Target = target },
-                Active = false
+                Active = status
             });
                 
             if (!writeSuccess)
@@ -151,7 +151,7 @@ public class PingMonitoringJobManager : BackgroundService
                 string message = "An attempt to write to the PingStatusIndicator channel was unsuccessful.";
                 throw (new InvalidOperationException(message));
             }
-            _logger.LogDebug("PingMonitoringJobManager: IndicateChangedPingStatus: ");
+            _logger.LogDebug($"PingMonitoringJobManager: IndicateChangedPingStatus: target{target}, status:{status}, caller:{caller}", target, status, caller);
         }
         catch (Exception e)
         {
