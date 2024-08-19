@@ -4,6 +4,7 @@ import './App.css'
 import { ConnectError } from '@connectrpc/connect';
 import PingBackendProvider from './PingBackendContext';
 import { DatabaseContext } from './PingBackendContext';
+import {AnomaliesTable } from './AnomaliesTable';
 
 // Need pinging state (active | inactive) to be globally accessible
 // Perhaps create PingStateManager?
@@ -14,7 +15,6 @@ interface PingStartButtonProps{
   pingTarget: string
 
 }
-
 
 function PingStartButton({pingTarget}: PingStartButtonProps){
   //const [isDisabled, setDisabled] = useState<boolean>(false);
@@ -35,23 +35,9 @@ function PingStartButton({pingTarget}: PingStartButtonProps){
                             : `Error message:${err.message}`));
   }
 
-  function isDisabled(){
-    if (databaseContext === undefined){
-      return false
-    }
+ 
 
-    if (databaseContext.pingStatus === undefined){
-      return false;
-    }
-    else if(databaseContext.pingStatus.active === undefined){
-      return false;
-    }
-    else{
-      return databaseContext.pingStatus.active;
-    }
-  } 
-
-  return <button className="ping-button ping-start" onClick={ startPinging } disabled={ isDisabled()  }>Start</button>
+  return <button className="ping-button ping-start" onClick={ startPinging } disabled={ databaseContext?.pingStatus?.active }>Start</button>
 }
 
 function PingStopButton(){
@@ -65,23 +51,7 @@ function PingStopButton(){
       .catch((err) => console.log(`Stop Pinging: message: ${err.message}`));
   }
 
-  function isDisabled(){
-    if (databaseContext === undefined){
-      return false
-    }
-
-    if (databaseContext.pingStatus === undefined){
-      return false;
-    }
-    else if(databaseContext.pingStatus.active === undefined){
-      return false;
-    }
-    else{
-      return !databaseContext.pingStatus.active;
-    }
-  } 
-
-  return <button className="ping-button ping-stop" onClick={ stopPinging } disabled={ isDisabled() }>Stop</button>
+  return <button className="ping-button ping-stop" onClick={ stopPinging } disabled={ !databaseContext?.pingStatus?.active }>Stop</button>
 }
 
 
@@ -91,11 +61,14 @@ interface PingTargetInputManagerProps{
 }
 
 function PingTargetInputManager(props: PingTargetInputManagerProps){
+  const databaseContext = useContext(DatabaseContext);
+
   return <input className = "ping-target"
           type = "text"
           placeholder = "IPAddress or website here"
           value = {props.pingTarget}
           onChange={(e) => {props.onPingTargetChanged(e.target.value)}}
+          disabled={ databaseContext?.pingStatus?.active }
           />
 }
 
@@ -106,7 +79,6 @@ function PingStartStopMenu(){
     setPingTarget(newPingTarget); 
   } 
 
-
  return (
   <div className="ping-start-stop-menu">
     <PingStartButton pingTarget={pingTarget}/>
@@ -116,42 +88,8 @@ function PingStartStopMenu(){
  )
 }
 
-function ArrayToTableData(array: any[]){
-  return <tr>{ array.map((e, index) => <td key={index}>{e}</td>) }</tr>;
-}
 
-function AnomaliesTable(){
-  const sampleData = [
-    ["1","2024-06-07 08:31:14.898", "2024-06-07 08:31:15.776", "8.8.8.8", "3", "4", "5", "1", "0"],
-    ["2","2024-06-07 08:31:15.912", "2024-06-07 08:31:16.789", "8.8.8.8", "3", "3.875", "6", "1.286", "0"],
-    ["3","2024-06-07 08:31:16.912", "2024-06-07 08:31:17.788", "8.8.8.8", "3", "4", "5", "1.143", "0"]
-  ];
 
-  return (
-    <>
-      <table className="styled-table anomalies">
-        <thead>
-          <tr>
-            <th>Number</th>
-            <th>StartTime</th>
-            <th>EndTime</th>
-            <th>Target</th>
-            <th>MinimumPing</th>
-            <th>AveragePing</th>
-            <th>MaximumPing</th>
-            <th>Jitter</th>
-            <th>PacketLoss</th>
-          </tr>
-        </thead>
-        <tbody>
-          {ArrayToTableData(sampleData[0])}
-          {ArrayToTableData(sampleData[1])}
-          {ArrayToTableData(sampleData[2])}
-        </tbody>
-      </table>
-    </>
-  )
-}
 
 function DashboardLayout(){
   return (

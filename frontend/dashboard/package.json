@@ -10,6 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@blueprintjs/core": "^5.11.0",
+    "@blueprintjs/icons": "^5.11.0",
     "@connectrpc/connect": "^1.4.0",
     "client": "workspace:*",
     "react": "^18.3.1",

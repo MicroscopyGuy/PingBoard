@@ -60,7 +60,7 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
             }
 
             _logger.LogDebug($"PingBoardService: StopPinging");
-            _pingMonitoringJobManager.StopPinging();
+            await _pingMonitoringJobManager.StopPingingAsync();
             return new Empty();
         }
 

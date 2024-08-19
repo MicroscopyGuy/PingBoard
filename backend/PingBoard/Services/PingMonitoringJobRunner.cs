@@ -61,7 +61,7 @@ public class PingMonitoringJobRunner : IDisposable
         {
             while (!stoppingToken.IsCancellationRequested && result.TerminatingIPStatus == null)
             {
-                result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse(_target));
+                result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse(_target), stoppingToken);
                 Console.WriteLine(result.ToString());
                 _databaseHelper.InsertPingGroupSummary(result);
             }
@@ -86,14 +86,14 @@ public class PingMonitoringJobRunner : IDisposable
         return _target;
     }
 
-    public void CancelTokenSource()
+    public async Task CancelTokenSourceAsync()
     {
         try
         {
             _logger.LogDebug("PingMonitoringJobRunner: Entered CancelTokenSource");
             _logger.LogDebug("PingMonitoringJobRunner: CancelTokenSource: CancellationTokenSourceHash: {ctsHash}", 
                 _cancellationTokenSource.GetHashCode());
-            _cancellationTokenSource.Cancel();
+            await _cancellationTokenSource.CancelAsync();
         }
  
         catch (ObjectDisposedException oDE) {
