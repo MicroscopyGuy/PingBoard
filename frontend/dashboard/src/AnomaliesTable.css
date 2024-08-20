@@ -1,6 +1,6 @@
 .flex-container .anomalies-table{
     justify-content: center;
-    flex-grow: 8;
+    flex-grow: 1;
     display: 'flex';
 }
 
@@ -46,8 +46,12 @@
 
 .nav .anomalies-table{
     max-height: 50px;
-    flex-grow: 0;
+    flex-grow: 1;
     fill: #ffffff;
     width: 20px;
-    height: 20px;
+    margin: 1px;
+    display:inline-flex;
 }
+
+
+
