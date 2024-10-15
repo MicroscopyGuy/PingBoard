@@ -9,13 +9,13 @@ public class PingMonitoringJobManager : BackgroundService
     private volatile PingMonitoringJobRunner? _currentJobRunner;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
-    private PingStatusIndicator _pingStatusIndicator;
+    private ServerEventEmitter _serverEventEmitter;
     
     public PingMonitoringJobManager(Func<string, PingMonitoringJobRunner> pingMonitoringJobRunnerSource,
-        PingStatusIndicator pingStatusIndicator, ILogger<PingMonitoringJobManager> logger)
+        ServerEventEmitter serverEventEmitter, ILogger<PingMonitoringJobManager> logger)
     {
         _getPingMonitoringJobRunner = pingMonitoringJobRunnerSource;
-        _pingStatusIndicator = pingStatusIndicator;
+        _serverEventEmitter = serverEventEmitter;
         _logger = logger;
     }
     
@@ -46,13 +46,13 @@ public class PingMonitoringJobManager : BackgroundService
 
                 // if job is done, reset _currentJobRunner and the pinging target
                 // For overview of task properties:
-                //      https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-8.0
+                // https://learn.microsoft.com/en-us/dotnet/api/system.threading.tasks.task?view=net-8.0
                 lock(_lockingObject){
                     if (completedTask.IsCompleted)
                     {
                         _logger.LogDebug($"PingMonitoringJobManager: ExecuteAsync: PingingJob of target {pingingTarget} has completed");
                         ResetJobRunner(); // keep reset just in case, since reset checks to see if it's safe, first
-                        IndicateChangedPingStatus(pingingTarget, false, "ExecuteAsync");
+                        _serverEventEmitter.IndicatePingOnOffToggle(pingingTarget, false, "ExecuteAsync");
                     }
                 }
                 
@@ -90,7 +90,6 @@ public class PingMonitoringJobManager : BackgroundService
         
     }
     
-    
     public void StartPinging(string target)
     {
         lock (_lockingObject)
@@ -106,7 +105,7 @@ public class PingMonitoringJobManager : BackgroundService
             _currentJobRunner = _getPingMonitoringJobRunner(target);
             //_logger.LogDebug($"PingMonitoringJobManager: StartPinging: new job runner created:{_currentJobRunner.GetHashCode()}");
             _currentJobRunner.StartPinging();
-            IndicateChangedPingStatus(_currentJobRunner.GetTarget(), true, "StartPinging");
+            _serverEventEmitter.IndicatePingOnOffToggle(_currentJobRunner.GetTarget(), true, "StartPinging");
         }
     }
 
@@ -128,7 +127,7 @@ public class PingMonitoringJobManager : BackgroundService
             var oldTarget = _currentJobRunner.GetTarget();
             await _currentJobRunner.CancelTokenSourceAsync();
             ResetJobRunner();
-            IndicateChangedPingStatus(oldTarget, false, "StopPinging");
+            _serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPinging");
         }
 
     }
@@ -150,28 +149,6 @@ public class PingMonitoringJobManager : BackgroundService
         }
     }
 
-    public void IndicateChangedPingStatus(string target, bool status, string caller)
-    {
-        try
-        {
-            var writeSuccess = _pingStatusIndicator.Writer.TryWrite(new PingStatusMessage
-            {
-                PingTarget = new PingTarget { Target = target },
-                Active = status
-            });
-                
-            if (!writeSuccess)
-            {
-                string message = "An attempt to write to the PingStatusIndicator channel was unsuccessful.";
-                throw (new InvalidOperationException(message));
-            }
-            _logger.LogDebug($"PingMonitoringJobManager: IndicateChangedPingStatus: target{target}, status:{status}, caller:{caller}", target, status, caller);
-        }
-        
-        catch (Exception e)
-        {
-            _logger.LogCritical("PingMonitoringJobManager: IndicateChangedPingStatus: ${caller}: ${eText}", e.ToString);
-        }
-    }
+    
 }
     

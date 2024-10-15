@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { PingAnomalies, PingStatusMessage, PingTarget } from "./service_pb.js";
+import { AnomalyNotification, PingAnomalies, PingStatusMessage, PingTarget, ServerEvent } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -37,7 +37,7 @@ export const PingBoardService = {
       name: "GetAnomalies",
       I: PingTarget,
       O: PingAnomalies,
-      kind: MethodKind.ServerStreaming,
+      kind: MethodKind.Unary,
     },
     /**
      * @generated from rpc PingBoardService.GetPingingStatus
@@ -46,6 +46,24 @@ export const PingBoardService = {
       name: "GetPingingStatus",
       I: Empty,
       O: PingStatusMessage,
+      kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * @generated from rpc PingBoardService.GetAnomalyNotification
+     */
+    getAnomalyNotification: {
+      name: "GetAnomalyNotification",
+      I: Empty,
+      O: AnomalyNotification,
+      kind: MethodKind.ServerStreaming,
+    },
+    /**
+     * @generated from rpc PingBoardService.GetLatestServerEvent
+     */
+    getLatestServerEvent: {
+      name: "GetLatestServerEvent",
+      I: Empty,
+      O: ServerEvent,
       kind: MethodKind.ServerStreaming,
     },
   }

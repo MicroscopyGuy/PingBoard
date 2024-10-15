@@ -18,17 +18,22 @@ public class PingMonitoringJobRunner : IDisposable
     private CancellationTokenSource _cancellationTokenSource;
     private readonly string _target;
     private Task _pingingTask;
-    private readonly ILogger<IGroupPinger> _logger;
+    private ServerEventEmitter _serverEventEmitter;
+    private PingQualification _pingQualifier;
+    private readonly ILogger<PingMonitoringJobRunner> _logger;
 
     public PingMonitoringJobRunner(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
                                    IOptions<PingingThresholdsConfig> pingingThresholds, PingingBehaviorConfigValidator behaviorValidator, 
                                    PingingThresholdsConfigValidator thresholdsValidator, DatabaseHelper databaseHelper, 
-                                   CancellationTokenSource cancellationTokenSource, string target, ILogger<IGroupPinger> logger){
+                                   PingQualification pingQualifier, CancellationTokenSource cancellationTokenSource,
+                                   ServerEventEmitter serverEventEmitter, string target, ILogger<PingMonitoringJobRunner> logger){
         _logger = logger;
         _logger.LogDebug("PingMonitoringJobRunner: Entered Constructor");
         _groupPinger = groupPinger;
         _databaseHelper = databaseHelper;
+        _pingQualifier = pingQualifier;
         _cancellationTokenSource = cancellationTokenSource;
+        _serverEventEmitter = serverEventEmitter;
         _target = target;
         
         // validate configured information
@@ -63,6 +68,18 @@ public class PingMonitoringJobRunner : IDisposable
             {
                 result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse(_target), stoppingToken);
                 Console.WriteLine(result.ToString());
+
+                var trippedFlags = _pingQualifier.CalculatePingQualityFlags(result);
+                bool anomaly = !PingQualification.PingQualityWithinThresholds(trippedFlags);
+                
+                if(anomaly)
+                {
+                    _serverEventEmitter.IndicatePingAnomaly(
+                        _target, 
+                        PingQualification.DescribePingQualityFlags(trippedFlags),
+                        "PingMonitoringJobRunner: ExecutePingingAsync"
+                        );
+                }
                 _databaseHelper.InsertPingGroupSummary(result);
             }
             _databaseHelper.Dispose();
@@ -101,7 +118,6 @@ public class PingMonitoringJobRunner : IDisposable
         }
 
     }
-    
     
     public void Dispose()
     {

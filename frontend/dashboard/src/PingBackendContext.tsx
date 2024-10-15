@@ -1,10 +1,9 @@
 import { ReactNode } from "react";
 import { createContext, useRef, useEffect, useState, useCallback } from "react";
 import createClient from 'client'
-import { PingStatusMessage } from "client/dist/gen/service_pb";
+import { dispatchEvent, useServerEventListener, CustomEventMap } from "./ServerEventListener.tsx";
 
 type DatabaseContext = {
-    pingStatus?: PingStatusMessage
     client?: BackendClient
 }
 
@@ -15,42 +14,35 @@ type PingBackendProviderProps = {
 };
 
 type BackendClient = ReturnType<typeof createClient>;
+const backendClient = createClient("http://localhost:5245");
 
 export default function PingBackendProvider(p : PingBackendProviderProps){
-    const backendClient = useRef<BackendClient | null>(null);
-    const [pingStatusMessage, setPingStatusMessage] = useState<PingStatusMessage>();
-
-    // *************** Create client if not yet made *****************/
-    if (backendClient.current === null){
-        backendClient.current = createClient("http://localhost:5245");
-    }
-
-    const grabPingStatusMessages = useCallback(async(signal : AbortSignal) => {
-        const statusStream = backendClient.current!.getPingingStatus([], { signal : signal });
-        for await (const pingStatus of statusStream) {
-            setPingStatusMessage(pingStatus);
-            console.log(`You've got mail: target:${pingStatusMessage?.pingTarget?.target} active:${pingStatusMessage?.active}`);
-            console.log(pingStatus);
+    const grabPingServerEvents = useCallback(async(signal : AbortSignal) => {
+        const statusStream = backendClient.getLatestServerEvent([], { signal : signal });
+        for await (const serverEvent of statusStream) {
+            dispatchEvent(serverEvent.ServerEvent.case!.toLowerCase() as keyof CustomEventMap, serverEvent.ServerEvent.value!);
+            console.log(`You've got mail`);
+            console.log(serverEvent);
         }
-        console.log("WARNING: No longer listening for PingStatusMessages");
-    }, [backendClient, setPingStatusMessage]);
+        console.log("WARNING: No longer listening for ServerEvents");
+    }, []);
 
     useEffect(()=>{
         const abortToken = new AbortController();
-        grabPingStatusMessages(abortToken.signal)
+        grabPingServerEvents(abortToken.signal)
 
         return ()=>{
             try{
                 abortToken.abort("I'm just here so I dont get fined");
             }
             catch(error){
-                console.log(`PingStatusStream aborted.: ${error}`);
+                console.log(`ServerEvent stream aborted.: ${error}`);
             }
         };
-    }, [grabPingStatusMessages]);
+    }, [grabPingServerEvents]);
 
     return (
-        <DatabaseContext.Provider value={{pingStatus: pingStatusMessage, client: backendClient.current }}>
+        <DatabaseContext.Provider value={{client: backendClient }}>
             { p.children }
         </DatabaseContext.Provider>
     )

@@ -3,7 +3,6 @@ using PingBoard.Database.Models;
     
 public static class CrudOperations
 {
-    
     /// <summary>
     /// Inserts a PingGroupSummary (private) into the database
     /// </summary>
@@ -28,12 +27,13 @@ public static class CrudOperations
     {
         var summaries = dbContext
             .Summaries
-            .Select(s => PingGroupSummaryPublic.Parse(s))
-            .OrderByDescending(s => s.Start)
             .Where(s => s.Start >= startingTime)
             .Take(numToGet)
+            .Select(s => PingGroupSummaryPublic.Parse(s))
+            .OrderByDescending(s => s.Start)
             .ToList();
         
         return summaries;
     }
+    
 }

@@ -11,7 +11,6 @@ using System.Diagnostics.CodeAnalysis;
 /// Essentially a wrapper around C#'s Ping library. 
 /// </summary>
 
-[ExcludeFromCodeCoverage]
 public class IndividualPinger : IIndividualPinger{
     private readonly PingingBehaviorConfig _pingBehavior;
     private readonly ILogger<IndividualPinger> _logger;

@@ -74,6 +74,7 @@ public class GroupPinger : IGroupPinger{
         pingGroupInfo.AveragePing = PingGroupSummary.CalculateAveragePing(pingGroupInfo);
         pingGroupInfo.Jitter      = PingGroupSummary.CalculatePingJitter(responseTimes);
         pingGroupInfo.PacketLoss  = PingGroupSummary.CalculatePacketLoss(pingGroupInfo.PacketsSent, pingGroupInfo.PacketsLost);
+        _pingQualifier.CalculatePingQualityFlags(pingGroupInfo);
         pingGroupInfo.ResetMinMaxPingsIfUnused();
         
         return pingGroupInfo;

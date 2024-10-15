@@ -1,3 +1,4 @@
+using System.Collections.Immutable;
 using System.Threading.Channels;
 
 namespace PingBoard;
@@ -20,8 +21,13 @@ public class Program
     public static void Main(string[] args)
     {
         
+        
+        
         var builder = WebApplication.CreateBuilder(args);
-
+        builder.WebHost.ConfigureKestrel((c) =>
+        {
+            c.ListenLocalhost(5245);
+        });
         /* commented out to move from Rest to GRPC API design
         // Add services to the container.
         builder.Services.AddControllers();
@@ -69,15 +75,42 @@ public class Program
         builder.Services.AddHostedService<DatabaseInitializer>((svc) =>
             svc.GetRequiredService<DatabaseInitializer>());
         
-        builder.Services.AddSingleton<Channel<PingStatusMessage>>(
-            Channel.CreateBounded<PingStatusMessage>(
-            new BoundedChannelOptions(100)
-        ));
-        builder.Services.AddSingleton<PingStatusIndicator>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingOnOffToggle>>(
+            Channel.CreateBounded<ServerEvent.Types.PingOnOffToggle>(
+                new BoundedChannelOptions(100))
+        );
+        
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAnomaly>>(
+            Channel.CreateBounded<ServerEvent.Types.PingAnomaly>(
+                new BoundedChannelOptions(100)
+            )
+        );
+        
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAgentError>>(
+            Channel.CreateBounded<ServerEvent.Types.PingAgentError>(
+                new BoundedChannelOptions(100)
+            )
+        );
+
+        builder.Services.AddKeyedSingleton<IImmutableList<object>>("ServerEventChannelReaders", (svc, _) =>
+        {
+            var channelList = new List<object>
+            {
+                svc.GetRequiredService<Channel<ServerEvent.Types.PingOnOffToggle>>().Reader,
+                svc.GetRequiredService<Channel<ServerEvent.Types.PingAnomaly>>().Reader,
+                svc.GetRequiredService<Channel<ServerEvent.Types.PingAgentError>>().Reader
+            };
+            return channelList.ToImmutableList();
+        });
+          
+        
+        builder.Services.AddSingleton<ServerEventEmitter>();
         
         builder.Services.AddSingleton<PingMonitoringJobManager>();
         builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());
+        
+        
         
         builder.Services.AddSingleton<Func<string, PingMonitoringJobRunner>>((svc) =>
         {
@@ -89,8 +122,10 @@ public class Program
                 var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
                 var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
                 var databaseHelper = svc.GetRequiredService<DatabaseHelper>();
+                var pingQualifier = svc.GetRequiredService<PingQualification>();
                 var cancellationTokenSource = new CancellationTokenSource();
-                var logger = svc.GetRequiredService<ILogger<IGroupPinger>>();
+                var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
+                var logger = svc.GetRequiredService<ILogger<PingMonitoringJobRunner>>();
                 logger.LogDebug(
                     "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
                     cancellationTokenSource.GetHashCode());
@@ -98,12 +133,9 @@ public class Program
                 return new PingMonitoringJobRunner(
                     groupPinger, pingingBehavior, pingingThresholds,
                     behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper,
-                    new CancellationTokenSource(), str, logger);
+                    pingQualifier, new CancellationTokenSource(), serverEventEmitter, str, logger);
             };
         });
-
-        
-
 
         //EFCore Framework related information
         var databaseName = "Summaries";

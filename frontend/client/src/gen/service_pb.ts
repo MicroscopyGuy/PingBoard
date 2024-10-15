@@ -88,14 +88,14 @@ export class PingGroupSummaryPublic extends Message<PingGroupSummaryPublic> {
   packetLoss = 0;
 
   /**
-   * @generated from field: optional int32 terminatingIPStatus = 9;
+   * @generated from field: optional string terminatingIPStatusExplanation = 9;
    */
-  terminatingIPStatus?: number;
+  terminatingIPStatusExplanation?: string;
 
   /**
-   * @generated from field: optional int32 lastAbnormalStatus = 10;
+   * @generated from field: optional string lastAbnormalStatusExplanation = 10;
    */
-  lastAbnormalStatus?: number;
+  lastAbnormalStatusExplanation?: string;
 
   constructor(data?: PartialMessage<PingGroupSummaryPublic>) {
     super();
@@ -113,8 +113,8 @@ export class PingGroupSummaryPublic extends Message<PingGroupSummaryPublic> {
     { no: 6, name: "maximumPing", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 7, name: "jitter", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
     { no: 8, name: "packetLoss", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 9, name: "terminatingIPStatus", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 10, name: "lastAbnormalStatus", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
+    { no: 9, name: "terminatingIPStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 10, name: "lastAbnormalStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingGroupSummaryPublic {
@@ -211,6 +211,241 @@ export class PingStatusMessage extends Message<PingStatusMessage> {
 
   static equals(a: PingStatusMessage | PlainMessage<PingStatusMessage> | undefined, b: PingStatusMessage | PlainMessage<PingStatusMessage> | undefined): boolean {
     return proto3.util.equals(PingStatusMessage, a, b);
+  }
+}
+
+/**
+ * @generated from message AnomalyNotification
+ */
+export class AnomalyNotification extends Message<AnomalyNotification> {
+  /**
+   * @generated from field: PingTarget pingTarget = 1;
+   */
+  pingTarget?: PingTarget;
+
+  /**
+   * @generated from field: string anomalyDescription = 2;
+   */
+  anomalyDescription = "";
+
+  constructor(data?: PartialMessage<AnomalyNotification>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "AnomalyNotification";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "anomalyDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): AnomalyNotification {
+    return new AnomalyNotification().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): AnomalyNotification {
+    return new AnomalyNotification().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): AnomalyNotification {
+    return new AnomalyNotification().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: AnomalyNotification | PlainMessage<AnomalyNotification> | undefined, b: AnomalyNotification | PlainMessage<AnomalyNotification> | undefined): boolean {
+    return proto3.util.equals(AnomalyNotification, a, b);
+  }
+}
+
+/**
+ * @generated from message ServerEvent
+ */
+export class ServerEvent extends Message<ServerEvent> {
+  /**
+   * @generated from field: google.protobuf.Timestamp eventTime = 1;
+   */
+  eventTime?: Timestamp;
+
+  /**
+   * @generated from oneof ServerEvent.ServerEvent
+   */
+  ServerEvent: {
+    /**
+     * @generated from field: ServerEvent.PingOnOffToggle pingOnOffToggle = 100;
+     */
+    value: ServerEvent_PingOnOffToggle;
+    case: "pingOnOffToggle";
+  } | {
+    /**
+     * @generated from field: ServerEvent.PingAnomaly pingAnomaly = 101;
+     */
+    value: ServerEvent_PingAnomaly;
+    case: "pingAnomaly";
+  } | {
+    /**
+     * @generated from field: ServerEvent.PingAgentError pingAgentError = 190;
+     */
+    value: ServerEvent_PingAgentError;
+    case: "pingAgentError";
+  } | { case: undefined; value?: undefined } = { case: undefined };
+
+  constructor(data?: PartialMessage<ServerEvent>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ServerEvent";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "eventTime", kind: "message", T: Timestamp },
+    { no: 100, name: "pingOnOffToggle", kind: "message", T: ServerEvent_PingOnOffToggle, oneof: "ServerEvent" },
+    { no: 101, name: "pingAnomaly", kind: "message", T: ServerEvent_PingAnomaly, oneof: "ServerEvent" },
+    { no: 190, name: "pingAgentError", kind: "message", T: ServerEvent_PingAgentError, oneof: "ServerEvent" },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServerEvent {
+    return new ServerEvent().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent {
+    return new ServerEvent().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent {
+    return new ServerEvent().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ServerEvent | PlainMessage<ServerEvent> | undefined, b: ServerEvent | PlainMessage<ServerEvent> | undefined): boolean {
+    return proto3.util.equals(ServerEvent, a, b);
+  }
+}
+
+/**
+ * @generated from message ServerEvent.PingOnOffToggle
+ */
+export class ServerEvent_PingOnOffToggle extends Message<ServerEvent_PingOnOffToggle> {
+  /**
+   * @generated from field: PingTarget pingTarget = 1;
+   */
+  pingTarget?: PingTarget;
+
+  /**
+   * @generated from field: bool active = 2;
+   */
+  active = false;
+
+  constructor(data?: PartialMessage<ServerEvent_PingOnOffToggle>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ServerEvent.PingOnOffToggle";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServerEvent_PingOnOffToggle {
+    return new ServerEvent_PingOnOffToggle().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent_PingOnOffToggle {
+    return new ServerEvent_PingOnOffToggle().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent_PingOnOffToggle {
+    return new ServerEvent_PingOnOffToggle().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ServerEvent_PingOnOffToggle | PlainMessage<ServerEvent_PingOnOffToggle> | undefined, b: ServerEvent_PingOnOffToggle | PlainMessage<ServerEvent_PingOnOffToggle> | undefined): boolean {
+    return proto3.util.equals(ServerEvent_PingOnOffToggle, a, b);
+  }
+}
+
+/**
+ * @generated from message ServerEvent.PingAnomaly
+ */
+export class ServerEvent_PingAnomaly extends Message<ServerEvent_PingAnomaly> {
+  /**
+   * @generated from field: PingTarget pingTarget = 1;
+   */
+  pingTarget?: PingTarget;
+
+  /**
+   * @generated from field: string anomalyDescription = 2;
+   */
+  anomalyDescription = "";
+
+  constructor(data?: PartialMessage<ServerEvent_PingAnomaly>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ServerEvent.PingAnomaly";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "anomalyDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServerEvent_PingAnomaly {
+    return new ServerEvent_PingAnomaly().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent_PingAnomaly {
+    return new ServerEvent_PingAnomaly().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent_PingAnomaly {
+    return new ServerEvent_PingAnomaly().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ServerEvent_PingAnomaly | PlainMessage<ServerEvent_PingAnomaly> | undefined, b: ServerEvent_PingAnomaly | PlainMessage<ServerEvent_PingAnomaly> | undefined): boolean {
+    return proto3.util.equals(ServerEvent_PingAnomaly, a, b);
+  }
+}
+
+/**
+ * @generated from message ServerEvent.PingAgentError
+ */
+export class ServerEvent_PingAgentError extends Message<ServerEvent_PingAgentError> {
+  /**
+   * @generated from field: PingTarget pingTarget = 1;
+   */
+  pingTarget?: PingTarget;
+
+  /**
+   * @generated from field: string errorDescription = 2;
+   */
+  errorDescription = "";
+
+  constructor(data?: PartialMessage<ServerEvent_PingAgentError>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ServerEvent.PingAgentError";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "errorDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServerEvent_PingAgentError {
+    return new ServerEvent_PingAgentError().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent_PingAgentError {
+    return new ServerEvent_PingAgentError().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent_PingAgentError {
+    return new ServerEvent_PingAgentError().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ServerEvent_PingAgentError | PlainMessage<ServerEvent_PingAgentError> | undefined, b: ServerEvent_PingAgentError | PlainMessage<ServerEvent_PingAgentError> | undefined): boolean {
+    return proto3.util.equals(ServerEvent_PingAgentError, a, b);
   }
 }
 
