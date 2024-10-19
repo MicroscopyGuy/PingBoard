@@ -8,7 +8,7 @@ namespace PingBoard.Pinging{
     /// <summary>
     /// Provides a set of enums and several utilities for:
     ///     A) calculating if a PingGroup has tripped the set thresholds,
-    ///     B) setting the apropriate flags to mark which thresholds have been tripped
+    ///     B) setting the appropriate flags to mark which thresholds have been tripped
     /// and C) outputing as a message, which thresholds were exceeded    
     /// </summary>
     public class PingQualification{

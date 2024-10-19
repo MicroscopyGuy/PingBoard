@@ -11,6 +11,7 @@ using PingBoard.Pinging;
 using PingBoard.Monitoring.Configuration;
 using PingBoard.Pinging.Configuration;
 using PingBoard.Services;
+using PingBoard.Endpoints;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
 
@@ -92,13 +93,19 @@ public class Program
             )
         );
 
-        builder.Services.AddKeyedSingleton<IImmutableList<object>>("ServerEventChannelReaders", (svc, _) =>
+        builder.Services.AddKeyedSingleton<IImmutableList<IChannelReaderAdapter>>("ServerEventChannelReaders", (svc, _) =>
         {
-            var channelList = new List<object>
+            var channelList = new List<IChannelReaderAdapter>
             {
-                svc.GetRequiredService<Channel<ServerEvent.Types.PingOnOffToggle>>().Reader,
-                svc.GetRequiredService<Channel<ServerEvent.Types.PingAnomaly>>().Reader,
-                svc.GetRequiredService<Channel<ServerEvent.Types.PingAgentError>>().Reader
+                new ChannelReaderAdapter<ServerEvent.Types.PingOnOffToggle>(
+                    svc.GetRequiredService<Channel<ServerEvent.Types.PingOnOffToggle>>().Reader
+                ),
+                new ChannelReaderAdapter<ServerEvent.Types.PingAnomaly>(
+                    svc.GetRequiredService<Channel<ServerEvent.Types.PingAnomaly>>().Reader
+                ),
+                new ChannelReaderAdapter<ServerEvent.Types.PingAgentError>(
+                    svc.GetRequiredService<Channel<ServerEvent.Types.PingAgentError>>().Reader
+                )
             };
             return channelList.ToImmutableList();
         });

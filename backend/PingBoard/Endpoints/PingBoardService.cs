@@ -1,31 +1,39 @@
 ﻿namespace PingBoard.Services;
 using System.Collections.Immutable;
 using System.Threading.Channels;
-using System.ComponentModel;
-using System.Reflection;
-using System.Reflection.Metadata.Ecma335;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
-//using "PingBoard/protos/service.proto";
+using PingBoard.Endpoints;
 
+/// <summary>
+/// A class which represents the service offerings of the PingBoard backend, and defines
+/// the central stream through which ServerEvents are sent to the frontend.
+/// </summary>
 public class PingBoardService : global::PingBoardService.PingBoardServiceBase
 {
-    
     private PingMonitoringJobManager _pingMonitoringJobManager;
-    private ServerEventEmitter _serverEventEmitter;
-    private readonly IImmutableList<object> _serverEventChannelReaders;
+    private readonly IImmutableList<IChannelReaderAdapter> _serverEventChannelReaders;
     private readonly ILogger<PingBoardService> _logger;
+    private readonly IImmutableDictionary<Type, object> _channelReaders;
     
-    public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager, ServerEventEmitter serverEventEmitter,
-                            [FromKeyedServices ("ServerEventChannelReaders")] IImmutableList<object> serverEventChannelReaderList,
+    
+    public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager, 
+                           [FromKeyedServices ("ServerEventChannelReaders")] IImmutableList<IChannelReaderAdapter> serverEventChannelReaderList,
                             ILogger<PingBoardService> logger)
     {
         _pingMonitoringJobManager = pingMonitoringJobManager;
-        _serverEventEmitter = serverEventEmitter;
         _serverEventChannelReaders = serverEventChannelReaderList;
         _logger = logger;
     }
     
+    /// <summary>
+    /// This function directly handles each request from the frontend to begin pinging a target,
+    /// by directing the PingMonitoringJobManager to StartPinging, if it isn't already.
+    /// </summary>
+    /// <param name="request">The target the user wishes to ping.</param>
+    /// <param name="context">Represents the context of a server-side call.</param>
+    /// <returns>An empty task.</returns>
+    /// <exception cref="RpcException"></exception>
     public override async Task<Empty> StartPinging(PingTarget request, ServerCallContext context)
     {
         try
@@ -56,6 +64,14 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         return new Empty();
     }
 
+    /// <summary>
+    /// This function directly handles each request from the frontend to cease the pinging of a target,
+    /// by directing the PingMonitoringJobManager to StopPinging, if it is already.
+    /// </summary>
+    /// <param name="request">The target the user wishes to cease sending pings to.</param>
+    /// <param name="context">Represents the context of a server-side call.</param>
+    /// <returns>An empty task.</returns>
+    /// <exception cref="RpcException"></exception>
     public override async Task<Empty> StopPinging(Empty request, ServerCallContext context)
     {
         try
@@ -88,70 +104,46 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     }
     
     /* Consider renaming this to SendLatestServerEvents: pluralize it, and clarify direction of communication */
+    /// <summary>
+    /// Streams ServerEvents to the FrontEnd, one at a time. See the ServerEvent definition in protos/service.proto
+    /// for a comprehensive list of which ServerEvents are supported. 
+    /// </summary>
+    /// <param name="request">Empty, since no user paramaters are needed./param>
+    /// <param name="responseStream">The writer that writes ServerEvents to the stream.</param>
+    /// <param name="context">Represents the context of a server-side call.</param>
+    /// <exception cref="InvalidOperationException"></exception>
     public override async Task GetLatestServerEvent(Empty request, IServerStreamWriter<ServerEvent> responseStream,
         ServerCallContext context)
     {
         while (!context.CancellationToken.IsCancellationRequested)
         {
             
-            var readyTaskReader = await GetChannelWithMessage(context.CancellationToken);
-
-            if (readyTaskReader == null)
-            {
-                throw new InvalidOperationException("The reader for the Channel task is null");
-            }
-            
-            var readyTaskReaderType = readyTaskReader.GetType();
-
-            // finds method that waits until there is something to read, and then reads it
-            var readMethod = readyTaskReaderType.GetMethod(nameof(ChannelReader<object>.TryRead))!;
-            
-
-            object[] parameters = new object[] { null };
+            var readyTaskReader = await GetReadyChannelReaderAdapter(context.CancellationToken);
 
             // the boolean result of Invoke indicates if something was read or not
-            while ((bool)readMethod.Invoke(readyTaskReader, parameters)!)
+            ServerEvent? eventToSend;
+            while ((eventToSend = readyTaskReader.ReadNextServerEvent()) != null)
             {
-                var message = parameters[0]; // this is what was read from the read method
-                var serverEvent = new ServerEvent();
-                serverEvent.PingOnOffToggle = new ServerEvent.Types.PingOnOffToggle();
-                var serverEventType = serverEvent.GetType();
-                var props = serverEventType.GetProperties();
-
-                foreach (var prop in props)
-                {
-                    var eventType = prop.PropertyType;
-                    if (message.GetType() == eventType)
-                    {
-                        prop.SetValue(serverEvent, message);
-                        break;
-                    }
-                }
-
-                await responseStream.WriteAsync(serverEvent, context.CancellationToken);
+                await responseStream.WriteAsync(eventToSend, context.CancellationToken); 
             }
         }
     }
     
-    private async Task<object> GetChannelWithMessage(CancellationToken cancellationToken)
+    /// <summary>
+    /// A helper method for GetLatestServerEvent which figures out which IChannelReaderAdapter has a message,
+    /// and then returns it so GetLatestServerEvent can send the ServerEvent the IChannelReaderAdapter
+    /// needs to tell the frontend about.
+    /// </summary>
+    /// <param name="cancellationToken">A cancellation token</param>
+    /// <returns>The IChannelReaderAdapter that has a new message</returns>
+    /// <exception cref="TaskCanceledException"></exception>
+    private async Task<IChannelReaderAdapter> GetReadyChannelReaderAdapter(CancellationToken cancellationToken)
     {
         List<Task<bool>> channelReaderTasks = new List<Task<bool>>();
 
         foreach (var reader in _serverEventChannelReaders)
         {
-            // need access to the type of the reader first to get access to the read method
-            var type = reader.GetType();
-            
-            // finds method that waits until there is something to read, and then reads it
-            var waitMethod = type.GetMethod(nameof (ChannelReader<object>.WaitToReadAsync))!;
-            var readerTask = waitMethod.Invoke(reader, [cancellationToken])!;
-            if (readerTask is ValueTask<bool>)
-            {
-                return reader;
-            }
-            
-            channelReaderTasks.Add((Task<bool>)readerTask);
-            
+            channelReaderTasks.Add(reader.WaitToReadAsync(cancellationToken));
         }
 
         // find which task completed, and then find the reader for that task

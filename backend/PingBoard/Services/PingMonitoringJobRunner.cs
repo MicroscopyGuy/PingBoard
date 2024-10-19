@@ -10,7 +10,10 @@ using PingBoard.Pinging.Configuration;
 using Database.Utilities;
 using System.Net;
 
-[ExcludeFromCodeCoverage]
+/// <summary>
+/// A disposable, self-contained class created by the PingMonitoringJobManager in response to a request
+/// to ping a particular domain or IP address. 
+/// </summary>
 public class PingMonitoringJobRunner : IDisposable
 {
     private readonly IGroupPinger _groupPinger;
@@ -91,18 +94,29 @@ public class PingMonitoringJobRunner : IDisposable
         }
     }
 
+    /// <summary>
+    /// A simple getter for the _pingingTask property.
+    /// </summary>
+    /// <returns></returns>
     public Task GetPingingTask()
     {
         _logger.LogDebug("PingMonitoringJobRunner: Entered GetPingingTask");
         return _pingingTask;
     }
 
+    /// <summary>
+    /// A simple getter for the _target property, used to return what the current ping target is.
+    /// </summary>
+    /// <returns></returns>
     public string GetTarget()
     {
         _logger.LogDebug("PingMonitoringJobRunner: Entered GetTarget");
         return _target;
     }
 
+    /// <summary>
+    /// Used to mark the CancellationToken passed to the GroupPinger as cancelled.
+    /// </summary>
     public async Task CancelTokenSourceAsync()
     {
         try
@@ -119,6 +133,9 @@ public class PingMonitoringJobRunner : IDisposable
 
     }
     
+    /// <summary>
+    /// Safely disposes of the CancellationTokenSource when the current PingMonitoringJobRunner is no longer needed.
+    /// </summary>
     public void Dispose()
     {
         try

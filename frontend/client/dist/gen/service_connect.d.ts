@@ -1,4 +1,4 @@
-import { AnomalyNotification, PingAnomalies, PingStatusMessage, PingTarget, ServerEvent } from "./service_pb.js";
+import { PingTarget, ServerEvent } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service PingBoardService
@@ -25,33 +25,10 @@ export declare const PingBoardService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * @generated from rpc PingBoardService.GetAnomalies
-         */
-        readonly getAnomalies: {
-            readonly name: "GetAnomalies";
-            readonly I: typeof PingTarget;
-            readonly O: typeof PingAnomalies;
-            readonly kind: MethodKind.Unary;
-        };
-        /**
-         * @generated from rpc PingBoardService.GetPingingStatus
-         */
-        readonly getPingingStatus: {
-            readonly name: "GetPingingStatus";
-            readonly I: typeof Empty;
-            readonly O: typeof PingStatusMessage;
-            readonly kind: MethodKind.ServerStreaming;
-        };
-        /**
-         * @generated from rpc PingBoardService.GetAnomalyNotification
-         */
-        readonly getAnomalyNotification: {
-            readonly name: "GetAnomalyNotification";
-            readonly I: typeof Empty;
-            readonly O: typeof AnomalyNotification;
-            readonly kind: MethodKind.ServerStreaming;
-        };
-        /**
+         * rpc GetAnomalies (PingTarget) returns (PingAnomalies);
+         * rpc GetPingingStatus(google.protobuf.Empty) returns (stream PingStatusMessage);
+         * rpc GetAnomalyNotification(google.protobuf.Empty) returns (stream AnomalyNotification);
+         *
          * @generated from rpc PingBoardService.GetLatestServerEvent
          */
         readonly getLatestServerEvent: {

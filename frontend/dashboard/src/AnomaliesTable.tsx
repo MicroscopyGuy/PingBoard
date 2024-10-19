@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import './AnomaliesTable.css';
+import { ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
+import { useServerEventListener } from './ServerEventListener';
 
 
 type AnomaliesTablePageControlProps = {
@@ -99,6 +101,24 @@ function ArrayToTableData(array: any[]){
 }
 
 function AnomaliesTableOutput(){
+    const [anomalyInfo, setAnomalyInfo] = useState<Array<string>>([]); // data structure to be determined later
+  
+    function onPingAnomaly(description : string){
+        const newData = [...anomalyInfo, description ];
+        setAnomalyInfo(newData);
+        console.log("New PingAnomaly data:");
+        console.log(newData);
+      return; 
+    }
+    
+    const eventHandler = useCallback((e: CustomEvent<ServerEvent_PingAnomaly>) => {
+      onPingAnomaly(e.detail.anomalyDescription);
+      console.log("AnomaliesTableOutput: PingAnomaly event");
+      console.log(e);
+    }, [setAnomalyInfo]);
+  
+    useServerEventListener("pinganomaly", eventHandler);
+
     const sampleData = [
         ["1","2024-06-07 08:31:14.898", "2024-06-07 08:31:15.776", "8.8.8.8", "3", "4", "5", "1", "0"],
         ["2","2024-06-07 08:31:15.912", "2024-06-07 08:31:16.789", "8.8.8.8", "3", "3.875", "6", "1.286", "0"],

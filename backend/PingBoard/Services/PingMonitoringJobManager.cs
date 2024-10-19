@@ -2,14 +2,18 @@
 
 namespace PingBoard.Services;
 
+/// <summary>
+/// Handles the logistics of pinging by creating, destroying, and directing PingMonitoringJobRunners
+/// in response to requests passed from the front end. <see cref="PingMonitoringJobRunner"/>
+/// </summary>
 public class PingMonitoringJobManager : BackgroundService
 {
     private readonly Func<string, PingMonitoringJobRunner> _getPingMonitoringJobRunner;
     private readonly ILogger<PingMonitoringJobManager> _logger;
+    private ServerEventEmitter _serverEventEmitter;
     private volatile PingMonitoringJobRunner? _currentJobRunner;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
-    private ServerEventEmitter _serverEventEmitter;
     
     public PingMonitoringJobManager(Func<string, PingMonitoringJobRunner> pingMonitoringJobRunnerSource,
         ServerEventEmitter serverEventEmitter, ILogger<PingMonitoringJobManager> logger)
@@ -19,7 +23,11 @@ public class PingMonitoringJobManager : BackgroundService
         _logger = logger;
     }
     
-
+    /// <summary>
+    /// The continuous loop that monitors the Pinging job to see if any administrative action is necessary,
+    /// such as getting rid of the PingMonitoringJobRunner, informing the front end that its no longer pinging, etc.
+    /// </summary>
+    /// <param name="stoppingToken"></param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         _logger.LogDebug("PingMonitoringJobManager: ExecuteAsync: Entered");
@@ -77,7 +85,7 @@ public class PingMonitoringJobManager : BackgroundService
     }
 
     /// <summary>
-    /// Returns whether any jobs are running
+    /// Returns whether any jobs are running.
     /// </summary>
     /// <returns>true if a job is running, and false otherwise</returns>
     public bool IsPinging()
@@ -90,6 +98,11 @@ public class PingMonitoringJobManager : BackgroundService
         
     }
     
+    /// <summary>
+    /// When appropriate, it synchronously begins pinging and informs the UI through the ServerEventEmitter that the
+    /// pinging has been toggled to "on."
+    /// </summary>
+    /// <param name="target"></param>
     public void StartPinging(string target)
     {
         lock (_lockingObject)
@@ -109,6 +122,10 @@ public class PingMonitoringJobManager : BackgroundService
         }
     }
 
+    /// <summary>
+    /// When appropriate, it asynchronously stops pinging and informs the UI through the ServerEventEmitter that the
+    /// pinging has been toggled to "off."
+    /// </summary>
     public async Task StopPingingAsync()
     {
         var safeToStop = false;
@@ -127,11 +144,16 @@ public class PingMonitoringJobManager : BackgroundService
             var oldTarget = _currentJobRunner.GetTarget();
             await _currentJobRunner.CancelTokenSourceAsync();
             ResetJobRunner();
-            _serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPinging");
+            _serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPingingAsync");
         }
 
     }
 
+    /// <summary>
+    /// Safely resets the current PingMonitoringJobRunner to null and disposes of the old one,
+    /// used as a cleanup function when the pinging is stopped by the user, halted for any reason, or
+    /// cancelled using a cancellation token.
+    /// </summary>
     public void ResetJobRunner()
     {
         lock (_lockingObject)

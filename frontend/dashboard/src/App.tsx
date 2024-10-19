@@ -1,122 +1,24 @@
-import { useState, useContext, useCallback } from 'react';
-import createClient from 'client';
+
 import './App.css';
-import { ConnectError } from '@connectrpc/connect';
 import PingBackendProvider from './PingBackendContext';
-import { DatabaseContext } from './PingBackendContext';
 import { AnomaliesTable } from './AnomaliesTable';
-import { useServerEventListener } from "./ServerEventListener.tsx";
-import { ServerEvent_PingOnOffToggle } from "client/dist/gen/service_pb";
-
-// Need pinging state (active | inactive) to be globally accessible
-// Perhaps create PingStateManager?
-
-interface PingStartButtonProps{
-  pingTarget: string,
-  pingingActive: boolean
-}
+import PingStartStopMenu from "./PingStartStopMenu.tsx";
 
 /**
- * @param param0 {pingTarget} : PingStartButtonProps
- * @description A button to start pinging after a target is entered in the target box
+ * @description The component that pulls together the various high-level components needed to form the dashboard 
  */
-function PingStartButton({pingTarget, pingingActive}: PingStartButtonProps){
-  const databaseContext = useContext(DatabaseContext);
-
-  function startPinging(){
-    if (pingTarget === ""){
-      alert("Must enter a pinging target");
-      return;
-    }
-
-    const client = databaseContext.client;
-    client!.startPinging({ target: pingTarget })
-      .catch((err) => console.log( err instanceof ConnectError
-                            ? `Start Pinging: Error code:${err.code}, message: ${err.message}`
-                            : `Error message:${err.message}`));
-  }
-
-  return <button className="ping-button ping-start" onClick={ startPinging } disabled={ pingingActive }>Start</button>
-}
-
-
-interface PingStopButtonProps{
-  pingingActive: boolean
-}
-/**
- * @description A button to stop the pinging of the active target
- */
-function PingStopButton({pingingActive} : PingStopButtonProps ){
-  const databaseContext = useContext(DatabaseContext);
-
-  const stopPinging = useCallback( () =>{
-    databaseContext.client!.stopPinging({}) 
-      .catch((err) => console.log(`Stop Pinging: message: ${err.message}`));
-  }, [databaseContext]);
-
-  return <button className="ping-button ping-stop" onClick={ stopPinging } disabled={ !pingingActive }>Stop</button>
-}
-
-
-interface PingTargetInputManagerProps{
-  pingTarget: string,
-  onPingTargetChanged: (pingTarget: string) => void,
-  pingingActive: boolean;
-}
-
-/**
- * @param props {PingTargetInputManagerProps}
- * @description Controls and outputs the textbox in which the pinging target is specified by the user
- */
-function PingTargetInputManager(props: PingTargetInputManagerProps){
-  return <input className = "ping-target"
-          type = "text"
-          placeholder = "IPAddress or website here"
-          value = {props.pingTarget}
-          onChange = {(e) => {props.onPingTargetChanged(e.target.value)}}
-          disabled = { props.pingingActive }
-          />
-}
-
-/**
- * @description A component which represents the entirety of the pinging controls, and is responsible
- *              for tracking whether pinging is on or off via the ServerEvent stream.
- */
-function PingStartStopMenu(){
-  const [pingTarget, setPingTarget] = useState<string>("");
-  const [pingingActive, setPingingActive ] = useState<boolean>(false);
-
-  function onPingTargetChanged(newPingTarget: string){
-    setPingTarget(newPingTarget); 
-  }
-  
-  const eventHandler = useCallback((e: CustomEvent<ServerEvent_PingOnOffToggle>) => {
-    setPingingActive(e.detail.active);
-    console.log("PingStartStopMenu: PingOnOffToggle event");
-    console.log(e);
-  }, [setPingingActive]);
-
-  useServerEventListener("pingonofftoggle", eventHandler);
-
- return (
-  <div className="ping-start-stop-menu">
-    <PingStartButton pingTarget = {pingTarget} pingingActive = {pingingActive}/>
-    <PingStopButton pingingActive = {pingingActive} />
-    <PingTargetInputManager pingTarget = {pingTarget} onPingTargetChanged = {onPingTargetChanged} pingingActive = {pingingActive}
-    />
-  </div>
- )
-}
-
 function DashboardLayout(){
   return (
       <div className="flex-container dashboard">
-        <PingStartStopMenu />
-        <AnomaliesTable />
+        <PingStartStopMenu/>
+        <AnomaliesTable/>
       </div>
   )
 }
 
+/**
+ * @description A component that represents the full application, to be used in main.tsx 
+ */
 function App() {
   return (
     <PingBackendProvider>
@@ -127,5 +29,3 @@ function App() {
 }
 
 export default App
-
-

@@ -4,6 +4,10 @@ using Grpc.Core;
 
 using static ServerEvent.Types;
 
+/// <summary>
+/// Provides a single, combined stream of the ServerEvent channels to the frontend, through which all ServerEvents
+/// are communicated. 
+/// </summary>
 public class ServerEventEmitter
 {
     private readonly Channel<PingAnomaly> _pingAnomalyChannel;
@@ -21,7 +25,13 @@ public class ServerEventEmitter
         _logger = logger;
     }
 
-    // must rename this to IndicatePingOnOffToggle as soon as feasible
+    /// <summary>
+    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
+    /// </summary>
+    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
+    /// <param name="status">A boolean value indicating whether the pinging is active or not</param>
+    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
+    /// <exception cref="InvalidOperationException"></exception>
     public void IndicatePingOnOffToggle(string target, bool status, string caller)
     {
         try

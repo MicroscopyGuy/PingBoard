@@ -20,9 +20,10 @@ export default function PingBackendProvider(p : PingBackendProviderProps){
     const grabPingServerEvents = useCallback(async(signal : AbortSignal) => {
         const statusStream = backendClient.getLatestServerEvent([], { signal : signal });
         for await (const serverEvent of statusStream) {
+            console.log(serverEvent);
             dispatchEvent(serverEvent.ServerEvent.case!.toLowerCase() as keyof CustomEventMap, serverEvent.ServerEvent.value!);
             console.log(`You've got mail`);
-            console.log(serverEvent);
+            
         }
         console.log("WARNING: No longer listening for ServerEvents");
     }, []);
