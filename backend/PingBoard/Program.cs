@@ -70,6 +70,7 @@ public class Program
         builder.Services.AddTransient<DatabaseStatementsGenerator>();
         builder.Services.AddTransient<DatabaseHelper>();
         builder.Services.AddTransient<SqliteConnection>();
+        builder.Services.AddTransient<CrudOperations>();
 
         // Service-related information
         builder.Services.AddSingleton<DatabaseInitializer>();
@@ -128,7 +129,7 @@ public class Program
                 var pingingThresholds = svc.GetRequiredService<IOptions<PingingThresholdsConfig>>();
                 var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
                 var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
-                var databaseHelper = svc.GetRequiredService<DatabaseHelper>();
+                var crudOperations = svc.GetRequiredService<CrudOperations>();
                 var pingQualifier = svc.GetRequiredService<PingQualification>();
                 var cancellationTokenSource = new CancellationTokenSource();
                 var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
@@ -139,7 +140,7 @@ public class Program
 
                 return new PingMonitoringJobRunner(
                     groupPinger, pingingBehavior, pingingThresholds,
-                    behaviorConfigValidator, pingingThresholdsConfigValidator, databaseHelper,
+                    behaviorConfigValidator, pingingThresholdsConfigValidator, crudOperations,
                     pingQualifier, new CancellationTokenSource(), serverEventEmitter, str, logger);
             };
         });
@@ -148,7 +149,14 @@ public class Program
         var databaseName = "Summaries";
         var folder = Environment.SpecialFolder.LocalApplicationData;
         var path = Environment.GetFolderPath(folder);
-        var dbPath = System.IO.Path.Join(path, databaseName);
+        var appDataPath = System.IO.Path.Join(path, "PingBoard");
+        
+        if (!Directory.Exists(appDataPath))
+        {
+            Directory.CreateDirectory(appDataPath);
+        }
+        var dbPath = System.IO.Path.Join(appDataPath, databaseName);
+        
 
         var connectionString = new SqliteConnectionStringBuilder()
         {

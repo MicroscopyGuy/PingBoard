@@ -1,13 +1,11 @@
-using PingBoard.Database.Models;
-
 namespace PingBoard.Services;
-using System.Diagnostics.CodeAnalysis;
+using PingBoard.Database.Utilities;
+using Microsoft.EntityFrameworkCore;
+using PingBoard.Database.Models;
 using FluentValidation;
-using FluentValidation.Results;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
-using Database.Utilities;
 using System.Net;
 
 /// <summary>
@@ -17,7 +15,8 @@ using System.Net;
 public class PingMonitoringJobRunner : IDisposable
 {
     private readonly IGroupPinger _groupPinger;
-    private readonly DatabaseHelper _databaseHelper;
+    private readonly IDbContextFactory<PingInfoContext> _pingInfoContextFactory;
+    private readonly CrudOperations _crudOperations;
     private CancellationTokenSource _cancellationTokenSource;
     private readonly string _target;
     private Task _pingingTask;
@@ -27,13 +26,13 @@ public class PingMonitoringJobRunner : IDisposable
 
     public PingMonitoringJobRunner(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
                                    IOptions<PingingThresholdsConfig> pingingThresholds, PingingBehaviorConfigValidator behaviorValidator, 
-                                   PingingThresholdsConfigValidator thresholdsValidator, DatabaseHelper databaseHelper, 
+                                   PingingThresholdsConfigValidator thresholdsValidator, CrudOperations crudOperations, 
                                    PingQualification pingQualifier, CancellationTokenSource cancellationTokenSource,
                                    ServerEventEmitter serverEventEmitter, string target, ILogger<PingMonitoringJobRunner> logger){
         _logger = logger;
         _logger.LogDebug("PingMonitoringJobRunner: Entered Constructor");
         _groupPinger = groupPinger;
-        _databaseHelper = databaseHelper;
+        _crudOperations = crudOperations;
         _pingQualifier = pingQualifier;
         _cancellationTokenSource = cancellationTokenSource;
         _serverEventEmitter = serverEventEmitter;
@@ -62,7 +61,6 @@ public class PingMonitoringJobRunner : IDisposable
     
     private async Task ExecutePingingAsync(CancellationToken stoppingToken){
         _logger.LogDebug("PingMonitoringJobRunner: ExecutePingAsync Entered");
-        _databaseHelper.InitializeDatabase();
         var result = new PingGroupSummary{TerminatingIPStatus = null};
         
         try
@@ -83,9 +81,12 @@ public class PingMonitoringJobRunner : IDisposable
                         "PingMonitoringJobRunner: ExecutePingingAsync"
                         );
                 }
-                _databaseHelper.InsertPingGroupSummary(result);
+
+                // await using, so it calls DisposeAsync on the pingInfoContext when it goes out of scope
+                await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(stoppingToken);
+                await _crudOperations.InsertPingGroupSummaryAsync(result, stoppingToken);
+                
             }
-            _databaseHelper.Dispose();
         }
         
         catch (Exception e)

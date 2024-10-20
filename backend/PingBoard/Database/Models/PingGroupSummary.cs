@@ -2,6 +2,7 @@ namespace PingBoard.Database.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
+using Google.Protobuf.WellKnownTypes;
 using PingBoard.Pinging;
 
 
@@ -238,4 +239,23 @@ public class PingGroupSummary{
                 $"MaximumPing: {MaximumPing} Jitter: {Jitter} PacketLoss: {PacketLoss} " +
                 $"TerminatingIPStatus: {TerminatingIPStatus} EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}";
     }
+    
+    public static PingGroupSummaryPublic ToApiModel(PingGroupSummary summary)
+    {
+        return new PingGroupSummaryPublic
+        {
+            Start = Timestamp.FromDateTime(summary.Start),
+            End = Timestamp.FromDateTime(summary.End),
+            Target = summary.Target,
+            MinimumPing = summary.MinimumPing,
+            AveragePing = summary.AveragePing,
+            MaximumPing = summary.MaximumPing,
+            PacketLoss = summary.PacketLoss,
+            Jitter = summary.Jitter
+        };
+    }
+    
+    public static implicit operator PingGroupSummaryPublic(PingGroupSummary summary)
+        => PingGroupSummary.ToApiModel(summary);
+
 }

@@ -1,4 +1,8 @@
-﻿namespace PingBoard.Services;
+﻿using Microsoft.EntityFrameworkCore;
+using PingBoard.Database.Models;
+using PingBoard.Database.Utilities;
+
+namespace PingBoard.Services;
 using System.Collections.Immutable;
 using System.Threading.Channels;
 using Google.Protobuf.WellKnownTypes;
@@ -14,15 +18,14 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     private PingMonitoringJobManager _pingMonitoringJobManager;
     private readonly IImmutableList<IChannelReaderAdapter> _serverEventChannelReaders;
     private readonly ILogger<PingBoardService> _logger;
-    private readonly IImmutableDictionary<Type, object> _channelReaders;
+    private readonly CrudOperations _crudOperations;
     
     
-    public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager, 
-                           [FromKeyedServices ("ServerEventChannelReaders")] IImmutableList<IChannelReaderAdapter> serverEventChannelReaderList,
+    public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager, CrudOperations crudOperations, 
                             ILogger<PingBoardService> logger)
     {
         _pingMonitoringJobManager = pingMonitoringJobManager;
-        _serverEventChannelReaders = serverEventChannelReaderList;
+        _crudOperations = crudOperations;
         _logger = logger;
     }
     
@@ -117,7 +120,6 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     {
         while (!context.CancellationToken.IsCancellationRequested)
         {
-            
             var readyTaskReader = await GetReadyChannelReaderAdapter(context.CancellationToken);
 
             // the boolean result of Invoke indicates if something was read or not
@@ -170,5 +172,14 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         
         var readyTaskReader = _serverEventChannelReaders[channelReaderTasks.IndexOf(readyTask)];
         return readyTaskReader;
+    }
+
+    public override async Task<GetNPingGroupSummariesResponse> GetNPingGroupSummaries(GetNPingGroupSummariesRequest request, ServerCallContext context)
+    {
+        var response = new GetNPingGroupSummariesResponse();
+        var summaries = await _crudOperations.GetNPingGroupSummariesFromAsync(request.PingTarget.Target,
+            request.StartingTime.ToDateTime(), request.NumberRequested, context.CancellationToken);
+        response.Summaries.Add(summaries);
+        return response;
     }
 }
