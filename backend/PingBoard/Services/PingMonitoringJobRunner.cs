@@ -15,7 +15,6 @@ using System.Net;
 public class PingMonitoringJobRunner : IDisposable
 {
     private readonly IGroupPinger _groupPinger;
-    private readonly IDbContextFactory<PingInfoContext> _pingInfoContextFactory;
     private readonly CrudOperations _crudOperations;
     private CancellationTokenSource _cancellationTokenSource;
     private readonly string _target;
@@ -39,8 +38,8 @@ public class PingMonitoringJobRunner : IDisposable
         _target = target;
         
         // validate configured information
-        thresholdsValidator.ValidateAndThrow(pingingThresholds.Value);
-        behaviorValidator.ValidateAndThrow(pingingBehavior.Value);
+        //thresholdsValidator.ValidateAndThrow(pingingThresholds.Value);
+        //behaviorValidator.ValidateAndThrow(pingingBehavior.Value);    
         
         // for logging to solve bug:
         _logger.LogDebug("PingMonitoringJobRunner: Constructor: CancellationTokenSourceHash: {ctsHash}", 
@@ -75,15 +74,14 @@ public class PingMonitoringJobRunner : IDisposable
                 
                 if(anomaly)
                 {
+                    _logger.LogDebug($"PingMonitoringJobRunner: New anomaly detected {PingQualification.DescribePingQualityFlags(trippedFlags)}");
                     _serverEventEmitter.IndicatePingAnomaly(
                         _target, 
                         PingQualification.DescribePingQualityFlags(trippedFlags),
                         "PingMonitoringJobRunner: ExecutePingingAsync"
                         );
                 }
-
-                // await using, so it calls DisposeAsync on the pingInfoContext when it goes out of scope
-                await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(stoppingToken);
+                
                 await _crudOperations.InsertPingGroupSummaryAsync(result, stoppingToken);
                 
             }
@@ -131,7 +129,6 @@ public class PingMonitoringJobRunner : IDisposable
         catch (ObjectDisposedException oDE) {
             _logger.LogError($"PingMonitoringJobRunner: CancelTokenSource: {oDE}");
         }
-
     }
     
     /// <summary>

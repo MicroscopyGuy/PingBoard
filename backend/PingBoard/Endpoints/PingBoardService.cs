@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Google.Rpc.Context;
+using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Models;
 using PingBoard.Database.Utilities;
 
@@ -22,10 +23,12 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     
     
     public PingBoardService(PingMonitoringJobManager pingMonitoringJobManager, CrudOperations crudOperations, 
+                            [FromKeyedServices("ServerEventChannelReaders")] IImmutableList<IChannelReaderAdapter> serverEventChannelReaders,
                             ILogger<PingBoardService> logger)
     {
         _pingMonitoringJobManager = pingMonitoringJobManager;
         _crudOperations = crudOperations;
+        _serverEventChannelReaders = serverEventChannelReaders;
         _logger = logger;
     }
     
@@ -174,12 +177,50 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         return readyTaskReader;
     }
 
-    public override async Task<GetNPingGroupSummariesResponse> GetNPingGroupSummaries(GetNPingGroupSummariesRequest request, ServerCallContext context)
+    // give this a PaginationToken as well, add to protobuff
+    public override async Task<ListPingsResponse> ListPings(ListPingsRequest request, ServerCallContext context)
     {
-        var response = new GetNPingGroupSummariesResponse();
-        var summaries = await _crudOperations.GetNPingGroupSummariesFromAsync(request.PingTarget.Target,
-            request.StartingTime.ToDateTime(), request.NumberRequested, context.CancellationToken);
+        var response = new ListPingsResponse();
+        var summaries = await _crudOperations.ListPingsAsync(
+            
+            request.StartingTime.ToDateTime(), 
+            request.NumberRequested, 
+            context.CancellationToken,
+            request.PingTarget.Target
+            
+        );
         response.Summaries.Add(summaries);
+        return response;
+    }
+
+    public override async Task<ListAnomaliesResponse> ListAnomalies(ListAnomaliesRequest request, ServerCallContext context)
+    {
+        // create a PaginationToken if the UI did not supply one
+        DateTime startTime = DateTime.UtcNow;
+        if (request.PaginationToken != "")
+        {
+            var suppliedToken = PaginationToken<DateTime>.FromApiFormat(request.PaginationToken, "ListAnomalies");
+            startTime = suppliedToken.Token;
+        }
+        
+        var response = new ListAnomaliesResponse();
+        var anomalies = await _crudOperations.ListAnomaliesAsync(
+            startTime,
+            request.NumberRequested+1,
+            context.CancellationToken,
+            request.PingTarget?.Target
+        );
+
+        if (anomalies.Count == request.NumberRequested+1)
+        {
+            var nextCursor = anomalies[(int)request.NumberRequested].Start.ToDateTime();
+            response.PaginationToken = PaginationToken<DateTime>.ToApiFormat( nextCursor, "ListAnomalies");
+            anomalies.RemoveAt(Convert.ToInt32(request.NumberRequested));
+        }
+        
+        response.Anomalies.Add(anomalies);
+        
+        
         return response;
     }
 }

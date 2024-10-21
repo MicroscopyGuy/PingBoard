@@ -151,6 +151,7 @@ public class Program
         var path = Environment.GetFolderPath(folder);
         var appDataPath = System.IO.Path.Join(path, "PingBoard");
         
+        
         if (!Directory.Exists(appDataPath))
         {
             Directory.CreateDirectory(appDataPath);

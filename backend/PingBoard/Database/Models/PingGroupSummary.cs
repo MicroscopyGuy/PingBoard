@@ -11,10 +11,6 @@ using PingBoard.Pinging;
 /// in the <see cref="GroupPinger"/> class.
 /// </summary>
 public class PingGroupSummary{
-    /// <summary>
-    /// A synthetic identifier that will be autoincremented in the database
-    /// </summary>
-    internal long _id { get; set; }
         
     /// <summary>
     /// The time the attempt to send the group of pings either started, or attempted to start
@@ -244,8 +240,8 @@ public class PingGroupSummary{
     {
         return new PingGroupSummaryPublic
         {
-            Start = Timestamp.FromDateTime(summary.Start),
-            End = Timestamp.FromDateTime(summary.End),
+            Start = Timestamp.FromDateTime(DateTime.SpecifyKind(summary.Start, DateTimeKind.Utc)),
+            End = Timestamp.FromDateTime(DateTime.SpecifyKind(summary.End, DateTimeKind.Utc)),
             Target = summary.Target,
             MinimumPing = summary.MinimumPing,
             AveragePing = summary.AveragePing,
