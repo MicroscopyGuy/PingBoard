@@ -71,6 +71,102 @@ export declare class PingGroupSummaryPublic extends Message<PingGroupSummaryPubl
     static equals(a: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined, b: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined): boolean;
 }
 /**
+ * @generated from message ListPingsRequest
+ */
+export declare class ListPingsRequest extends Message<ListPingsRequest> {
+    /**
+     * @generated from field: google.protobuf.Timestamp startingTime = 1;
+     */
+    startingTime?: Timestamp;
+    /**
+     * @generated from field: uint32 numberRequested = 2;
+     */
+    numberRequested: number;
+    /**
+     * @generated from field: string paginationToken = 3;
+     */
+    paginationToken: string;
+    /**
+     * @generated from field: optional PingTarget pingTarget = 4;
+     */
+    pingTarget?: PingTarget;
+    constructor(data?: PartialMessage<ListPingsRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ListPingsRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListPingsRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListPingsRequest;
+    static equals(a: ListPingsRequest | PlainMessage<ListPingsRequest> | undefined, b: ListPingsRequest | PlainMessage<ListPingsRequest> | undefined): boolean;
+}
+/**
+ * @generated from message ListPingsResponse
+ */
+export declare class ListPingsResponse extends Message<ListPingsResponse> {
+    /**
+     * @generated from field: repeated PingGroupSummaryPublic summaries = 1;
+     */
+    summaries: PingGroupSummaryPublic[];
+    /**
+     * @generated from field: string paginationToken = 2;
+     */
+    paginationToken: string;
+    constructor(data?: PartialMessage<ListPingsResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ListPingsResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListPingsResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListPingsResponse;
+    static equals(a: ListPingsResponse | PlainMessage<ListPingsResponse> | undefined, b: ListPingsResponse | PlainMessage<ListPingsResponse> | undefined): boolean;
+}
+/**
+ * @generated from message ListAnomaliesRequest
+ */
+export declare class ListAnomaliesRequest extends Message<ListAnomaliesRequest> {
+    /**
+     * @generated from field: uint32 numberRequested = 1;
+     */
+    numberRequested: number;
+    /**
+     * @generated from field: string paginationToken = 2;
+     */
+    paginationToken: string;
+    /**
+     * @generated from field: optional PingTarget pingTarget = 3;
+     */
+    pingTarget?: PingTarget;
+    constructor(data?: PartialMessage<ListAnomaliesRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ListAnomaliesRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListAnomaliesRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListAnomaliesRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListAnomaliesRequest;
+    static equals(a: ListAnomaliesRequest | PlainMessage<ListAnomaliesRequest> | undefined, b: ListAnomaliesRequest | PlainMessage<ListAnomaliesRequest> | undefined): boolean;
+}
+/**
+ * @generated from message ListAnomaliesResponse
+ */
+export declare class ListAnomaliesResponse extends Message<ListAnomaliesResponse> {
+    /**
+     * @generated from field: repeated PingGroupSummaryPublic anomalies = 1;
+     */
+    anomalies: PingGroupSummaryPublic[];
+    /**
+     * @generated from field: string paginationToken = 2;
+     */
+    paginationToken: string;
+    constructor(data?: PartialMessage<ListAnomaliesResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ListAnomaliesResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListAnomaliesResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListAnomaliesResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListAnomaliesResponse;
+    static equals(a: ListAnomaliesResponse | PlainMessage<ListAnomaliesResponse> | undefined, b: ListAnomaliesResponse | PlainMessage<ListAnomaliesResponse> | undefined): boolean;
+}
+/**
  * @generated from message ServerEvent
  */
 export declare class ServerEvent extends Message<ServerEvent> {

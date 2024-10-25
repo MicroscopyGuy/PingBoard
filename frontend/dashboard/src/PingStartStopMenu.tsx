@@ -50,7 +50,7 @@ function PingStopButton({pingingActive} : PingStopButtonProps ){
         .catch((err) => console.log(`Stop Pinging: message: ${err.message}`));
     }, [databaseContext]);
   
-    return <button className="ping-button ping-stop" onClick={ stopPinging } disabled={ !pingingActive }>Stop</button>
+    return <button className="ping-button ping-stop" onClick = {stopPinging} disabled = { !pingingActive }>Stop</button>
 }
   
 interface PingTargetInputManagerProps{
@@ -69,8 +69,7 @@ function PingTargetInputManager(props: PingTargetInputManagerProps){
             placeholder = "IPAddress or website here"
             value = {props.pingTarget}
             onChange = {(e) => {props.onPingTargetChanged(e.target.value)}}
-            disabled = { props.pingingActive }
-            />
+            disabled = {props.pingingActive}/>
 }
   
 /**
@@ -96,9 +95,8 @@ export default function PingStartStopMenu(){
    return (
     <div className="ping-start-stop-menu">
       <PingStartButton pingTarget = {pingTarget} pingingActive = {pingingActive}/>
-      <PingStopButton pingingActive = {pingingActive} />
-      <PingTargetInputManager pingTarget = {pingTarget} onPingTargetChanged = {onPingTargetChanged} pingingActive = {pingingActive}
-      />
+      <PingStopButton pingingActive = {pingingActive}/>
+      <PingTargetInputManager pingTarget = {pingTarget} onPingTargetChanged = {onPingTargetChanged} pingingActive = {pingingActive}/>
     </div>
    )
 }

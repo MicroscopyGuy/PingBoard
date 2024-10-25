@@ -135,6 +135,196 @@ export class PingGroupSummaryPublic extends Message<PingGroupSummaryPublic> {
 }
 
 /**
+ * @generated from message ListPingsRequest
+ */
+export class ListPingsRequest extends Message<ListPingsRequest> {
+  /**
+   * @generated from field: google.protobuf.Timestamp startingTime = 1;
+   */
+  startingTime?: Timestamp;
+
+  /**
+   * @generated from field: uint32 numberRequested = 2;
+   */
+  numberRequested = 0;
+
+  /**
+   * @generated from field: string paginationToken = 3;
+   */
+  paginationToken = "";
+
+  /**
+   * @generated from field: optional PingTarget pingTarget = 4;
+   */
+  pingTarget?: PingTarget;
+
+  constructor(data?: PartialMessage<ListPingsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ListPingsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "startingTime", kind: "message", T: Timestamp },
+    { no: 2, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+    { no: 3, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 4, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsRequest {
+    return new ListPingsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListPingsRequest {
+    return new ListPingsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListPingsRequest {
+    return new ListPingsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListPingsRequest | PlainMessage<ListPingsRequest> | undefined, b: ListPingsRequest | PlainMessage<ListPingsRequest> | undefined): boolean {
+    return proto3.util.equals(ListPingsRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message ListPingsResponse
+ */
+export class ListPingsResponse extends Message<ListPingsResponse> {
+  /**
+   * @generated from field: repeated PingGroupSummaryPublic summaries = 1;
+   */
+  summaries: PingGroupSummaryPublic[] = [];
+
+  /**
+   * @generated from field: string paginationToken = 2;
+   */
+  paginationToken = "";
+
+  constructor(data?: PartialMessage<ListPingsResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ListPingsResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "summaries", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsResponse {
+    return new ListPingsResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListPingsResponse {
+    return new ListPingsResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListPingsResponse {
+    return new ListPingsResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListPingsResponse | PlainMessage<ListPingsResponse> | undefined, b: ListPingsResponse | PlainMessage<ListPingsResponse> | undefined): boolean {
+    return proto3.util.equals(ListPingsResponse, a, b);
+  }
+}
+
+/**
+ * @generated from message ListAnomaliesRequest
+ */
+export class ListAnomaliesRequest extends Message<ListAnomaliesRequest> {
+  /**
+   * @generated from field: uint32 numberRequested = 1;
+   */
+  numberRequested = 0;
+
+  /**
+   * @generated from field: string paginationToken = 2;
+   */
+  paginationToken = "";
+
+  /**
+   * @generated from field: optional PingTarget pingTarget = 3;
+   */
+  pingTarget?: PingTarget;
+
+  constructor(data?: PartialMessage<ListAnomaliesRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ListAnomaliesRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListAnomaliesRequest {
+    return new ListAnomaliesRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListAnomaliesRequest {
+    return new ListAnomaliesRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListAnomaliesRequest {
+    return new ListAnomaliesRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListAnomaliesRequest | PlainMessage<ListAnomaliesRequest> | undefined, b: ListAnomaliesRequest | PlainMessage<ListAnomaliesRequest> | undefined): boolean {
+    return proto3.util.equals(ListAnomaliesRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message ListAnomaliesResponse
+ */
+export class ListAnomaliesResponse extends Message<ListAnomaliesResponse> {
+  /**
+   * @generated from field: repeated PingGroupSummaryPublic anomalies = 1;
+   */
+  anomalies: PingGroupSummaryPublic[] = [];
+
+  /**
+   * @generated from field: string paginationToken = 2;
+   */
+  paginationToken = "";
+
+  constructor(data?: PartialMessage<ListAnomaliesResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ListAnomaliesResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "anomalies", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListAnomaliesResponse {
+    return new ListAnomaliesResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListAnomaliesResponse {
+    return new ListAnomaliesResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListAnomaliesResponse {
+    return new ListAnomaliesResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListAnomaliesResponse | PlainMessage<ListAnomaliesResponse> | undefined, b: ListAnomaliesResponse | PlainMessage<ListAnomaliesResponse> | undefined): boolean {
+    return proto3.util.equals(ListAnomaliesResponse, a, b);
+  }
+}
+
+/**
  * @generated from message ServerEvent
  */
 export class ServerEvent extends Message<ServerEvent> {

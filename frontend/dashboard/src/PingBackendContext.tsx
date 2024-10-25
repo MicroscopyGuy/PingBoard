@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { createContext, useRef, useEffect, useState, useCallback } from "react";
+import { createContext, useEffect, useCallback } from "react";
 import createClient from 'client'
-import { dispatchEvent, useServerEventListener, CustomEventMap } from "./ServerEventListener.tsx";
+import { dispatchEvent, CustomEventMap } from "./ServerEventListener.tsx";
 
 type DatabaseContext = {
     client?: BackendClient

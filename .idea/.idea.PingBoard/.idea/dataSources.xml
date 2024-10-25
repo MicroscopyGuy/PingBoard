@@ -29,5 +29,12 @@
         </library>
       </libraries>
     </data-source>
+    <data-source source="LOCAL" name="Summaries" uuid="3b2acc95-95a5-4275-9dc9-aedd370993d8">
+      <driver-ref>sqlite.xerial</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\LeorGoldberg\AppData\Local\Summaries</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
   </component>
 </project>

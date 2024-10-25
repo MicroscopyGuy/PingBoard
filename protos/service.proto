@@ -6,10 +6,9 @@ import "google/protobuf/empty.proto";
 service PingBoardService {
   rpc StartPinging (PingTarget) returns (google.protobuf.Empty);
   rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
-  //rpc GetAnomalies (PingTarget) returns (PingAnomalies);
-  //rpc GetPingingStatus(google.protobuf.Empty) returns (stream PingStatusMessage);
-  //rpc GetAnomalyNotification(google.protobuf.Empty) returns (stream AnomalyNotification);
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
+  rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
+  rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
 }
 
 message PingTarget {
@@ -28,10 +27,29 @@ message PingGroupSummaryPublic {
   optional string terminatingIPStatusExplanation = 9;
   optional string lastAbnormalStatusExplanation = 10;
 }
-/*
-message PingAnomalies{
-  repeated PingGroupSummaryPublic pingAnomaly = 1;
-}*/
+
+message ListPingsRequest{
+  google.protobuf.Timestamp startingTime = 1;
+  uint32 numberRequested = 2;
+  string paginationToken = 3;
+  optional PingTarget pingTarget = 4;
+}
+
+message ListPingsResponse{
+  repeated PingGroupSummaryPublic summaries = 1;
+  string paginationToken = 2;
+}
+
+message ListAnomaliesRequest{
+  uint32 numberRequested = 1;
+  string paginationToken = 2;
+  optional PingTarget pingTarget = 3;
+}
+
+message ListAnomaliesResponse{
+  repeated PingGroupSummaryPublic anomalies = 1;
+  string paginationToken = 2;
+}
 
 message ServerEvent{
   message PingOnOffToggle{

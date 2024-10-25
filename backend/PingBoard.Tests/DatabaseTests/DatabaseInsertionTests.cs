@@ -17,8 +17,6 @@ public class DatabaseInsertionTests{
         new DatabaseConstants()
     );
     
-    
-    
     [Theory]
     [MemberData(nameof(PingGroupSummaryTestGenerator.GetScenarioFunctions), MemberType = typeof(PingGroupSummaryTestGenerator))]
     public async Task TestRecordInsertion(string scenario){

@@ -1,12 +1,12 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useContext, useState, useEffect, useRef } from 'react';
 import './AnomaliesTable.css';
-import { ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
+import { PingGroupSummaryPublic, ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
 import { useServerEventListener } from './ServerEventListener';
+import { DatabaseContext } from './PingBackendContext';
 
 
-type AnomaliesTablePageControlProps = {
-    pageNumber : number,
-    saveUpdatedPage: (newPageNumber: number) => void
+type AnomaliesTablePageViewProps = {
+    pageNumber : number;
 }
 
 /**
@@ -14,7 +14,7 @@ type AnomaliesTablePageControlProps = {
  * @param param0 AnomaliesTablePageControlProps: {pageNumber, saveUpdatedPage}
  * @returns A text box which displays the current page number of the paginated anomalies view
  */
-function AnomaliesTablePageBox({pageNumber, saveUpdatedPage}:AnomaliesTablePageControlProps){
+function AnomaliesTablePageBox({pageNumber}:AnomaliesTablePageViewProps){
 
     // make sure to add feature to limit textbox value based on number of anomalies in the database
     return <input className = "page-box nav anomalies-table"
@@ -27,10 +27,15 @@ function AnomaliesTablePageBox({pageNumber, saveUpdatedPage}:AnomaliesTablePageC
                     borderRadius: '5px',
                     border:'transparent',
                     width: '30px',
-                    fontSize:"18px"}}
-            />
+                    fontSize:"18px"}}/>
 
 }
+
+type AnomaliesTablePageControlProps = {
+    pageNumber : number,
+    saveUpdatedPage: (newPageNumber: number) => void
+}
+
 
 /**
  * 
@@ -65,71 +70,42 @@ function AnomaliesTableNewestButton({pageNumber, saveUpdatedPage}:AnomaliesTable
     );
 }
 
+// Will evaluate adding this functionality later, for now save the same page
 function AnomaliesTableOldestButton({pageNumber, saveUpdatedPage}:AnomaliesTablePageControlProps){
     // simply go 5 pages over for now, but this needs to eventually go to the last page. 
     // Will need to use the same API that the AnomaliesTableRightPage button needs in order to detect when it should be disabled.
     return(
-        <button onClick={ () => saveUpdatedPage(pageNumber+5)}>
+        <button onClick={ () => saveUpdatedPage(pageNumber)}>
             <img src="/public/double-chevron-right.svg" className="button nav anomalies-table"/>
         </button>
     );
 }
 
 
-// will need callback to parent, parent will need to request new records
-function AnomaliesTableNavigation(){
-    const [pageNumber, setPageNumber] = useState<number>(1);
-
-    function saveUpdatedPage(num: number){
-        setPageNumber(num);
-    } 
-
-    return( 
-        <div className="nav anomalies-table" style={{display:'flex'}}>
-            <AnomaliesTableNewestButton pageNumber={pageNumber} saveUpdatedPage = {saveUpdatedPage}/>
-            <AnomaliesTableLeftPage pageNumber={pageNumber} saveUpdatedPage = {saveUpdatedPage}/>
-            <AnomaliesTablePageBox pageNumber={pageNumber} saveUpdatedPage = {saveUpdatedPage}/>
-            <AnomaliesTableRightPage pageNumber={pageNumber} saveUpdatedPage = {saveUpdatedPage}/>
-            <AnomaliesTableOldestButton pageNumber={pageNumber} saveUpdatedPage = {saveUpdatedPage}/>
-        </div>
-    )
+function DisplayAnomalies(anomalies: Array<PingGroupSummaryPublic>){
+    return anomalies.map((a) => {
+        return <tr key={a.start?.toDate().toString()}> 
+                <td>{a.start?.toDate().toString()}</td>
+                <td>{a.end?.toDate().toString()}</td>
+                <td>{a.target}</td>
+                <td>{a.minimumPing}</td>
+                <td>{a.averagePing}</td>
+                <td>{a.maximumPing}</td>
+                <td>{a.jitter}</td>
+                <td>{a.packetLoss}</td>
+              </tr>
+    }) 
 }
 
-
-function ArrayToTableData(array: any[]){
-    return <tr>{ array.map((e, index) => <td key={index}>{e}</td>) }</tr>;
+interface AnomaliesTableOutputProps{
+    anomalies: Array<PingGroupSummaryPublic> ;
 }
 
-function AnomaliesTableOutput(){
-    const [anomalyInfo, setAnomalyInfo] = useState<Array<string>>([]); // data structure to be determined later
-  
-    function onPingAnomaly(description : string){
-        const newData = [...anomalyInfo, description ];
-        setAnomalyInfo(newData);
-        console.log("New PingAnomaly data:");
-        console.log(newData);
-      return; 
-    }
-    
-    const eventHandler = useCallback((e: CustomEvent<ServerEvent_PingAnomaly>) => {
-      onPingAnomaly(e.detail.anomalyDescription);
-      console.log("AnomaliesTableOutput: PingAnomaly event");
-      console.log(e);
-    }, [setAnomalyInfo]);
-  
-    useServerEventListener("pinganomaly", eventHandler);
-
-    const sampleData = [
-        ["1","2024-06-07 08:31:14.898", "2024-06-07 08:31:15.776", "8.8.8.8", "3", "4", "5", "1", "0"],
-        ["2","2024-06-07 08:31:15.912", "2024-06-07 08:31:16.789", "8.8.8.8", "3", "3.875", "6", "1.286", "0"],
-        ["3","2024-06-07 08:31:16.912", "2024-06-07 08:31:17.788", "8.8.8.8", "3", "4", "5", "1.143", "0"]
-    ];
-
+function AnomaliesTableOutput(props : AnomaliesTableOutputProps){
     return (
         <table className="styled-table anomalies">
             <thead>
             <tr>
-                <th>Number</th>
                 <th>StartTime</th>
                 <th>EndTime</th>
                 <th>Target</th>
@@ -141,19 +117,84 @@ function AnomaliesTableOutput(){
             </tr>
             </thead>
             <tbody>
-            {ArrayToTableData(sampleData[0])}
-            {ArrayToTableData(sampleData[1])}
-            {ArrayToTableData(sampleData[2])}
+                {DisplayAnomalies(props.anomalies)}
             </tbody>
         </table>
     )
 }
 
+/**
+ * @description Responsible for tracking the current state of the Anomalies table, including data, pagination tokens and current page
+ */
+function AnomaliesTableManager(){
+    const [pageNumber, setPageNumber] = useState<number>(1);
+    const [anomaliesData, setAnomaliesData] = useState<Array<PingGroupSummaryPublic>>([]);
+    const [newAnomaly, setNewAnomaly] = useState<ServerEvent_PingAnomaly>();
+    const [apiError, setApiError] = useState<Error>();
+    const [loading, setLoading] = useState<boolean>();
+    const [numRecordsToGet, setNumRecordsToGet] = useState<number>(10); // make this more flexible in the future
+    const pTokenCacheRef = useRef<Map<number, string>>(new Map<number, string>());
+    const databaseContext = useContext(DatabaseContext);
+    const client = databaseContext.client;
+
+    const loadAnomalies = useCallback(() => {
+        console.log("loadAnomalies entered");
+        
+        var request = {numberRequested : numRecordsToGet, paginationToken : pTokenCacheRef.current.get(pageNumber-1)};
+        console.log(request);
+        setLoading(true);
+        client?.listAnomalies(request)
+            .catch((error) => {
+                console.log(error);
+                setApiError(error);
+            })
+            .then((response) => {
+                console.log(response!.anomalies.length);
+                if (!apiError){
+                    setAnomaliesData(response!.anomalies);
+                    if (pageNumber == 1){
+                        pTokenCacheRef.current = new Map<number, string>();
+                    }
+                    pTokenCacheRef.current.set(pageNumber, response!.paginationToken);
+                } else{
+                    setApiError(undefined);
+                    // pagination token cache?    
+                }
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+    }, [client, setAnomaliesData, pageNumber, newAnomaly]);
+    
+    const eventHandler = useCallback((e: CustomEvent<ServerEvent_PingAnomaly>) => {
+      setNewAnomaly(e.detail);
+    }, [setNewAnomaly, loadAnomalies]);
+  
+    useEffect(() => {
+        loadAnomalies();
+    }, [loadAnomalies, newAnomaly, pageNumber]);
+
+    useServerEventListener("pinganomaly", eventHandler);
+    return (
+        <>
+            <AnomaliesTableOutput anomalies={anomaliesData}/>
+            <div className="nav anomalies-table" style={{display:'flex'}}>
+                <AnomaliesTableNewestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
+                <AnomaliesTableLeftPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
+                <AnomaliesTablePageBox pageNumber={pageNumber}/>
+                <AnomaliesTableRightPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
+                <AnomaliesTableOldestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
+            </div>
+        </>
+    ) 
+}
+
+
+
 export function AnomaliesTable(){
     return (
         <div className="flex-container anomalies-table">
-        <AnomaliesTableOutput />
-        <AnomaliesTableNavigation />
+            <AnomaliesTableManager/>
         </div>
     )
 }  
