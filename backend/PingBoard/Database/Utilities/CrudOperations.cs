@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace PingBoard.Database.Utilities;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging.Configuration;
@@ -83,7 +85,7 @@ public class CrudOperations
         uint numToGet, CancellationToken cancellationToken, string? target = "")
     {
         await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(cancellationToken);
-        
+
         var summaryQuery = pingInfoContext
             .Summaries
             .Where(s => s.Start <= startingTime);
@@ -92,6 +94,8 @@ public class CrudOperations
         {
             summaryQuery = summaryQuery.Where((s) => s.Target == target);
         }
+        
+        
         var summaries = summaryQuery
             .Where(s => s.MinimumPing > _pingingThresholds.MinimumPingMs ||
                                         s.AveragePing > _pingingThresholds.AveragePingMs ||

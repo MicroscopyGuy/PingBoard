@@ -197,7 +197,7 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     {
         // create a PaginationToken if the UI did not supply one
         DateTime startTime = DateTime.UtcNow;
-        if (request.PaginationToken != "")
+        if (!string.IsNullOrEmpty(request.PaginationToken))
         {
             var suppliedToken = PaginationToken<DateTime>.FromApiFormat(request.PaginationToken, "ListAnomalies");
             startTime = suppliedToken.Token;
@@ -215,7 +215,7 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         {
             var nextCursor = anomalies[(int)request.NumberRequested].Start.ToDateTime();
             response.PaginationToken = PaginationToken<DateTime>.ToApiFormat( nextCursor, "ListAnomalies");
-            anomalies.RemoveAt(Convert.ToInt32(request.NumberRequested));
+            anomalies.RemoveAt((int) (request.NumberRequested));
         }
         
         response.Anomalies.Add(anomalies);
