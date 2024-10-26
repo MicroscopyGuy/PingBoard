@@ -218,6 +218,11 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
             anomalies.RemoveAt((int) (request.NumberRequested));
         }
         
+        else // if there aren't enough anomalies for a next page
+        {
+            response.PaginationToken = "";
+        }
+        
         response.Anomalies.Add(anomalies);
         
         

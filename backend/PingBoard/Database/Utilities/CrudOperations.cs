@@ -101,6 +101,7 @@ public class CrudOperations
                                         s.AveragePing > _pingingThresholds.AveragePingMs ||
                                         s.MaximumPing > _pingingThresholds.MaximumPingMs ||
                                         s.Jitter > _pingingThresholds.JitterMs ||
+                                        s.PacketLoss > _pingingThresholds.PacketLossPercentage ||
                                         s.TerminatingIPStatus != null)
             .Take((int) numToGet)
             .OrderByDescending(s => s.Start)

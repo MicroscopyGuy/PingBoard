@@ -91,7 +91,7 @@ function DisplayAnomalies(anomalies: Array<PingGroupSummaryPublic>){
                 <td>{a.minimumPing}</td>
                 <td>{a.averagePing}</td>
                 <td>{a.maximumPing}</td>
-                <td>{a.jitter}</td>
+                <td>{a.jitter.toFixed(3)}</td>
                 <td>{a.packetLoss}</td>
               </tr>
     }) 
@@ -132,6 +132,7 @@ function AnomaliesTableManager(){
     const [newAnomaly, setNewAnomaly] = useState<ServerEvent_PingAnomaly>();
     const [apiError, setApiError] = useState<Error>();
     const [loading, setLoading] = useState<boolean>();
+    const [endOfResults, setEndOfResults] = useState<boolean>(false);
     const [numRecordsToGet, setNumRecordsToGet] = useState<number>(10); // make this more flexible in the future
     const pTokenCacheRef = useRef<Map<number, string>>(new Map<number, string>());
     const databaseContext = useContext(DatabaseContext);
@@ -152,6 +153,7 @@ function AnomaliesTableManager(){
                 console.log(response!.anomalies.length);
                 if (!apiError){
                     setAnomaliesData(response!.anomalies);
+                    setEndOfResults(response!.paginationToken != "");
                     if (pageNumber == 1){
                         pTokenCacheRef.current = new Map<number, string>();
                     }
@@ -182,8 +184,8 @@ function AnomaliesTableManager(){
                 <AnomaliesTableNewestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
                 <AnomaliesTableLeftPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
                 <AnomaliesTablePageBox pageNumber={pageNumber}/>
-                <AnomaliesTableRightPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
-                <AnomaliesTableOldestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
+                { endOfResults && <AnomaliesTableRightPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/> }
+                { endOfResults && <AnomaliesTableOldestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/> }
             </div>
         </>
     ) 
