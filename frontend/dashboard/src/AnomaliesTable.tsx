@@ -18,9 +18,10 @@ function AnomaliesTablePageBox({pageNumber}:AnomaliesTablePageViewProps){
 
     // make sure to add feature to limit textbox value based on number of anomalies in the database
     return <input className = "page-box nav anomalies-table"
-            type = "text"
-            value = {pageNumber}
-            min = {1}
+            readOnly
+            type="text"
+            value={pageNumber}
+            min={1}
             style={{maxWidth: "60px", 
                     alignSelf: "stretch", 
                     textAlign:'center', 
@@ -31,9 +32,10 @@ function AnomaliesTablePageBox({pageNumber}:AnomaliesTablePageViewProps){
 
 }
 
+type AnomaliesPageSetter = (current: number) => number;
 type AnomaliesTablePageControlProps = {
-    pageNumber : number,
-    saveUpdatedPage: (newPageNumber: number) => void
+    saveUpdatedPage: (newPageNumber: AnomaliesPageSetter) => void
+    disabled: boolean
 }
 
 
@@ -42,40 +44,40 @@ type AnomaliesTablePageControlProps = {
  * @param param0 AnomaliesTablePageControlProps: {pageNumber, saveUpdatedPage}
  * @returns A button used to move through the paginated anomalies in reverse order
  */
-function AnomaliesTableLeftPage({pageNumber, saveUpdatedPage}:AnomaliesTablePageControlProps){
+function AnomaliesTableLeftPage({saveUpdatedPage, disabled}:AnomaliesTablePageControlProps){
     return(
-        <button disabled={ pageNumber == 1 } onClick={ () => saveUpdatedPage(pageNumber-1) }>
+        <button disabled={ disabled } onClick={ () => saveUpdatedPage((current) => current-1)}>
             <img src="/public/chevron-left.svg" className="button nav anomalies-table"/>
         </button>
     );
     
 }
 
-function AnomaliesTableRightPage({pageNumber, saveUpdatedPage}:AnomaliesTablePageControlProps){
+function AnomaliesTableRightPage({saveUpdatedPage, disabled}:AnomaliesTablePageControlProps){
     // need to eventually make some sort of API to get the count of pages that are anomalies,
     // use that information to disable the right page button when at the end of results
     return(
-        <button onClick={ () => saveUpdatedPage(pageNumber+1)}>
+        <button disabled={disabled} onClick={ () => saveUpdatedPage((current) => current+1)}>
             <img src="/public/chevron-right.svg" className="button nav anomalies-table" style={{justifyContent: "center"}}/>
         </button>
     );
 }
 
 
-function AnomaliesTableNewestButton({pageNumber, saveUpdatedPage}:AnomaliesTablePageControlProps){
+function AnomaliesTableNewestButton({saveUpdatedPage, disabled}:AnomaliesTablePageControlProps){
     return(
-        <button disabled={ pageNumber == 1 } onClick={ () => saveUpdatedPage(1)}>
+        <button disabled={ disabled} onClick={ () => saveUpdatedPage((_) => 1)}>
             <img src="/public/double-chevron-left.svg" className="button nav anomalies-table"/>
         </button>
     );
 }
 
 // Will evaluate adding this functionality later, for now save the same page
-function AnomaliesTableOldestButton({pageNumber, saveUpdatedPage}:AnomaliesTablePageControlProps){
+function AnomaliesTableOldestButton({saveUpdatedPage}:AnomaliesTablePageControlProps){
     // simply go 5 pages over for now, but this needs to eventually go to the last page. 
     // Will need to use the same API that the AnomaliesTableRightPage button needs in order to detect when it should be disabled.
     return(
-        <button onClick={ () => saveUpdatedPage(pageNumber)}>
+        <button disabled={true} onClick={() => saveUpdatedPage((_) => 999)}>
             <img src="/public/double-chevron-right.svg" className="button nav anomalies-table"/>
         </button>
     );
@@ -85,14 +87,14 @@ function AnomaliesTableOldestButton({pageNumber, saveUpdatedPage}:AnomaliesTable
 function DisplayAnomalies(anomalies: Array<PingGroupSummaryPublic>){
     return anomalies.map((a) => {
         return <tr key={a.start?.toDate().toString()}> 
-                <td>{a.start?.toDate().toString()}</td>
-                <td>{a.end?.toDate().toString()}</td>
+                <td>{a.start?.toDate().toLocaleString()}</td>
+                <td>{a.end?.toDate().toLocaleString()}</td>
                 <td>{a.target}</td>
-                <td>{a.minimumPing}</td>
-                <td>{a.averagePing}</td>
-                <td>{a.maximumPing}</td>
-                <td>{a.jitter.toFixed(3)}</td>
-                <td>{a.packetLoss}</td>
+                <td>{a.minimumPing + "ms"}</td>
+                <td>{a.averagePing.toFixed(3) + "ms"}</td>
+                <td>{a.maximumPing + "ms"}</td>
+                <td>{a.jitter.toFixed(3)+"ms"}</td>
+                <td>{a.packetLoss + "%"}</td>
               </tr>
     }) 
 }
@@ -133,7 +135,7 @@ function AnomaliesTableManager(){
     const [apiError, setApiError] = useState<Error>();
     const [loading, setLoading] = useState<boolean>();
     const [endOfResults, setEndOfResults] = useState<boolean>(false);
-    const [numRecordsToGet, setNumRecordsToGet] = useState<number>(10); // make this more flexible in the future
+    const [numRecordsToGet, setNumRecordsToGet] = useState<number>(20); // make this more flexible in the future
     const pTokenCacheRef = useRef<Map<number, string>>(new Map<number, string>());
     const databaseContext = useContext(DatabaseContext);
     const client = databaseContext.client;
@@ -145,23 +147,20 @@ function AnomaliesTableManager(){
         console.log(request);
         setLoading(true);
         client?.listAnomalies(request)
+            .then((response) => {
+                console.log(response!.anomalies.length);
+                setAnomaliesData(response!.anomalies);
+                setEndOfResults(response?.paginationToken ? false : true);
+                if (pageNumber == 1){
+                    pTokenCacheRef.current = new Map<number, string>();
+                }
+                pTokenCacheRef.current.set(pageNumber, response!.paginationToken);
+                setApiError(undefined);
+                // pagination token cache?    
+            })
             .catch((error) => {
                 console.log(error);
                 setApiError(error);
-            })
-            .then((response) => {
-                console.log(response!.anomalies.length);
-                if (!apiError){
-                    setAnomaliesData(response!.anomalies);
-                    setEndOfResults(response!.paginationToken != "");
-                    if (pageNumber == 1){
-                        pTokenCacheRef.current = new Map<number, string>();
-                    }
-                    pTokenCacheRef.current.set(pageNumber, response!.paginationToken);
-                } else{
-                    setApiError(undefined);
-                    // pagination token cache?    
-                }
             })
             .finally(() => {
                 setLoading(false);
@@ -181,11 +180,11 @@ function AnomaliesTableManager(){
         <>
             <AnomaliesTableOutput anomalies={anomaliesData}/>
             <div className="nav anomalies-table" style={{display:'flex'}}>
-                <AnomaliesTableNewestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
-                <AnomaliesTableLeftPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/>
+                <AnomaliesTableNewestButton disabled={pageNumber === 1} saveUpdatedPage={setPageNumber}/>
+                <AnomaliesTableLeftPage disabled={pageNumber === 1} saveUpdatedPage={setPageNumber}/>
                 <AnomaliesTablePageBox pageNumber={pageNumber}/>
-                { endOfResults && <AnomaliesTableRightPage pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/> }
-                { endOfResults && <AnomaliesTableOldestButton pageNumber={pageNumber} saveUpdatedPage = {setPageNumber}/> }
+                <AnomaliesTableRightPage disabled={endOfResults} saveUpdatedPage={setPageNumber}/>
+                <AnomaliesTableOldestButton disabled={endOfResults} saveUpdatedPage={setPageNumber}/>
             </div>
         </>
     ) 

@@ -214,7 +214,7 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         if (anomalies.Count == request.NumberRequested+1)
         {
             var nextCursor = anomalies[(int)request.NumberRequested].Start.ToDateTime();
-            response.PaginationToken = PaginationToken<DateTime>.ToApiFormat( nextCursor, "ListAnomalies");
+            response.PaginationToken = PaginationToken<DateTime>.ToApiFormat(nextCursor, "ListAnomalies");
             anomalies.RemoveAt((int) (request.NumberRequested));
         }
         
