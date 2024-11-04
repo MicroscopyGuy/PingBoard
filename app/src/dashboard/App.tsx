@@ -1,5 +1,5 @@
-
 import './App.css';
+import './index.css';
 import PingBackendProvider from './PingBackendContext';
 import { AnomaliesTable } from './AnomaliesTable';
 import PingStartStopMenu from "./PingStartStopMenu";

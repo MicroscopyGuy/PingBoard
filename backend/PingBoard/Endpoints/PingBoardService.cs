@@ -121,6 +121,7 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     public override async Task GetLatestServerEvent(Empty request, IServerStreamWriter<ServerEvent> responseStream,
         ServerCallContext context)
     {
+        _logger.LogDebug("GetLatestServerEvent: Starting API call");
         while (!context.CancellationToken.IsCancellationRequested)
         {
             var readyTaskReader = await GetReadyChannelReaderAdapter(context.CancellationToken);
@@ -177,6 +178,7 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         return readyTaskReader;
     }
 
+    /*
     // give this a PaginationToken as well, add to protobuff
     public override async Task<ListPingsResponse> ListPings(ListPingsRequest request, ServerCallContext context)
     {
@@ -191,10 +193,12 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         );
         response.Summaries.Add(summaries);
         return response;
-    }
+    }*/
 
     public override async Task<ListAnomaliesResponse> ListAnomalies(ListAnomaliesRequest request, ServerCallContext context)
     {
+        _logger.LogDebug("GetLatestServerEvent: Starting API call");
+        
         // create a PaginationToken if the UI did not supply one
         DateTime startTime = DateTime.UtcNow;
         if (!string.IsNullOrEmpty(request.PaginationToken))
@@ -224,7 +228,6 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         }
         
         response.Anomalies.Add(anomalies);
-        
         
         return response;
     }

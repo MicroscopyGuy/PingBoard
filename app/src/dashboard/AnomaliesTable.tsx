@@ -38,7 +38,6 @@ type AnomaliesTablePageControlProps = {
     disabled: boolean
 }
 
-
 /**
  * 
  * @param param0 AnomaliesTablePageControlProps: {pageNumber, saveUpdatedPage}
@@ -84,17 +83,25 @@ function AnomaliesTableOldestButton({saveUpdatedPage}:AnomaliesTablePageControlP
 }
 
 
+function IndicateEmptyAnomalies(){
+    return <tr>
+                <td colSpan={8}>
+                    No results found.
+                </td>
+           </tr>
+}
+
 function DisplayAnomalies(anomalies: Array<PingGroupSummaryPublic>){
     return anomalies.map((a) => {
-        return <tr key={a.start?.toDate().toString()}> 
-                <td>{a.start?.toDate().toLocaleString()}</td>
-                <td>{a.end?.toDate().toLocaleString()}</td>
-                <td>{a.target}</td>
-                <td>{a.minimumPing + "ms"}</td>
-                <td>{a.averagePing.toFixed(3) + "ms"}</td>
-                <td>{a.maximumPing + "ms"}</td>
-                <td>{a.jitter.toFixed(3)+"ms"}</td>
-                <td>{a.packetLoss + "%"}</td>
+        return <tr key={a.start?.toDate().toString() + a.end?.toDate().toString()}> 
+                    <td>{a.start?.toDate().toLocaleString()}</td>
+                    <td>{a.end?.toDate().toLocaleString()}</td>
+                    <td>{a.target}</td>
+                    <td>{a.minimumPing + "ms"}</td>
+                    <td>{a.averagePing.toFixed(3) + "ms"}</td>
+                    <td>{a.maximumPing + "ms"}</td>
+                    <td>{a.jitter.toFixed(3)+"ms"}</td>
+                    <td>{a.packetLoss.toFixed(2) + "%"}</td>
               </tr>
     }) 
 }
@@ -119,7 +126,10 @@ function AnomaliesTableOutput(props : AnomaliesTableOutputProps){
             </tr>
             </thead>
             <tbody>
-                {DisplayAnomalies(props.anomalies)}
+                {props.anomalies.length > 0 
+                    ? DisplayAnomalies(props.anomalies) 
+                    : IndicateEmptyAnomalies() 
+                }
             </tbody>
         </table>
     )

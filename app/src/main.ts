@@ -1,5 +1,7 @@
 import { app, BrowserWindow } from 'electron';
 import path from 'path';
+import { spawn } from 'child_process';
+import { join } from 'path';
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME : string;
@@ -30,10 +32,24 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
 };
 
+const serverPath = "C:/Users/LeorGoldberg/Documents/Projects/PingBoard/backend/PingBoard/bin/Release/net8.0/win-x64/publish/";
+const startBackend = () => {
+  spawn(join(serverPath, "PingBoard.exe"),
+    [],
+    {
+      cwd: serverPath,
+      env: {
+        LOG_TO_FILE:"true"
+      }
+    }
+  )
+}
+
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', createWindow);
+app.on('ready', startBackend);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

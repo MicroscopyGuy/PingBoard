@@ -28,16 +28,22 @@ message PingGroupSummaryPublic {
   optional string lastAbnormalStatusExplanation = 10;
 }
 
+enum MetricAggregationPeriod{
+  None = 0;
+  Minute = 1;
+  Hour = 2;
+  Day = 3;
+}
+
 message ListPingsRequest{
   google.protobuf.Timestamp startingTime = 1;
-  uint32 numberRequested = 2;
-  string paginationToken = 3;
-  optional PingTarget pingTarget = 4;
+  google.protobuf.Timestamp endingTime = 2;
+  PingTarget pingTarget = 4;
+  MetricAggregationPeriod metricAggregationPeriod= 5;
 }
 
 message ListPingsResponse{
-  repeated PingGroupSummaryPublic summaries = 1;
-  string paginationToken = 2;
+  google.protobuf.Timestamp imJustHereSoIDontGetFined = 1;
 }
 
 message ListAnomaliesRequest{
@@ -66,14 +72,12 @@ message ServerEvent{
     PingTarget pingTarget = 1;
     string errorDescription = 2;   
   }
-
+  
   google.protobuf.Timestamp eventTime = 1;
 
   oneof ServerEvent{
     PingOnOffToggle pingOnOffToggle = 100;
-
     PingAnomaly pingAnomaly = 101;
-
     PingAgentError pingAgentError = 190;
   }
 }

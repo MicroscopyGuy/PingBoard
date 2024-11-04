@@ -1,5 +1,8 @@
 using System.Collections.Immutable;
+using System.Text.Json;
 using System.Threading.Channels;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Serilog;
 
 namespace PingBoard;
 using Microsoft.Data.Sqlite;
@@ -22,20 +25,12 @@ public class Program
     public static void Main(string[] args)
     {
         
-        
-        
         var builder = WebApplication.CreateBuilder(args);
         builder.WebHost.ConfigureKestrel((c) =>
         {
             c.ListenLocalhost(5245);
         });
-        /* commented out to move from Rest to GRPC API design
-        // Add services to the container.
-        builder.Services.AddControllers();
-        // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-        builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
-        */
+        
         builder.Services.AddGrpc();
         builder.Services.AddGrpcReflection();
         //builder.Services.AddGrpcHealthChecks()
@@ -115,10 +110,8 @@ public class Program
         builder.Services.AddSingleton<ServerEventEmitter>();
         
         builder.Services.AddSingleton<PingMonitoringJobManager>();
-        builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
-            => svc.GetRequiredService<PingMonitoringJobManager>());
-        
-        
+        /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
+            => svc.GetRequiredService<PingMonitoringJobManager>());*/
         
         builder.Services.AddSingleton<Func<string, PingMonitoringJobRunner>>((svc) =>
         {
@@ -188,7 +181,22 @@ public class Program
                 });
         });
         
-        builder.Logging.AddConsole();
+        //builder.Logging.AddConsole();
+
+        if (Environment.GetEnvironmentVariable("LOG_TO_FILE") == "true")
+        {
+            builder.Services.AddSerilog((services, lc) => lc
+                .ReadFrom.Configuration(builder.Configuration)
+                .ReadFrom.Services(services)
+                .Enrich.FromLogContext()
+                .WriteTo.File("serverLogs.txt", rollingInterval: RollingInterval.Day)
+                .WriteTo.Console());
+        }
+        else
+        {
+            builder.Logging.AddConsole();
+        }
+        
         /***********************************************Build the application *****************************************/
         var app = builder.Build();
         app.UseCors(allowCorsPolicy);
@@ -199,8 +207,6 @@ public class Program
             //app.UseSwagger();
             //app.UseSwaggerUI();
             app.MapGrpcReflectionService();
-            
-            
         }
 
         //app.UseHttpsRedirection();
