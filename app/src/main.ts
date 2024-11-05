@@ -2,6 +2,8 @@ import { app, BrowserWindow } from 'electron';
 import path from 'path';
 import { spawn } from 'child_process';
 import { join } from 'path';
+import * as http from 'http';
+import { ipcMain } from 'electron'
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME : string;
@@ -14,8 +16,8 @@ if (require('electron-squirrel-startup')) {
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1920,
+    height: 1080,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
     },
@@ -39,11 +41,43 @@ const startBackend = () => {
     {
       cwd: serverPath,
       env: {
-        LOG_TO_FILE:"true"
+        LOG_TO_FILE:"true",
+        CLIENT_SOCKET_PATH:"/temp/client.sock"
       }
     }
   )
 }
+
+async function makeApiRequest(method: 'GET', path: string) {
+
+  const options: http.RequestOptions = {
+    socketPath: "/tmp/wizard.sock",   // Replace with a path that is more reasonable to you, a relative path is fine, maybe in AppData
+    path: path,
+    method: method,
+    headers: {
+      Accept: "application/json",
+    },
+  };
+
+  const reqPromise = new Promise<string>((resolve, reject) => {
+    const callback = (res: http.IncomingMessage) => {
+      console.log(`STATUS: ${res.statusCode}`);
+      res.setEncoding("utf8");
+      res.on("data", (d) => resolve(d as string));
+      res.on("error", (error) => reject(`${error.name}: ${error.message}`));
+    };
+
+    const clientRequest = http.request(options, callback);
+    clientRequest.end();
+  });
+  return await reqPromise;
+}
+
+app.on('ready', () => {
+  ipcMain.handle("api:makeRequest", (e, args) => makeApiRequest(args[0], args[1]));
+});
+
+
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
