@@ -1,6 +1,5 @@
 import { useState, useContext, useCallback } from 'react';
 import './App.css';
-import { ConnectError } from '@connectrpc/connect';
 import { DatabaseContext } from './PingBackendContext';
 import { useServerEventListener } from "./ServerEventListener";
 import { ServerEvent_PingOnOffToggle } from "client/dist/gen/service_pb";
@@ -26,7 +25,7 @@ function PingStartButton({pingTarget, pingingActive}: PingStartButtonProps){
   
       const client = databaseContext.client;
       client!.startPinging({ target: pingTarget })
-        .catch((err) => console.log( err instanceof ConnectError
+        .catch((err) => console.log( err instanceof Error && 'code' in err
                               ? `Start Pinging: Error code:${err.code}, message: ${err.message}`
                               : `Error message:${err.message}`));
     }

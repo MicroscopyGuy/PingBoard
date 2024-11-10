@@ -4,6 +4,11 @@ import { spawn } from 'child_process';
 import { join } from 'path';
 import * as http from 'http';
 import { ipcMain } from 'electron'
+import createClient from 'client';
+import { PingTarget } from 'client/dist/gen/service_pb';
+import { PingBoardService } from 'client';
+import { Empty } from "@bufbuild/protobuf";
+
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME : string;
@@ -19,7 +24,7 @@ const createWindow = () => {
     width: 1920,
     height: 1080,
     webPreferences: {
-      preload: path.join(__dirname, 'preload.js'),
+      preload: path.join(__dirname, 'preload.js')
     },
   });
 
@@ -35,55 +40,79 @@ const createWindow = () => {
 };
 
 const serverPath = "C:/Users/LeorGoldberg/Documents/Projects/PingBoard/backend/PingBoard/bin/Release/net8.0/win-x64/publish/";
+const socketPath = "client.sock";
+
 const startBackend = () => {
-  spawn(join(serverPath, "PingBoard.exe"),
+  const p = spawn(join(serverPath, "PingBoard.exe"),
     [],
     {
       cwd: serverPath,
       env: {
-        LOG_TO_FILE:"true",
-        CLIENT_SOCKET_PATH:"/temp/client.sock"
+        //LOG_TO_FILE:"true",
+        CLIENT_SOCKET_PATH:socketPath
       }
     }
   )
+
+  p.stdout.on('data', (info) => {console.log(info.toString())});
 }
 
-async function makeApiRequest(method: 'GET', path: string) {
+type BackendClient = ReturnType<typeof createClient>;
+let backendClient : BackendClient;
 
-  const options: http.RequestOptions = {
-    socketPath: "/tmp/wizard.sock",   // Replace with a path that is more reasonable to you, a relative path is fine, maybe in AppData
-    path: path,
-    method: method,
-    headers: {
-      Accept: "application/json",
-    },
-  };
+// type rpcName = keyof BackendClient; type union of rpc names
+// type la = BackendClient['listAnomalies'] //type definition for list anomalies
+// type laRet = ReturnType<la>; //return type of list anomalies
+// type waitedLaRet = Awaited<laRet>;
+// type returnTypes = ReturnType<BackendClient[keyof BackendClient]> type union of return types for all rpcs in BackendClient
+// type firstParameters = Parameters<BackendClient[keyof BackendClient]>[0] type union of first parameters for all rpcs in BackendClient
 
-  const reqPromise = new Promise<string>((resolve, reject) => {
-    const callback = (res: http.IncomingMessage) => {
-      console.log(`STATUS: ${res.statusCode}`);
-      res.setEncoding("utf8");
-      res.on("data", (d) => resolve(d as string));
-      res.on("error", (error) => reject(`${error.name}: ${error.message}`));
-    };
+// rpc returns promises, but Typescript doesn't know that that ReturnType<BackendClient[T] is a promise, so we await it and then 
+// explicitly make it a promise. Awaited unwraps the type ONLY if it's a promise
 
-    const clientRequest = http.request(options, callback);
-    clientRequest.end();
-  });
-  return await reqPromise;
+type StreamingOrNever<T extends keyof BackendClient> = ReturnType<BackendClient[T]> extends AsyncIterable<any> ? T : never; 
+type PromiseOrNever<T extends keyof BackendClient> = ReturnType<BackendClient[T]> extends Promise<any> ? T : never;
+type PromiseReturningBackendClient = {
+  [K in keyof BackendClient as PromiseOrNever<K>]: BackendClient[K]
 }
+
+
+async function makeApiRequest<T extends keyof PromiseReturningBackendClient>(
+  rpcMethod: T,
+  request: Parameters<PromiseReturningBackendClient[T]>[0]
+): Promise<Awaited<ReturnType<PromiseReturningBackendClient[T]>>> {
+
+  const inputType = PingBoardService.methods[rpcMethod].I;
+  console.log(`Method type: ${PingBoardService.methods[rpcMethod].kind}`);
+  let jsonRequest;
+
+  if (inputType.typeName == "google.protobuf.Empty"){
+    jsonRequest = {};
+  } else{
+    console.log(inputType);
+    jsonRequest = inputType.fromJson(request as any);
+  }
+
+  const pbc = backendClient as PromiseReturningBackendClient;
+  const result = await pbc[rpcMethod](jsonRequest);
+  console.log(result);
+
+  const outputType = PingBoardService.methods[rpcMethod].O;
+  if (outputType.typeName === "google.protobuf.Empty"){
+    return {} as Promise<Awaited<ReturnType<PromiseReturningBackendClient[T]>>>
+  }
+
+  return (outputType as any).toJson(result);
+}
+
+
 
 app.on('ready', () => {
+  startBackend();
   ipcMain.handle("api:makeRequest", (e, args) => makeApiRequest(args[0], args[1]));
+  createWindow();
+  backendClient = createClient("http://localhost:5245");
 });
-
-
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
-app.on('ready', startBackend);
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

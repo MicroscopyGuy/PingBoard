@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
 import { createContext, useEffect, useCallback } from "react";
-import createClient from 'client'
+import type * as bc from 'client/dist/gen/service_pb';
 import { dispatchEvent, CustomEventMap } from "./ServerEventListener";
+import { BackendClient } from 'client/dist/index';
+import createClient from './PingBackendClient';
 
 type DatabaseContext = {
     client?: BackendClient
@@ -13,8 +15,7 @@ type PingBackendProviderProps = {
     children : ReactNode
 };
 
-type BackendClient = ReturnType<typeof createClient>;
-const backendClient = createClient("http://localhost:5245");
+const backendClient = createClient();
 
 export default function PingBackendProvider(p : PingBackendProviderProps){
     const grabPingServerEvents = useCallback(async(signal : AbortSignal) => {

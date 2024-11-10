@@ -152,7 +152,7 @@ function AnomaliesTableManager(){
 
     const loadAnomalies = useCallback(() => {
         console.log("loadAnomalies entered");
-        var request = {numberRequested : numRecordsToGet, paginationToken : pTokenCacheRef.current.get(pageNumber-1)};
+        var request = {numberRequested : numRecordsToGet, paginationToken : pTokenCacheRef.current.get(pageNumber-1)?? ""};
         console.log(request);
         setLoading(true);
         client?.listAnomalies(request)
