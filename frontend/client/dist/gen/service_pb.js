@@ -4,6 +4,35 @@
 // @ts-nocheck
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 /**
+ * @generated from enum MetricAggregationPeriod
+ */
+export var MetricAggregationPeriod;
+(function (MetricAggregationPeriod) {
+    /**
+     * @generated from enum value: None = 0;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["None"] = 0] = "None";
+    /**
+     * @generated from enum value: Minute = 1;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["Minute"] = 1] = "Minute";
+    /**
+     * @generated from enum value: Hour = 2;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["Hour"] = 2] = "Hour";
+    /**
+     * @generated from enum value: Day = 3;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["Day"] = 3] = "Day";
+})(MetricAggregationPeriod || (MetricAggregationPeriod = {}));
+// Retrieve enum metadata with: proto3.getEnumType(MetricAggregationPeriod)
+proto3.util.setEnumType(MetricAggregationPeriod, "MetricAggregationPeriod", [
+    { no: 0, name: "None" },
+    { no: 1, name: "Minute" },
+    { no: 2, name: "Hour" },
+    { no: 3, name: "Day" },
+]);
+/**
  * @generated from message PingTarget
  */
 export class PingTarget extends Message {
@@ -99,13 +128,9 @@ export class ListPingsRequest extends Message {
     constructor(data) {
         super();
         /**
-         * @generated from field: uint32 numberRequested = 2;
+         * @generated from field: MetricAggregationPeriod metricAggregationPeriod = 5;
          */
-        this.numberRequested = 0;
-        /**
-         * @generated from field: string paginationToken = 3;
-         */
-        this.paginationToken = "";
+        this.metricAggregationPeriod = MetricAggregationPeriod.None;
         proto3.util.initPartial(data, this);
     }
     static fromBinary(bytes, options) {
@@ -125,9 +150,9 @@ ListPingsRequest.runtime = proto3;
 ListPingsRequest.typeName = "ListPingsRequest";
 ListPingsRequest.fields = proto3.util.newFieldList(() => [
     { no: 1, name: "startingTime", kind: "message", T: Timestamp },
-    { no: 2, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
-    { no: 3, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
+    { no: 2, name: "endingTime", kind: "message", T: Timestamp },
+    { no: 4, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 5, name: "metricAggregationPeriod", kind: "enum", T: proto3.getEnumType(MetricAggregationPeriod) },
 ]);
 /**
  * @generated from message ListPingsResponse
@@ -135,14 +160,6 @@ ListPingsRequest.fields = proto3.util.newFieldList(() => [
 export class ListPingsResponse extends Message {
     constructor(data) {
         super();
-        /**
-         * @generated from field: repeated PingGroupSummaryPublic summaries = 1;
-         */
-        this.summaries = [];
-        /**
-         * @generated from field: string paginationToken = 2;
-         */
-        this.paginationToken = "";
         proto3.util.initPartial(data, this);
     }
     static fromBinary(bytes, options) {
@@ -161,8 +178,7 @@ export class ListPingsResponse extends Message {
 ListPingsResponse.runtime = proto3;
 ListPingsResponse.typeName = "ListPingsResponse";
 ListPingsResponse.fields = proto3.util.newFieldList(() => [
-    { no: 1, name: "summaries", kind: "message", T: PingGroupSummaryPublic, repeated: true },
-    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "imJustHereSoIDontGetFined", kind: "message", T: Timestamp },
 ]);
 /**
  * @generated from message ListAnomaliesRequest

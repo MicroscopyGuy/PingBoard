@@ -24,12 +24,38 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        
         var builder = WebApplication.CreateBuilder(args);
+
         builder.WebHost.ConfigureKestrel((c) =>
         {
-            c.ListenLocalhost(5245);
-        });
+            c.ListenLocalhost(5245, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http2;
+            });
+        }); 
+        var folder = Environment.SpecialFolder.LocalApplicationData;
+        var path = Environment.GetFolderPath(folder);
+        var appDataPath = System.IO.Path.Join(path, "PingBoard");
+        
+        /*
+        var socketPath = Environment.GetEnvironmentVariable("CLIENT_SOCKET_PATH") ?? "client.sock";
+        var fullSocketPath = System.IO.Path.Join(Environment.CurrentDirectory, socketPath);
+        Console.WriteLine($"Client Socket file located at: {fullSocketPath}");
+        if (File.Exists(fullSocketPath))
+        {
+            File.Delete(fullSocketPath);
+        }
+        
+        builder.WebHost.ConfigureKestrel(serverOptions =>
+        {
+            serverOptions.ListenUnixSocket(fullSocketPath, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1;
+            });
+        });*/
+        
+        
+        
         
         builder.Services.AddGrpc();
         builder.Services.AddGrpcReflection();
@@ -140,10 +166,6 @@ public class Program
 
         //EFCore Framework related information
         var databaseName = "Summaries";
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        var appDataPath = System.IO.Path.Join(path, "PingBoard");
-        
         
         if (!Directory.Exists(appDataPath))
         {
@@ -214,7 +236,6 @@ public class Program
         //app.UseAuthorization();
 
         //app.MapControllers();
-        app.UseGrpcWeb(new GrpcWebOptions { DefaultEnabled = true });
         app.MapGrpcService<Services.PingBoardService>();
         app.MapGet("/", () => "This gRPC service is gRPC-Web enabled and is callable from browser apps using the gRPC-Web protocol");
         

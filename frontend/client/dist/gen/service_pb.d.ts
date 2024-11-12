@@ -1,6 +1,27 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 /**
+ * @generated from enum MetricAggregationPeriod
+ */
+export declare enum MetricAggregationPeriod {
+    /**
+     * @generated from enum value: None = 0;
+     */
+    None = 0,
+    /**
+     * @generated from enum value: Minute = 1;
+     */
+    Minute = 1,
+    /**
+     * @generated from enum value: Hour = 2;
+     */
+    Hour = 2,
+    /**
+     * @generated from enum value: Day = 3;
+     */
+    Day = 3
+}
+/**
  * @generated from message PingTarget
  */
 export declare class PingTarget extends Message<PingTarget> {
@@ -79,17 +100,17 @@ export declare class ListPingsRequest extends Message<ListPingsRequest> {
      */
     startingTime?: Timestamp;
     /**
-     * @generated from field: uint32 numberRequested = 2;
+     * @generated from field: google.protobuf.Timestamp endingTime = 2;
      */
-    numberRequested: number;
+    endingTime?: Timestamp;
     /**
-     * @generated from field: string paginationToken = 3;
-     */
-    paginationToken: string;
-    /**
-     * @generated from field: optional PingTarget pingTarget = 4;
+     * @generated from field: PingTarget pingTarget = 4;
      */
     pingTarget?: PingTarget;
+    /**
+     * @generated from field: MetricAggregationPeriod metricAggregationPeriod = 5;
+     */
+    metricAggregationPeriod: MetricAggregationPeriod;
     constructor(data?: PartialMessage<ListPingsRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "ListPingsRequest";
@@ -104,13 +125,9 @@ export declare class ListPingsRequest extends Message<ListPingsRequest> {
  */
 export declare class ListPingsResponse extends Message<ListPingsResponse> {
     /**
-     * @generated from field: repeated PingGroupSummaryPublic summaries = 1;
+     * @generated from field: google.protobuf.Timestamp imJustHereSoIDontGetFined = 1;
      */
-    summaries: PingGroupSummaryPublic[];
-    /**
-     * @generated from field: string paginationToken = 2;
-     */
-    paginationToken: string;
+    imJustHereSoIDontGetFined?: Timestamp;
     constructor(data?: PartialMessage<ListPingsResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "ListPingsResponse";

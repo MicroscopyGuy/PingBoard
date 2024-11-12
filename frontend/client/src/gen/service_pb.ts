@@ -7,6 +7,38 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 
 /**
+ * @generated from enum MetricAggregationPeriod
+ */
+export enum MetricAggregationPeriod {
+  /**
+   * @generated from enum value: None = 0;
+   */
+  None = 0,
+
+  /**
+   * @generated from enum value: Minute = 1;
+   */
+  Minute = 1,
+
+  /**
+   * @generated from enum value: Hour = 2;
+   */
+  Hour = 2,
+
+  /**
+   * @generated from enum value: Day = 3;
+   */
+  Day = 3,
+}
+// Retrieve enum metadata with: proto3.getEnumType(MetricAggregationPeriod)
+proto3.util.setEnumType(MetricAggregationPeriod, "MetricAggregationPeriod", [
+  { no: 0, name: "None" },
+  { no: 1, name: "Minute" },
+  { no: 2, name: "Hour" },
+  { no: 3, name: "Day" },
+]);
+
+/**
  * @generated from message PingTarget
  */
 export class PingTarget extends Message<PingTarget> {
@@ -144,19 +176,19 @@ export class ListPingsRequest extends Message<ListPingsRequest> {
   startingTime?: Timestamp;
 
   /**
-   * @generated from field: uint32 numberRequested = 2;
+   * @generated from field: google.protobuf.Timestamp endingTime = 2;
    */
-  numberRequested = 0;
+  endingTime?: Timestamp;
 
   /**
-   * @generated from field: string paginationToken = 3;
-   */
-  paginationToken = "";
-
-  /**
-   * @generated from field: optional PingTarget pingTarget = 4;
+   * @generated from field: PingTarget pingTarget = 4;
    */
   pingTarget?: PingTarget;
+
+  /**
+   * @generated from field: MetricAggregationPeriod metricAggregationPeriod = 5;
+   */
+  metricAggregationPeriod = MetricAggregationPeriod.None;
 
   constructor(data?: PartialMessage<ListPingsRequest>) {
     super();
@@ -167,9 +199,9 @@ export class ListPingsRequest extends Message<ListPingsRequest> {
   static readonly typeName = "ListPingsRequest";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
     { no: 1, name: "startingTime", kind: "message", T: Timestamp },
-    { no: 2, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
-    { no: 3, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
+    { no: 2, name: "endingTime", kind: "message", T: Timestamp },
+    { no: 4, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 5, name: "metricAggregationPeriod", kind: "enum", T: proto3.getEnumType(MetricAggregationPeriod) },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsRequest {
@@ -194,14 +226,9 @@ export class ListPingsRequest extends Message<ListPingsRequest> {
  */
 export class ListPingsResponse extends Message<ListPingsResponse> {
   /**
-   * @generated from field: repeated PingGroupSummaryPublic summaries = 1;
+   * @generated from field: google.protobuf.Timestamp imJustHereSoIDontGetFined = 1;
    */
-  summaries: PingGroupSummaryPublic[] = [];
-
-  /**
-   * @generated from field: string paginationToken = 2;
-   */
-  paginationToken = "";
+  imJustHereSoIDontGetFined?: Timestamp;
 
   constructor(data?: PartialMessage<ListPingsResponse>) {
     super();
@@ -211,8 +238,7 @@ export class ListPingsResponse extends Message<ListPingsResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "ListPingsResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "summaries", kind: "message", T: PingGroupSummaryPublic, repeated: true },
-    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 1, name: "imJustHereSoIDontGetFined", kind: "message", T: Timestamp },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsResponse {
