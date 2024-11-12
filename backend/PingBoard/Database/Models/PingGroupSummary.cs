@@ -2,6 +2,7 @@ namespace PingBoard.Database.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
+using Google.Protobuf.WellKnownTypes;
 using PingBoard.Pinging;
 
 
@@ -10,10 +11,6 @@ using PingBoard.Pinging;
 /// in the <see cref="GroupPinger"/> class.
 /// </summary>
 public class PingGroupSummary{
-    /// <summary>
-    /// A synthetic identifier that will be autoincremented in the database
-    /// </summary>
-    internal long _id { get; set; }
         
     /// <summary>
     /// The time the attempt to send the group of pings either started, or attempted to start
@@ -238,4 +235,23 @@ public class PingGroupSummary{
                 $"MaximumPing: {MaximumPing} Jitter: {Jitter} PacketLoss: {PacketLoss} " +
                 $"TerminatingIPStatus: {TerminatingIPStatus} EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}";
     }
+    
+    public static PingGroupSummaryPublic ToApiModel(PingGroupSummary summary)
+    {
+        return new PingGroupSummaryPublic
+        {
+            Start = Timestamp.FromDateTime(DateTime.SpecifyKind(summary.Start, DateTimeKind.Utc)),
+            End = Timestamp.FromDateTime(DateTime.SpecifyKind(summary.End, DateTimeKind.Utc)),
+            Target = summary.Target,
+            MinimumPing = summary.MinimumPing,
+            AveragePing = summary.AveragePing,
+            MaximumPing = summary.MaximumPing,
+            PacketLoss = summary.PacketLoss,
+            Jitter = summary.Jitter
+        };
+    }
+    
+    public static implicit operator PingGroupSummaryPublic(PingGroupSummary summary)
+        => PingGroupSummary.ToApiModel(summary);
+
 }

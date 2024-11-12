@@ -4,6 +4,35 @@
 // @ts-nocheck
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 /**
+ * @generated from enum MetricAggregationPeriod
+ */
+export var MetricAggregationPeriod;
+(function (MetricAggregationPeriod) {
+    /**
+     * @generated from enum value: None = 0;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["None"] = 0] = "None";
+    /**
+     * @generated from enum value: Minute = 1;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["Minute"] = 1] = "Minute";
+    /**
+     * @generated from enum value: Hour = 2;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["Hour"] = 2] = "Hour";
+    /**
+     * @generated from enum value: Day = 3;
+     */
+    MetricAggregationPeriod[MetricAggregationPeriod["Day"] = 3] = "Day";
+})(MetricAggregationPeriod || (MetricAggregationPeriod = {}));
+// Retrieve enum metadata with: proto3.getEnumType(MetricAggregationPeriod)
+proto3.util.setEnumType(MetricAggregationPeriod, "MetricAggregationPeriod", [
+    { no: 0, name: "None" },
+    { no: 1, name: "Minute" },
+    { no: 2, name: "Hour" },
+    { no: 3, name: "Day" },
+]);
+/**
  * @generated from message PingTarget
  */
 export class PingTarget extends Message {
@@ -89,6 +118,262 @@ PingGroupSummaryPublic.fields = proto3.util.newFieldList(() => [
     { no: 6, name: "maximumPing", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 7, name: "jitter", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
     { no: 8, name: "packetLoss", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 9, name: "terminatingIPStatus", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
-    { no: 10, name: "lastAbnormalStatus", kind: "scalar", T: 5 /* ScalarType.INT32 */, opt: true },
+    { no: 9, name: "terminatingIPStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+    { no: 10, name: "lastAbnormalStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
+]);
+/**
+ * @generated from message ListPingsRequest
+ */
+export class ListPingsRequest extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: MetricAggregationPeriod metricAggregationPeriod = 5;
+         */
+        this.metricAggregationPeriod = MetricAggregationPeriod.None;
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ListPingsRequest().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ListPingsRequest().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ListPingsRequest().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ListPingsRequest, a, b);
+    }
+}
+ListPingsRequest.runtime = proto3;
+ListPingsRequest.typeName = "ListPingsRequest";
+ListPingsRequest.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "startingTime", kind: "message", T: Timestamp },
+    { no: 2, name: "endingTime", kind: "message", T: Timestamp },
+    { no: 4, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 5, name: "metricAggregationPeriod", kind: "enum", T: proto3.getEnumType(MetricAggregationPeriod) },
+]);
+/**
+ * @generated from message ListPingsResponse
+ */
+export class ListPingsResponse extends Message {
+    constructor(data) {
+        super();
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ListPingsResponse().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ListPingsResponse().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ListPingsResponse().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ListPingsResponse, a, b);
+    }
+}
+ListPingsResponse.runtime = proto3;
+ListPingsResponse.typeName = "ListPingsResponse";
+ListPingsResponse.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "imJustHereSoIDontGetFined", kind: "message", T: Timestamp },
+]);
+/**
+ * @generated from message ListAnomaliesRequest
+ */
+export class ListAnomaliesRequest extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: uint32 numberRequested = 1;
+         */
+        this.numberRequested = 0;
+        /**
+         * @generated from field: string paginationToken = 2;
+         */
+        this.paginationToken = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ListAnomaliesRequest().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ListAnomaliesRequest().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ListAnomaliesRequest().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ListAnomaliesRequest, a, b);
+    }
+}
+ListAnomaliesRequest.runtime = proto3;
+ListAnomaliesRequest.typeName = "ListAnomaliesRequest";
+ListAnomaliesRequest.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
+]);
+/**
+ * @generated from message ListAnomaliesResponse
+ */
+export class ListAnomaliesResponse extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: repeated PingGroupSummaryPublic anomalies = 1;
+         */
+        this.anomalies = [];
+        /**
+         * @generated from field: string paginationToken = 2;
+         */
+        this.paginationToken = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ListAnomaliesResponse().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ListAnomaliesResponse().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ListAnomaliesResponse().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ListAnomaliesResponse, a, b);
+    }
+}
+ListAnomaliesResponse.runtime = proto3;
+ListAnomaliesResponse.typeName = "ListAnomaliesResponse";
+ListAnomaliesResponse.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "anomalies", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message ServerEvent
+ */
+export class ServerEvent extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from oneof ServerEvent.ServerEvent
+         */
+        this.ServerEvent = { case: undefined };
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent, a, b);
+    }
+}
+ServerEvent.runtime = proto3;
+ServerEvent.typeName = "ServerEvent";
+ServerEvent.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "eventTime", kind: "message", T: Timestamp },
+    { no: 100, name: "pingOnOffToggle", kind: "message", T: ServerEvent_PingOnOffToggle, oneof: "ServerEvent" },
+    { no: 101, name: "pingAnomaly", kind: "message", T: ServerEvent_PingAnomaly, oneof: "ServerEvent" },
+    { no: 190, name: "pingAgentError", kind: "message", T: ServerEvent_PingAgentError, oneof: "ServerEvent" },
+]);
+/**
+ * @generated from message ServerEvent.PingOnOffToggle
+ */
+export class ServerEvent_PingOnOffToggle extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: bool active = 2;
+         */
+        this.active = false;
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_PingOnOffToggle().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_PingOnOffToggle().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_PingOnOffToggle().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_PingOnOffToggle, a, b);
+    }
+}
+ServerEvent_PingOnOffToggle.runtime = proto3;
+ServerEvent_PingOnOffToggle.typeName = "ServerEvent.PingOnOffToggle";
+ServerEvent_PingOnOffToggle.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+]);
+/**
+ * @generated from message ServerEvent.PingAnomaly
+ */
+export class ServerEvent_PingAnomaly extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string anomalyDescription = 2;
+         */
+        this.anomalyDescription = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_PingAnomaly().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_PingAnomaly().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_PingAnomaly().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_PingAnomaly, a, b);
+    }
+}
+ServerEvent_PingAnomaly.runtime = proto3;
+ServerEvent_PingAnomaly.typeName = "ServerEvent.PingAnomaly";
+ServerEvent_PingAnomaly.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "anomalyDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message ServerEvent.PingAgentError
+ */
+export class ServerEvent_PingAgentError extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string errorDescription = 2;
+         */
+        this.errorDescription = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_PingAgentError().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_PingAgentError().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_PingAgentError().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_PingAgentError, a, b);
+    }
+}
+ServerEvent_PingAgentError.runtime = proto3;
+ServerEvent_PingAgentError.typeName = "ServerEvent.PingAgentError";
+ServerEvent_PingAgentError.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+    { no: 2, name: "errorDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
 ]);

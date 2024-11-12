@@ -22,7 +22,7 @@ public class PingInfoContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelbuilder)
     {
         modelbuilder.Entity<PingGroupSummary>()
-            .HasKey(p => p._id);
+            .HasKey(p => p.Start);
     }
     
 }

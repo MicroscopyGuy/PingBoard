@@ -4,7 +4,7 @@
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type" : "module",
+  "type": "module",
   "module": "dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,14 +14,14 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@bufbuild/buf": "^1.35.1",
-    "@bufbuild/protoc-gen-es": "^1.10.0",
-    "@connectrpc/protoc-gen-connect-es": "^1.4.0",
+    "@bufbuild/buf": "^1.10.0",
+    "@connectrpc/protoc-gen-connect-es": "^1.6.1",
     "typescript": "^5.2.2"
   },
   "dependencies": {
     "@bufbuild/protobuf": "^1.10.0",
-    "@connectrpc/connect": "^1.4.0",
-    "@connectrpc/connect-web": "^1.4.0"
+    "@bufbuild/protoc-gen-es": "^1.10.0",
+    "@connectrpc/connect": "^1.6.1",
+    "@types/node": "^22.9.0"
   }
 }

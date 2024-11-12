@@ -1,0 +1,165 @@
+import { app, BrowserWindow } from "electron";
+import path from "path";
+import { spawn } from "child_process";
+import { join } from "path";
+import * as http from "http";
+import { ipcMain } from "electron";
+import {
+  ListAnomaliesResponse,
+  PingTarget,
+  ServerEvent,
+} from "client/dist/gen/service_pb";
+import { PingBoardService } from "client";
+import { Empty } from "@bufbuild/protobuf";
+import type {
+  Maybe,
+  PromiseOrNever,
+  BackendClient,
+  PromiseReturningBackendClient,
+} from "./types";
+import createClient from './createClient';
+
+
+declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
+declare const MAIN_WINDOW_VITE_NAME: string;
+
+// Handle creating/removing shortcuts on Windows when installing/uninstalling.
+if (require("electron-squirrel-startup")) {
+  app.quit();
+}
+
+const createWindow = () => {
+  // Create the browser window.
+  const mainWindow = new BrowserWindow({
+    width: 1920,
+    height: 1080,
+    webPreferences: {
+      preload: path.join(__dirname, "preload.js"),
+    },
+  });
+
+  // and load the index.html of the app.
+  if (MAIN_WINDOW_VITE_DEV_SERVER_URL) {
+    mainWindow.loadURL(MAIN_WINDOW_VITE_DEV_SERVER_URL);
+  } else {
+    mainWindow.loadFile(
+      path.join(__dirname, `../renderer/${MAIN_WINDOW_VITE_NAME}/index.html`)
+    );
+  }
+
+  // Open the DevTools.
+  mainWindow.webContents.openDevTools();
+  return mainWindow;
+};
+
+const serverPath ="node_modules/backend/dist/PingBoard.exe";
+
+const startBackend = async () => {
+  const p = spawn(join(serverPath, "PingBoard.exe"), [], {
+    cwd: serverPath,
+    env: {
+      LOG_TO_FILE:"true",
+    },
+  });
+  console.log(`StartBackend process ID: ${process.pid}`);
+  let backendResolver: () => void;
+  p.stdout.on("data", (info) => {
+    if (info.toString().includes("Now listening on:")) {
+      backendResolver();
+    }
+    console.log(info.toString());
+  });
+
+  await new Promise<void>((resolve, reject) => {
+    backendResolver = resolve;
+  });
+};
+
+let backendClient: BackendClient;
+
+async function tryMakeApiRequest<T extends keyof PromiseReturningBackendClient>(
+  rpcMethod: T,
+  request: Parameters<PromiseReturningBackendClient[T]>[0]
+): Promise<Maybe<Awaited<ReturnType<PromiseReturningBackendClient[T]>>>> {
+  try {
+    const result = await makeApiRequest(rpcMethod, request);
+    return { successful: true, result: result };
+  } catch (error) {
+    console.log(error);
+    return { successful: false, error: error };
+  }
+}
+
+async function makeApiRequest<T extends keyof PromiseReturningBackendClient>(
+  rpcMethod: T,
+  request: Parameters<PromiseReturningBackendClient[T]>[0]
+): Promise<Awaited<ReturnType<PromiseReturningBackendClient[T]>>> {
+  if ((rpcMethod as any) === "getLatestServerEvent") {
+    return [] as any;
+  }
+
+  const kind = PingBoardService.methods[rpcMethod].kind;
+  const inputType = PingBoardService.methods[rpcMethod].I;
+  console.log(`Method name: ${rpcMethod.toString()}`);
+  // console.log(`Method type: ${PingBoardService.methods[rpcMethod].kind}`);
+  let jsonRequest;
+
+  if (inputType.typeName == "google.protobuf.Empty") {
+    jsonRequest = {};
+  } else {
+    jsonRequest = inputType.fromJson(request as any);
+  }
+
+  const pbc = backendClient as PromiseReturningBackendClient;
+  const result = await pbc[rpcMethod](jsonRequest);
+  //console.log(`Result for Method name: ${rpcMethod.toString()}`);
+
+  const outputType = PingBoardService.methods[rpcMethod].O;
+  //console.log(outputType);
+  if (outputType.typeName === "google.protobuf.Empty") {
+    return {} as Promise<Awaited<ReturnType<PromiseReturningBackendClient[T]>>>;
+  }
+
+  return (result as any).toJson();
+}
+
+async function listenServerEvents(w: BrowserWindow) {
+  const iterable = await backendClient.getLatestServerEvent({});
+
+  for await (const event of iterable) {
+    w.webContents.send("serverEventReceived", event.toJson());
+    console.log(event.toJson());
+    //callback(event.toJson());
+  }
+}
+
+app.on("ready", async () => {
+  await startBackend();
+  ipcMain.handle("api:makeRequest", (e, args) =>
+    tryMakeApiRequest(args[0], args[1])
+  );
+
+  const mainWindow = createWindow();
+  backendClient = createClient("http://localhost:5245");
+  listenServerEvents(mainWindow);
+});
+
+// Quit when all windows are closed, except on macOS. There, it's common
+// for applications and their menu bar to stay active until the user quits
+// explicitly with Cmd + Q.
+app.on("window-all-closed", () => {
+  if (process.platform !== "darwin") {
+    app.quit();
+  }
+});
+
+app.on("activate", () => {
+  // On OS X it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (BrowserWindow.getAllWindows().length === 0) {
+    createWindow();
+  }
+});
+
+// In this file you can include the rest of your app's specific main process
+// code. You can also put them in separate files and import them here.

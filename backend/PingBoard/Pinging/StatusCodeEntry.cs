@@ -4,6 +4,9 @@ using PingBoard.Pinging;
 
 
 namespace PingBoard.Pinging{
+    /// <summary>
+    /// A struct to store information related to a single IcmpStatusCode, to be used for later lookup and translation.
+    /// </summary>
     public struct IcmpStatusCodeEntry{
 
         /// <summary>

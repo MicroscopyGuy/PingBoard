@@ -12,12 +12,12 @@ namespace PingBoard.Pinging.Configuration{
         /// <summary>
         /// The lowest value allowed for the AveragePing threshold, measured in milliseconds
         /// </summary>
-        public const float LowestAllowedAveragePingMs = 15;
+        public const float LowestAllowedAveragePingMs = 11;
         
         /// <summary>
         /// The lowest value allowed for the MaximumPing threshold, measured in milliseconds
         /// </summary>
-        public const int LowestAllowedMaximumPingMs = 20;
+        public const int LowestAllowedMaximumPingMs = 12;
 
         /// <summary>
         /// The lowest value allowed for the Jitter threshold, measured in milliseconds

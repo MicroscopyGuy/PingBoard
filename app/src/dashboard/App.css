@@ -1,0 +1,38 @@
+#root {
+  max-width: 3840px;
+  min-width: 1080px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.flex-container dash{
+  display:flex
+}
+
+.ping-start-stop-menu{
+  display: grid;
+  grid-template-columns: 1fr 1fr 5fr;
+  border: 2px solid #1eb1d2;
+  border-radius: 5px;
+}
+
+.ping-button {
+  border-color:black;
+  padding: 0.6em 1.2em;
+}
+
+.ping-button.ping-start{
+  background-color: rgb(29, 201, 29);
+  background-color: linear-gradient(0,(29, 150, 29), rgb(29, 201, 29))
+}
+
+.ping-button.ping-stop{
+  background-color: rgb(249, 42, 42);
+}
+
+.input{
+  border-color:black;
+}
+
+

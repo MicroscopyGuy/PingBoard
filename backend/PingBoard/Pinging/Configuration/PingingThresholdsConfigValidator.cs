@@ -32,7 +32,7 @@ namespace PingBoard.Pinging.Configuration{
                 .GreaterThan(ptc => (int) ptc.AveragePingMs)
                 .InclusiveBetween(Limits.LowestAllowedMaximumPingMs, Limits.HighestAllowedMaximumPingMs)
                 .WithMessage($"""
-                                The MinimumPingMs threshold must be >= {Limits.LowestAllowedMaximumPingMs} and 
+                                The MaximumPingMs threshold must be >= {Limits.LowestAllowedMaximumPingMs} and 
                                 <= {Limits.HighestAllowedMaximumPingMs}. 
                                 It also must be more than the MinimumPingMs and AveragePingMs thresholds.
                               """); 
