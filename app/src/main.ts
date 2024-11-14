@@ -18,6 +18,7 @@ import type {
   PromiseReturningBackendClient,
 } from "./types";
 import createClient from './createClient';
+import { resolve } from 'path';
 
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
@@ -52,13 +53,13 @@ const createWindow = () => {
   return mainWindow;
 };
 
-const serverPath ="node_modules/backend/dist/PingBoard.exe";
+const serverPath = resolve("../backend/dist");
 
 const startBackend = async () => {
   const p = spawn(join(serverPath, "PingBoard.exe"), [], {
     cwd: serverPath,
     env: {
-      LOG_TO_FILE:"true",
+      LOG_TO_FILE:"false",
     },
   });
   console.log(`StartBackend process ID: ${process.pid}`);

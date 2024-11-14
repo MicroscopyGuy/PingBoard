@@ -25,7 +25,7 @@ function PingStartButton({pingTarget, pingingActive}: PingStartButtonProps){
   
       const client = databaseContext.client;
       client!.startPinging({ target: pingTarget })
-        .catch((err) => console.log( err instanceof Error && 'code' in err
+        .catch((err: Error) => console.log( err instanceof Error && 'code' in err
                               ? `Start Pinging: Error code:${err.code}, message: ${err.message}`
                               : `Error message:${err.message}`));
     }
@@ -46,7 +46,7 @@ function PingStopButton({pingingActive} : PingStopButtonProps ){
   
     const stopPinging = useCallback( () =>{
       databaseContext.client!.stopPinging({}) 
-        .catch((err) => console.log(`Stop Pinging: message: ${err.message}`));
+        .catch((err: Error) => console.log(`Stop Pinging: message: ${err.message}`));
     }, [databaseContext]);
   
     return <button className="ping-button ping-stop" onClick = {stopPinging} disabled = { !pingingActive }>Stop</button>

@@ -1,8 +1,8 @@
-import { ReactNode } from "react";
+import { ReactNode, useContext } from "react";
 import { createContext, useEffect, useCallback } from "react";
 import type * as bc from 'client/dist/gen/service_pb';
 import { dispatchEvent, CustomEventMap } from "./ServerEventListener";
-import { BackendClient } from 'client/dist/index';
+import { BackendClient } from '../types';
 import createClient from './PingBackendClient';
 
 type DatabaseContext = {
@@ -16,6 +16,11 @@ type PingBackendProviderProps = {
 };
 
 const backendClient = createClient();
+
+export function useBackendClient(){
+    const dbContext = useContext(DatabaseContext);
+    return dbContext.client;
+}
 
 export default function PingBackendProvider(p : PingBackendProviderProps){
     const grabPingServerEvents = useCallback(async(signal : AbortSignal) => {
@@ -50,3 +55,5 @@ export default function PingBackendProvider(p : PingBackendProviderProps){
     )
      
 }
+
+
