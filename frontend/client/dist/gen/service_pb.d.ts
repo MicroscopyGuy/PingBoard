@@ -1,25 +1,80 @@
 import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialMessage, PlainMessage } from "@bufbuild/protobuf";
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 /**
- * @generated from enum MetricAggregationPeriod
+ * @generated from enum Quantum
  */
-export declare enum MetricAggregationPeriod {
+export declare enum Quantum {
     /**
-     * @generated from enum value: None = 0;
+     * @generated from enum value: Length = 0;
      */
-    None = 0,
+    Length = 0
+}
+/**
+ * @generated from enum Metric
+ */
+export declare enum Metric {
     /**
-     * @generated from enum value: Minute = 1;
+     * @generated from enum value: LATENCY = 0;
      */
-    Minute = 1,
+    LATENCY = 0,
     /**
-     * @generated from enum value: Hour = 2;
+     * @generated from enum value: PACKET_LOSS = 1;
      */
-    Hour = 2,
+    PACKET_LOSS = 1,
     /**
-     * @generated from enum value: Day = 3;
+     * @generated from enum value: JITTER = 2;
      */
-    Day = 3
+    JITTER = 2
+}
+/**
+ * @generated from enum Statistic
+ */
+export declare enum Statistic {
+    /**
+     * @generated from enum value: MIN = 0;
+     */
+    MIN = 0,
+    /**
+     * @generated from enum value: AVG = 1;
+     */
+    AVG = 1,
+    /**
+     * @generated from enum value: MAX = 2;
+     */
+    MAX = 2,
+    /**
+     * @generated from enum value: P90 = 3;
+     */
+    P90 = 3,
+    /**
+     * @generated from enum value: P99 = 4;
+     */
+    P99 = 4,
+    /**
+     * @generated from enum value: SUM = 5;
+     */
+    SUM = 5,
+    /**
+     * @generated from enum value: COUNT = 6;
+     */
+    COUNT = 6
+}
+/**
+ * @generated from message StartPingingRequest
+ */
+export declare class StartPingingRequest extends Message<StartPingingRequest> {
+    /**
+     * @generated from field: PingTarget target = 1;
+     */
+    target?: PingTarget;
+    constructor(data?: PartialMessage<StartPingingRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "StartPingingRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): StartPingingRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): StartPingingRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): StartPingingRequest;
+    static equals(a: StartPingingRequest | PlainMessage<StartPingingRequest> | undefined, b: StartPingingRequest | PlainMessage<StartPingingRequest> | undefined): boolean;
 }
 /**
  * @generated from message PingTarget
@@ -92,6 +147,48 @@ export declare class PingGroupSummaryPublic extends Message<PingGroupSummaryPubl
     static equals(a: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined, b: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined): boolean;
 }
 /**
+ * @generated from message ShowPingsRequest
+ */
+export declare class ShowPingsRequest extends Message<ShowPingsRequest> {
+    /**
+     * @generated from field: PingTarget target = 1;
+     */
+    target?: PingTarget;
+    /**
+     * @generated from field: google.protobuf.Timestamp startingTime = 2;
+     */
+    startingTime?: Timestamp;
+    /**
+     * @generated from field: google.protobuf.Timestamp endingTime = 3;
+     */
+    endingTime?: Timestamp;
+    constructor(data?: PartialMessage<ShowPingsRequest>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ShowPingsRequest";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ShowPingsRequest;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ShowPingsRequest;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ShowPingsRequest;
+    static equals(a: ShowPingsRequest | PlainMessage<ShowPingsRequest> | undefined, b: ShowPingsRequest | PlainMessage<ShowPingsRequest> | undefined): boolean;
+}
+/**
+ * @generated from message ShowPingsResponse
+ */
+export declare class ShowPingsResponse extends Message<ShowPingsResponse> {
+    /**
+     * @generated from field: repeated PingGroupSummaryPublic pings = 1;
+     */
+    pings: PingGroupSummaryPublic[];
+    constructor(data?: PartialMessage<ShowPingsResponse>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ShowPingsResponse";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ShowPingsResponse;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ShowPingsResponse;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ShowPingsResponse;
+    static equals(a: ShowPingsResponse | PlainMessage<ShowPingsResponse> | undefined, b: ShowPingsResponse | PlainMessage<ShowPingsResponse> | undefined): boolean;
+}
+/**
  * @generated from message ListPingsRequest
  */
 export declare class ListPingsRequest extends Message<ListPingsRequest> {
@@ -108,9 +205,17 @@ export declare class ListPingsRequest extends Message<ListPingsRequest> {
      */
     pingTarget?: PingTarget;
     /**
-     * @generated from field: MetricAggregationPeriod metricAggregationPeriod = 5;
+     * @generated from field: Metric metric = 5;
      */
-    metricAggregationPeriod: MetricAggregationPeriod;
+    metric: Metric;
+    /**
+     * @generated from field: Statistic statistic = 6;
+     */
+    statistic: Statistic;
+    /**
+     * @generated from field: optional Quantum quantum = 7;
+     */
+    quantum?: Quantum;
     constructor(data?: PartialMessage<ListPingsRequest>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "ListPingsRequest";
@@ -121,13 +226,34 @@ export declare class ListPingsRequest extends Message<ListPingsRequest> {
     static equals(a: ListPingsRequest | PlainMessage<ListPingsRequest> | undefined, b: ListPingsRequest | PlainMessage<ListPingsRequest> | undefined): boolean;
 }
 /**
+ * @generated from message ListPingsDatapoint
+ */
+export declare class ListPingsDatapoint extends Message<ListPingsDatapoint> {
+    /**
+     * @generated from field: google.protobuf.Timestamp Timestamp = 1;
+     */
+    Timestamp?: Timestamp;
+    /**
+     * @generated from field: double Value = 2;
+     */
+    Value: number;
+    constructor(data?: PartialMessage<ListPingsDatapoint>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ListPingsDatapoint";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsDatapoint;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListPingsDatapoint;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListPingsDatapoint;
+    static equals(a: ListPingsDatapoint | PlainMessage<ListPingsDatapoint> | undefined, b: ListPingsDatapoint | PlainMessage<ListPingsDatapoint> | undefined): boolean;
+}
+/**
  * @generated from message ListPingsResponse
  */
 export declare class ListPingsResponse extends Message<ListPingsResponse> {
     /**
-     * @generated from field: google.protobuf.Timestamp imJustHereSoIDontGetFined = 1;
+     * @generated from field: repeated ListPingsDatapoint datapoints = 1;
      */
-    imJustHereSoIDontGetFined?: Timestamp;
+    datapoints: ListPingsDatapoint[];
     constructor(data?: PartialMessage<ListPingsResponse>);
     static readonly runtime: typeof proto3;
     static readonly typeName = "ListPingsResponse";
@@ -206,6 +332,12 @@ export declare class ServerEvent extends Message<ServerEvent> {
          */
         value: ServerEvent_PingAnomaly;
         case: "pingAnomaly";
+    } | {
+        /**
+         * @generated from field: ServerEvent.PingInfo pingInfo = 102;
+         */
+        value: ServerEvent_PingInfo;
+        case: "pingInfo";
     } | {
         /**
          * @generated from field: ServerEvent.PingAgentError pingAgentError = 190;
@@ -287,4 +419,21 @@ export declare class ServerEvent_PingAgentError extends Message<ServerEvent_Ping
     static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent_PingAgentError;
     static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent_PingAgentError;
     static equals(a: ServerEvent_PingAgentError | PlainMessage<ServerEvent_PingAgentError> | undefined, b: ServerEvent_PingAgentError | PlainMessage<ServerEvent_PingAgentError> | undefined): boolean;
+}
+/**
+ * @generated from message ServerEvent.PingInfo
+ */
+export declare class ServerEvent_PingInfo extends Message<ServerEvent_PingInfo> {
+    /**
+     * @generated from field: PingTarget pingTarget = 1;
+     */
+    pingTarget?: PingTarget;
+    constructor(data?: PartialMessage<ServerEvent_PingInfo>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "ServerEvent.PingInfo";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServerEvent_PingInfo;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent_PingInfo;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent_PingInfo;
+    static equals(a: ServerEvent_PingInfo | PlainMessage<ServerEvent_PingInfo> | undefined, b: ServerEvent_PingInfo | PlainMessage<ServerEvent_PingInfo> | undefined): boolean;
 }

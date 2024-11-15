@@ -37,26 +37,6 @@ public class Program
         var path = Environment.GetFolderPath(folder);
         var appDataPath = System.IO.Path.Join(path, "PingBoard");
         
-        /*
-        var socketPath = Environment.GetEnvironmentVariable("CLIENT_SOCKET_PATH") ?? "client.sock";
-        var fullSocketPath = System.IO.Path.Join(Environment.CurrentDirectory, socketPath);
-        Console.WriteLine($"Client Socket file located at: {fullSocketPath}");
-        if (File.Exists(fullSocketPath))
-        {
-            File.Delete(fullSocketPath);
-        }
-        
-        builder.WebHost.ConfigureKestrel(serverOptions =>
-        {
-            serverOptions.ListenUnixSocket(fullSocketPath, listenOptions =>
-            {
-                listenOptions.Protocols = HttpProtocols.Http1;
-            });
-        });*/
-        
-        
-        
-        
         builder.Services.AddGrpc();
         builder.Services.AddGrpcReflection();
         //builder.Services.AddGrpcHealthChecks()
@@ -114,19 +94,33 @@ public class Program
                 new BoundedChannelOptions(100)
             )
         );
+        
+        
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingInfo>>(
+            Channel.CreateBounded<ServerEvent.Types.PingInfo>(
+                new BoundedChannelOptions(100)
+            )
+        );
+        
 
         builder.Services.AddKeyedSingleton<IImmutableList<IChannelReaderAdapter>>("ServerEventChannelReaders", (svc, _) =>
         {
             var channelList = new List<IChannelReaderAdapter>
             {
-                new ChannelReaderAdapter<ServerEvent.Types.PingOnOffToggle>(
-                    svc.GetRequiredService<Channel<ServerEvent.Types.PingOnOffToggle>>().Reader
+                new ChannelReaderAdapter<ServerEvent.Types.PingAgentError>(
+                    svc.GetRequiredService<Channel<ServerEvent.Types.PingAgentError>>().Reader
                 ),
+                
                 new ChannelReaderAdapter<ServerEvent.Types.PingAnomaly>(
                     svc.GetRequiredService<Channel<ServerEvent.Types.PingAnomaly>>().Reader
                 ),
-                new ChannelReaderAdapter<ServerEvent.Types.PingAgentError>(
-                    svc.GetRequiredService<Channel<ServerEvent.Types.PingAgentError>>().Reader
+                
+                new ChannelReaderAdapter<ServerEvent.Types.PingInfo>(
+                    svc.GetRequiredService<Channel<ServerEvent.Types.PingInfo>>().Reader
+                ),
+                
+                new ChannelReaderAdapter<ServerEvent.Types.PingOnOffToggle>(
+                    svc.GetRequiredService<Channel<ServerEvent.Types.PingOnOffToggle>>().Reader
                 )
             };
             return channelList.ToImmutableList();

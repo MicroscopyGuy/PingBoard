@@ -13,15 +13,18 @@ public class ServerEventEmitter
     private readonly Channel<PingAnomaly> _pingAnomalyChannel;
     private readonly Channel<PingOnOffToggle> _pingOnOffToggleChannel;
     private readonly Channel<PingAgentError> _pingAgentErrorChannel;
+    private readonly Channel<PingInfo> _pingInfoChannel;
     private readonly ILogger<ServerEventEmitter> _logger;
 
 
     public ServerEventEmitter(Channel<PingAnomaly> anomalyErrorChannel, Channel<PingOnOffToggle> pingOnOffToggleChannel, 
-         Channel<PingAgentError> pingAgentErrorChannel, ILogger<ServerEventEmitter> logger)
+         Channel<PingAgentError> pingAgentErrorChannel, Channel<PingInfo> pingInfoChannel, 
+         ILogger<ServerEventEmitter> logger)
     {
         _pingAnomalyChannel = anomalyErrorChannel;
         _pingOnOffToggleChannel = pingOnOffToggleChannel;
         _pingAgentErrorChannel = pingAgentErrorChannel;
+        _pingInfoChannel = pingInfoChannel;
         _logger = logger;
     }
 
@@ -52,10 +55,17 @@ public class ServerEventEmitter
         
         catch (Exception e)
         {
-            _logger.LogCritical("ServerEventEmitter: IndicateChangedPingStatus: ${caller}: ${eText}", caller, e.ToString());
+            _logger.LogCritical("ServerEventEmitter: IndicatePingOnOffToggle: ${caller}: ${eText}", caller, e.ToString());
         }
     }
     
+    /// <summary>
+    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
+    /// </summary>
+    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
+    /// <param name="description">A description of the PingAnomaly, ie, in which way(s) it is anomalous</param>
+    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
+    /// <exception cref="InvalidOperationException"></exception>
     public void IndicatePingAnomaly(string target, string description, string caller)
     {
         try
@@ -76,7 +86,36 @@ public class ServerEventEmitter
         
         catch (Exception e)
         {
-            _logger.LogCritical("ServerEventEmitter: IndicateChangedPingStatus: ${caller}: ${eText}", caller, e.ToString());
+            _logger.LogCritical("ServerEventEmitter: IndicatePingAnomaly: ${caller}: ${eText}", caller, e.ToString());
+        }
+    }
+    
+    /// <summary>
+    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
+    /// </summary>
+    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
+    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void IndicatePingInfo(string target, string caller)
+    {
+        try
+        {
+            var writeSuccess = _pingInfoChannel.Writer.TryWrite(new PingInfo()
+            {
+                PingTarget = new PingTarget { Target = target },
+            });
+                
+            if (!writeSuccess)
+            {
+                string message = "An attempt to write to the PingAnomalyIndicator channel was unsuccessful.";
+                throw (new InvalidOperationException(message));
+            }
+            _logger.LogDebug($"ServerEventEmitter: IndicatePingInfo: target{target}, caller:{caller}", target, caller);
+        }
+        
+        catch (Exception e)
+        {
+            _logger.LogCritical("ServerEventEmitter: IndicatePingInfo: ${caller}: ${eText}", caller, e.ToString());
         }
     }
 }

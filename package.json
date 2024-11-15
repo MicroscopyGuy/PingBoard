@@ -8,5 +8,9 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "@cloudscape-design/components": "^3.0.825",
+    "@cloudscape-design/global-styles": "^1.0.32"
+  }
 }

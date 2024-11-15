@@ -1,4 +1,4 @@
-import { ListAnomaliesRequest, ListAnomaliesResponse, ListPingsRequest, ListPingsResponse, PingTarget, ServerEvent } from "./service_pb.js";
+import { ListAnomaliesRequest, ListAnomaliesResponse, ListPingsRequest, ListPingsResponse, ServerEvent, ShowPingsRequest, ShowPingsResponse, StartPingingRequest } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service PingBoardService
@@ -11,7 +11,7 @@ export declare const PingBoardService: {
          */
         readonly startPinging: {
             readonly name: "StartPinging";
-            readonly I: typeof PingTarget;
+            readonly I: typeof StartPingingRequest;
             readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
@@ -49,6 +49,15 @@ export declare const PingBoardService: {
             readonly name: "ListAnomalies";
             readonly I: typeof ListAnomaliesRequest;
             readonly O: typeof ListAnomaliesResponse;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc PingBoardService.ShowPings
+         */
+        readonly showPings: {
+            readonly name: "ShowPings";
+            readonly I: typeof ShowPingsRequest;
+            readonly O: typeof ShowPingsResponse;
             readonly kind: MethodKind.Unary;
         };
     };
