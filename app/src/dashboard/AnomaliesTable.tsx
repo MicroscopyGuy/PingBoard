@@ -1,6 +1,6 @@
 import './AnomaliesTable.css';
 import { useCallback, useContext, useState, useEffect, useRef } from 'react';
-import { ListAnomaliesResponse, PingGroupSummaryPublic, ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
+import { ListAnomaliesRequest, ListAnomaliesResponse, PingGroupSummaryPublic, ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
 import { useServerEventListener } from './ServerEventListener';
 import { DatabaseContext } from './PingBackendContext';
 
@@ -151,7 +151,10 @@ function AnomaliesTableManager(){
 
     const loadAnomalies = useCallback(() => {
         console.log("loadAnomalies entered");
-        var request = {numberRequested : numRecordsToGet, paginationToken : pTokenCacheRef.current.get(pageNumber-1)?? ""};
+        var request = new ListAnomaliesRequest({
+            numberRequested: numRecordsToGet,
+            paginationToken: pTokenCacheRef.current.get(pageNumber-1) ?? ""
+        });
         console.log(request);
         setLoading(true);
         client?.listAnomalies(request)

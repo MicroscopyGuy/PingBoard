@@ -7,6 +7,7 @@ import { PingGroupSummaryPublic, PingTarget, ServerEvent_PingInfo, ShowPingsRequ
 import {useState, useEffect, useCallback} from 'react';
 import { useBackendClient } from './PingBackendContext'
 import { useServerEventListener } from "./ServerEventListener";
+import { Timestamp } from "@bufbuild/protobuf";
 
 export const numberFormatter = (value: number): string => {
     if (Math.abs(value) >= 1_000_000_000) {
@@ -42,16 +43,31 @@ Object.defineProperty(Date.prototype, 'addMinutes', {
   }
 });
 
+Object.defineProperty(Date.prototype, 'toTimestamp', {
+  value: function (this : Date): Timestamp {
+    var ticks = this!.getTime();
+    var tickDate = new Date()
+    tickDate.setTime(ticks);
+
+    return Timestamp.fromDate(tickDate);
+  }
+});
+
 declare global{
   interface Date{
     subtractMinutes: (num: number) => Date;
     addMinutes: (num: number) => Date;
+    toTimestamp: () => Timestamp;
   }
 }
 
 
+export default function SummariesGraph(){
+  return <SummariesGraphManager/>
+}
+
 function SummariesGraphManager(){
-  const [pingInfo, setPingInfo] = useState([]);
+  const [pingInfo, setPingInfo] = useState<Array<PingGroupSummaryPublic>>([]);
   const [apiError, setApiError] = useState<Error>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [pingTarget, setPingTarget] = useState<string>("8.8.8.8");
@@ -79,61 +95,45 @@ function SummariesGraphManager(){
   }, [client, setPingInfo]);
 
   const eventHandler = useCallback((e: CustomEvent<ServerEvent_PingInfo>) => {
-    var request = { target: {target: pingTarget}, startingTime: new Date(), endingTime: new Date().subtractMinutes(5) } as any as ShowPingsRequest;
-    client.showPings(request);
+    var request = new ShowPingsRequest({ 
+      target: new PingTarget({target: "8.8.8.8"}), 
+      startingTime: Timestamp.fromDate(new Date().subtractMinutes(5)), 
+      endingTime: new Date().toTimestamp()
+    });
     loadPingInfo(request);
+  
   }, [loadPingInfo, pingTarget]);
 
   useServerEventListener("pinginfo", eventHandler);
+  console.log('render');
+
+  return <SummariesGraphDisplay pingTarget={pingTarget} data = {pingInfo} />
 }
 
-type SummariesGraphProps = {
-  datapoints: Array<PingGroupSummaryPublic>
-}
+type showPingData = ShowPingsResponse['pings'];
 
-export default function SummariesGraph(){
+type SummariesGraphDisplayProps = {
+  pingTarget : string,
+  data: Array<PingGroupSummaryPublic>;
+};
+
+
+function SummariesGraphDisplay(p : SummariesGraphDisplayProps){
+  const graphData = p.data.map((datapoint) => ({
+      x: new Date(datapoint.start.toDate()), 
+      y: datapoint.maximumPing
+    })
+  );
+
+  console.log(graphData);
   return (
     <LineChart
       series={[
         {
           title: "Site 1",
           type: "line",
-          data: [
-            { x: new Date(1601006400000), y: 58020 },
-            { x: new Date(1601007300000), y: 102402 },
-            { x: new Date(1601008200000), y: 104920 },
-            { x: new Date(1601009100000), y: 94031 },
-            { x: new Date(1601010000000), y: 125021 },
-            { x: new Date(1601010900000), y: 159219 },
-            { x: new Date(1601011800000), y: 193082 },
-            { x: new Date(1601012700000), y: 162592 },
-            { x: new Date(1601013600000), y: 274021 },
-            { x: new Date(1601014500000), y: 264286 },
-            { x: new Date(1601015400000), y: 289210 },
-            { x: new Date(1601016300000), y: 256362 },
-            { x: new Date(1601017200000), y: 257306 },
-            { x: new Date(1601018100000), y: 186776 },
-            { x: new Date(1601019000000), y: 294020 },
-            { x: new Date(1601019900000), y: 385975 },
-            { x: new Date(1601020800000), y: 486039 },
-            { x: new Date(1601021700000), y: 490447 },
-            { x: new Date(1601022600000), y: 361845 },
-            { x: new Date(1601023500000), y: 339058 },
-            { x: new Date(1601024400000), y: 298028 },
-            { x: new Date(1601025300000), y: 231902 },
-            { x: new Date(1601026200000), y: 224558 },
-            { x: new Date(1601027100000), y: 253901 },
-            { x: new Date(1601028000000), y: 102839 },
-            { x: new Date(1601028900000), y: 234943 },
-            { x: new Date(1601029800000), y: 204405 },
-            { x: new Date(1601030700000), y: 190391 },
-            { x: new Date(1601031600000), y: 183570 },
-            { x: new Date(1601032500000), y: 162592 },
-            { x: new Date(1601033400000), y: 148910 },
-            { x: new Date(1601034300000), y: 229492 },
-            { x: new Date(1601035200000), y: 293910 }
-          ],
-          valueFormatter: function s(e) {
+          data: graphData,
+          valueFormatter: function s(e: number) {
             return Math.abs(e) >= 1e9
               ? (e / 1e9).toFixed(1).replace(/\.0$/, "") +
                   "G"
@@ -146,17 +146,18 @@ export default function SummariesGraph(){
               : e.toFixed(2);
           }
         },
-        {
-          title: "Peak hours",
-          type: "threshold",
-          x: new Date(1601025000000)
-        }
+        //{
+          //title: "Peak hours",
+          //type: "threshold",
+          //x: new Date(1601025000000)
+        //}
       ]}
-      xDomain={[
-        new Date(1601006400000),
-        new Date(1601035200000)
-      ]}
-      yDomain={[0, 500000]}
+      xDomain={
+        graphData.length > 0 
+          ? [new Date(graphData[0].x), new Date(graphData[-1].x)]
+          : [new Date().subtractMinutes(5), new Date()]
+      }
+      yDomain={[0, 1500]} // this should dynamically pull from the timeOut property
       i18nStrings={{
         xTickFormatter: e =>
           e
@@ -170,16 +171,7 @@ export default function SummariesGraph(){
             .split(",")
             .join("\n"),
         yTickFormatter: function s(e) {
-          return Math.abs(e) >= 1e9
-            ? (e / 1e9).toFixed(1).replace(/\.0$/, "") +
-                "G"
-            : Math.abs(e) >= 1e6
-            ? (e / 1e6).toFixed(1).replace(/\.0$/, "") +
-              "M"
-            : Math.abs(e) >= 1e3
-            ? (e / 1e3).toFixed(1).replace(/\.0$/, "") +
-              "K"
-            : e.toFixed(2);
+          return e + "ms";
         }
       }}
       detailPopoverSeriesContent={({ series, x, y }) => ({
@@ -195,8 +187,8 @@ export default function SummariesGraph(){
       hideFilter
       hideLegend
       xScaleType="time"
-      xTitle="Time (UTC)"
-      yTitle="Bytes transferred"
+      xTitle="Time (EST)"
+      yTitle="MaximumPing"
       empty={
         <Box textAlign="center" color="inherit">
           <b>No data available</b>
