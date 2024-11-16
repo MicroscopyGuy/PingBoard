@@ -1,9 +1,8 @@
-import { useCallback, useContext, useState, useEffect, useRef } from 'react';
 import './AnomaliesTable.css';
-import { PingGroupSummaryPublic, ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
+import { useCallback, useContext, useState, useEffect, useRef } from 'react';
+import { ListAnomaliesRequest, ListAnomaliesResponse, PingGroupSummaryPublic, ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
 import { useServerEventListener } from './ServerEventListener';
 import { DatabaseContext } from './PingBackendContext';
-
 
 type AnomaliesTablePageViewProps = {
     pageNumber : number;
@@ -145,18 +144,21 @@ function AnomaliesTableManager(){
     const [apiError, setApiError] = useState<Error>();
     const [loading, setLoading] = useState<boolean>();
     const [endOfResults, setEndOfResults] = useState<boolean>(false);
-    const [numRecordsToGet, setNumRecordsToGet] = useState<number>(20); // make this more flexible in the future
+    const [numRecordsToGet, setNumRecordsToGet] = useState<number>(10); // make this more flexible in the future
     const pTokenCacheRef = useRef<Map<number, string>>(new Map<number, string>());
     const databaseContext = useContext(DatabaseContext);
     const client = databaseContext.client;
 
     const loadAnomalies = useCallback(() => {
         console.log("loadAnomalies entered");
-        var request = {numberRequested : numRecordsToGet, paginationToken : pTokenCacheRef.current.get(pageNumber-1)?? ""};
+        var request = new ListAnomaliesRequest({
+            numberRequested: numRecordsToGet,
+            paginationToken: pTokenCacheRef.current.get(pageNumber-1) ?? ""
+        });
         console.log(request);
         setLoading(true);
         client?.listAnomalies(request)
-            .then((response) => {
+            .then((response: ListAnomaliesResponse) => {
                 console.log(response!.anomalies.length);
                 setAnomaliesData(response!.anomalies);
                 setEndOfResults(response?.paginationToken ? false : true);
@@ -166,7 +168,7 @@ function AnomaliesTableManager(){
                 pTokenCacheRef.current.set(pageNumber, response!.paginationToken);
                 setApiError(undefined);  
             })
-            .catch((error) => {
+            .catch((error: Error) => {
                 console.log(error);
                 setApiError(error);
             })

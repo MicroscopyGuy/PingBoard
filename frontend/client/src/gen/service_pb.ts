@@ -7,36 +7,131 @@ import type { BinaryReadOptions, FieldList, JsonReadOptions, JsonValue, PartialM
 import { Message, proto3, Timestamp } from "@bufbuild/protobuf";
 
 /**
- * @generated from enum MetricAggregationPeriod
+ * @generated from enum Quantum
  */
-export enum MetricAggregationPeriod {
+export enum Quantum {
   /**
-   * @generated from enum value: None = 0;
+   * @generated from enum value: Length = 0;
    */
-  None = 0,
-
-  /**
-   * @generated from enum value: Minute = 1;
-   */
-  Minute = 1,
-
-  /**
-   * @generated from enum value: Hour = 2;
-   */
-  Hour = 2,
-
-  /**
-   * @generated from enum value: Day = 3;
-   */
-  Day = 3,
+  Length = 0,
 }
-// Retrieve enum metadata with: proto3.getEnumType(MetricAggregationPeriod)
-proto3.util.setEnumType(MetricAggregationPeriod, "MetricAggregationPeriod", [
-  { no: 0, name: "None" },
-  { no: 1, name: "Minute" },
-  { no: 2, name: "Hour" },
-  { no: 3, name: "Day" },
+// Retrieve enum metadata with: proto3.getEnumType(Quantum)
+proto3.util.setEnumType(Quantum, "Quantum", [
+  { no: 0, name: "Length" },
 ]);
+
+/**
+ * @generated from enum Metric
+ */
+export enum Metric {
+  /**
+   * @generated from enum value: LATENCY = 0;
+   */
+  LATENCY = 0,
+
+  /**
+   * @generated from enum value: PACKET_LOSS = 1;
+   */
+  PACKET_LOSS = 1,
+
+  /**
+   * @generated from enum value: JITTER = 2;
+   */
+  JITTER = 2,
+}
+// Retrieve enum metadata with: proto3.getEnumType(Metric)
+proto3.util.setEnumType(Metric, "Metric", [
+  { no: 0, name: "LATENCY" },
+  { no: 1, name: "PACKET_LOSS" },
+  { no: 2, name: "JITTER" },
+]);
+
+/**
+ * @generated from enum Statistic
+ */
+export enum Statistic {
+  /**
+   * @generated from enum value: MIN = 0;
+   */
+  MIN = 0,
+
+  /**
+   * @generated from enum value: AVG = 1;
+   */
+  AVG = 1,
+
+  /**
+   * @generated from enum value: MAX = 2;
+   */
+  MAX = 2,
+
+  /**
+   * @generated from enum value: P90 = 3;
+   */
+  P90 = 3,
+
+  /**
+   * @generated from enum value: P99 = 4;
+   */
+  P99 = 4,
+
+  /**
+   * @generated from enum value: SUM = 5;
+   */
+  SUM = 5,
+
+  /**
+   * @generated from enum value: COUNT = 6;
+   */
+  COUNT = 6,
+}
+// Retrieve enum metadata with: proto3.getEnumType(Statistic)
+proto3.util.setEnumType(Statistic, "Statistic", [
+  { no: 0, name: "MIN" },
+  { no: 1, name: "AVG" },
+  { no: 2, name: "MAX" },
+  { no: 3, name: "P90" },
+  { no: 4, name: "P99" },
+  { no: 5, name: "SUM" },
+  { no: 6, name: "COUNT" },
+]);
+
+/**
+ * @generated from message StartPingingRequest
+ */
+export class StartPingingRequest extends Message<StartPingingRequest> {
+  /**
+   * @generated from field: PingTarget target = 1;
+   */
+  target?: PingTarget;
+
+  constructor(data?: PartialMessage<StartPingingRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "StartPingingRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "target", kind: "message", T: PingTarget },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): StartPingingRequest {
+    return new StartPingingRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): StartPingingRequest {
+    return new StartPingingRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): StartPingingRequest {
+    return new StartPingingRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: StartPingingRequest | PlainMessage<StartPingingRequest> | undefined, b: StartPingingRequest | PlainMessage<StartPingingRequest> | undefined): boolean {
+    return proto3.util.equals(StartPingingRequest, a, b);
+  }
+}
 
 /**
  * @generated from message PingTarget
@@ -167,6 +262,92 @@ export class PingGroupSummaryPublic extends Message<PingGroupSummaryPublic> {
 }
 
 /**
+ * @generated from message ShowPingsRequest
+ */
+export class ShowPingsRequest extends Message<ShowPingsRequest> {
+  /**
+   * @generated from field: PingTarget target = 1;
+   */
+  target?: PingTarget;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp startingTime = 2;
+   */
+  startingTime?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp endingTime = 3;
+   */
+  endingTime?: Timestamp;
+
+  constructor(data?: PartialMessage<ShowPingsRequest>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ShowPingsRequest";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "target", kind: "message", T: PingTarget },
+    { no: 2, name: "startingTime", kind: "message", T: Timestamp },
+    { no: 3, name: "endingTime", kind: "message", T: Timestamp },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ShowPingsRequest {
+    return new ShowPingsRequest().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ShowPingsRequest {
+    return new ShowPingsRequest().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ShowPingsRequest {
+    return new ShowPingsRequest().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ShowPingsRequest | PlainMessage<ShowPingsRequest> | undefined, b: ShowPingsRequest | PlainMessage<ShowPingsRequest> | undefined): boolean {
+    return proto3.util.equals(ShowPingsRequest, a, b);
+  }
+}
+
+/**
+ * @generated from message ShowPingsResponse
+ */
+export class ShowPingsResponse extends Message<ShowPingsResponse> {
+  /**
+   * @generated from field: repeated PingGroupSummaryPublic pings = 1;
+   */
+  pings: PingGroupSummaryPublic[] = [];
+
+  constructor(data?: PartialMessage<ShowPingsResponse>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ShowPingsResponse";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pings", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ShowPingsResponse {
+    return new ShowPingsResponse().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ShowPingsResponse {
+    return new ShowPingsResponse().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ShowPingsResponse {
+    return new ShowPingsResponse().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ShowPingsResponse | PlainMessage<ShowPingsResponse> | undefined, b: ShowPingsResponse | PlainMessage<ShowPingsResponse> | undefined): boolean {
+    return proto3.util.equals(ShowPingsResponse, a, b);
+  }
+}
+
+/**
  * @generated from message ListPingsRequest
  */
 export class ListPingsRequest extends Message<ListPingsRequest> {
@@ -186,9 +367,19 @@ export class ListPingsRequest extends Message<ListPingsRequest> {
   pingTarget?: PingTarget;
 
   /**
-   * @generated from field: MetricAggregationPeriod metricAggregationPeriod = 5;
+   * @generated from field: Metric metric = 5;
    */
-  metricAggregationPeriod = MetricAggregationPeriod.None;
+  metric = Metric.LATENCY;
+
+  /**
+   * @generated from field: Statistic statistic = 6;
+   */
+  statistic = Statistic.MIN;
+
+  /**
+   * @generated from field: optional Quantum quantum = 7;
+   */
+  quantum?: Quantum;
 
   constructor(data?: PartialMessage<ListPingsRequest>) {
     super();
@@ -201,7 +392,9 @@ export class ListPingsRequest extends Message<ListPingsRequest> {
     { no: 1, name: "startingTime", kind: "message", T: Timestamp },
     { no: 2, name: "endingTime", kind: "message", T: Timestamp },
     { no: 4, name: "pingTarget", kind: "message", T: PingTarget },
-    { no: 5, name: "metricAggregationPeriod", kind: "enum", T: proto3.getEnumType(MetricAggregationPeriod) },
+    { no: 5, name: "metric", kind: "enum", T: proto3.getEnumType(Metric) },
+    { no: 6, name: "statistic", kind: "enum", T: proto3.getEnumType(Statistic) },
+    { no: 7, name: "quantum", kind: "enum", T: proto3.getEnumType(Quantum), opt: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsRequest {
@@ -222,13 +415,56 @@ export class ListPingsRequest extends Message<ListPingsRequest> {
 }
 
 /**
+ * @generated from message ListPingsDatapoint
+ */
+export class ListPingsDatapoint extends Message<ListPingsDatapoint> {
+  /**
+   * @generated from field: google.protobuf.Timestamp Timestamp = 1;
+   */
+  Timestamp?: Timestamp;
+
+  /**
+   * @generated from field: double Value = 2;
+   */
+  Value = 0;
+
+  constructor(data?: PartialMessage<ListPingsDatapoint>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ListPingsDatapoint";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "Timestamp", kind: "message", T: Timestamp },
+    { no: 2, name: "Value", kind: "scalar", T: 1 /* ScalarType.DOUBLE */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsDatapoint {
+    return new ListPingsDatapoint().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ListPingsDatapoint {
+    return new ListPingsDatapoint().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ListPingsDatapoint {
+    return new ListPingsDatapoint().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ListPingsDatapoint | PlainMessage<ListPingsDatapoint> | undefined, b: ListPingsDatapoint | PlainMessage<ListPingsDatapoint> | undefined): boolean {
+    return proto3.util.equals(ListPingsDatapoint, a, b);
+  }
+}
+
+/**
  * @generated from message ListPingsResponse
  */
 export class ListPingsResponse extends Message<ListPingsResponse> {
   /**
-   * @generated from field: google.protobuf.Timestamp imJustHereSoIDontGetFined = 1;
+   * @generated from field: repeated ListPingsDatapoint datapoints = 1;
    */
-  imJustHereSoIDontGetFined?: Timestamp;
+  datapoints: ListPingsDatapoint[] = [];
 
   constructor(data?: PartialMessage<ListPingsResponse>) {
     super();
@@ -238,7 +474,7 @@ export class ListPingsResponse extends Message<ListPingsResponse> {
   static readonly runtime: typeof proto3 = proto3;
   static readonly typeName = "ListPingsResponse";
   static readonly fields: FieldList = proto3.util.newFieldList(() => [
-    { no: 1, name: "imJustHereSoIDontGetFined", kind: "message", T: Timestamp },
+    { no: 1, name: "datapoints", kind: "message", T: ListPingsDatapoint, repeated: true },
   ]);
 
   static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ListPingsResponse {
@@ -376,6 +612,12 @@ export class ServerEvent extends Message<ServerEvent> {
     case: "pingAnomaly";
   } | {
     /**
+     * @generated from field: ServerEvent.PingInfo pingInfo = 102;
+     */
+    value: ServerEvent_PingInfo;
+    case: "pingInfo";
+  } | {
+    /**
      * @generated from field: ServerEvent.PingAgentError pingAgentError = 190;
      */
     value: ServerEvent_PingAgentError;
@@ -393,6 +635,7 @@ export class ServerEvent extends Message<ServerEvent> {
     { no: 1, name: "eventTime", kind: "message", T: Timestamp },
     { no: 100, name: "pingOnOffToggle", kind: "message", T: ServerEvent_PingOnOffToggle, oneof: "ServerEvent" },
     { no: 101, name: "pingAnomaly", kind: "message", T: ServerEvent_PingAnomaly, oneof: "ServerEvent" },
+    { no: 102, name: "pingInfo", kind: "message", T: ServerEvent_PingInfo, oneof: "ServerEvent" },
     { no: 190, name: "pingAgentError", kind: "message", T: ServerEvent_PingAgentError, oneof: "ServerEvent" },
   ]);
 
@@ -539,6 +782,43 @@ export class ServerEvent_PingAgentError extends Message<ServerEvent_PingAgentErr
 
   static equals(a: ServerEvent_PingAgentError | PlainMessage<ServerEvent_PingAgentError> | undefined, b: ServerEvent_PingAgentError | PlainMessage<ServerEvent_PingAgentError> | undefined): boolean {
     return proto3.util.equals(ServerEvent_PingAgentError, a, b);
+  }
+}
+
+/**
+ * @generated from message ServerEvent.PingInfo
+ */
+export class ServerEvent_PingInfo extends Message<ServerEvent_PingInfo> {
+  /**
+   * @generated from field: PingTarget pingTarget = 1;
+   */
+  pingTarget?: PingTarget;
+
+  constructor(data?: PartialMessage<ServerEvent_PingInfo>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "ServerEvent.PingInfo";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): ServerEvent_PingInfo {
+    return new ServerEvent_PingInfo().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): ServerEvent_PingInfo {
+    return new ServerEvent_PingInfo().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): ServerEvent_PingInfo {
+    return new ServerEvent_PingInfo().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: ServerEvent_PingInfo | PlainMessage<ServerEvent_PingInfo> | undefined, b: ServerEvent_PingInfo | PlainMessage<ServerEvent_PingInfo> | undefined): boolean {
+    return proto3.util.equals(ServerEvent_PingInfo, a, b);
   }
 }
 

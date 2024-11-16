@@ -17,8 +17,8 @@ import type {
   BackendClient,
   PromiseReturningBackendClient,
 } from "./types";
-import createClient from './createClient';
-
+import createClient from "./createClient";
+import { resolve } from "path";
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
@@ -48,17 +48,17 @@ const createWindow = () => {
   }
 
   // Open the DevTools.
-  mainWindow.webContents.openDevTools();
+  //mainWindow.webContents.openDevTools();
   return mainWindow;
 };
 
-const serverPath ="node_modules/backend/dist/PingBoard.exe";
+const serverPath = resolve("../backend/dist");
 
 const startBackend = async () => {
   const p = spawn(join(serverPath, "PingBoard.exe"), [], {
     cwd: serverPath,
     env: {
-      LOG_TO_FILE:"true",
+      LOG_TO_FILE: "false",
     },
   });
   console.log(`StartBackend process ID: ${process.pid}`);
@@ -139,6 +139,8 @@ app.on("ready", async () => {
     tryMakeApiRequest(args[0], args[1])
   );
 
+  ipcMain.handle("preloadLog", (logStr) => console.log(logStr));
+
   const mainWindow = createWindow();
   backendClient = createClient("http://localhost:5245");
   listenServerEvents(mainWindow);
@@ -160,6 +162,3 @@ app.on("activate", () => {
     createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.

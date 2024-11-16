@@ -4,11 +4,16 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
 service PingBoardService {
-  rpc StartPinging (PingTarget) returns (google.protobuf.Empty);
+  rpc StartPinging (StartPingingRequest) returns (google.protobuf.Empty);
   rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
   rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
   rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
+  rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
+}
+
+message StartPingingRequest{
+  PingTarget target = 1;
 }
 
 message PingTarget {
@@ -28,22 +33,52 @@ message PingGroupSummaryPublic {
   optional string lastAbnormalStatusExplanation = 10;
 }
 
-enum MetricAggregationPeriod{
-  None = 0;
-  Minute = 1;
-  Hour = 2;
-  Day = 3;
+message ShowPingsRequest{
+  PingTarget target = 1;
+  google.protobuf.Timestamp startingTime = 2;
+  google.protobuf.Timestamp endingTime = 3;
+}
+
+message ShowPingsResponse{
+  repeated PingGroupSummaryPublic pings = 1;
+}
+
+enum Quantum{
+  Length = 0;
 }
 
 message ListPingsRequest{
   google.protobuf.Timestamp startingTime = 1;
   google.protobuf.Timestamp endingTime = 2;
   PingTarget pingTarget = 4;
-  MetricAggregationPeriod metricAggregationPeriod= 5;
+  Metric metric = 5;
+  Statistic statistic = 6;
+  optional Quantum quantum = 7;
+}
+
+enum Metric{
+  LATENCY = 0;
+  PACKET_LOSS = 1;
+  JITTER = 2;
+}
+
+enum Statistic{
+  MIN = 0;
+  AVG = 1;
+  MAX = 2;
+  P90 = 3;
+  P99 = 4;
+  SUM = 5;
+  COUNT = 6;
+}
+
+message ListPingsDatapoint{
+  google.protobuf.Timestamp Timestamp = 1;
+  double Value = 2;
 }
 
 message ListPingsResponse{
-  google.protobuf.Timestamp imJustHereSoIDontGetFined = 1;
+  repeated ListPingsDatapoint datapoints = 1;
 }
 
 message ListAnomaliesRequest{
@@ -73,11 +108,16 @@ message ServerEvent{
     string errorDescription = 2;   
   }
   
+  message PingInfo{
+    PingTarget pingTarget = 1;
+  }
+  
   google.protobuf.Timestamp eventTime = 1;
 
   oneof ServerEvent{
     PingOnOffToggle pingOnOffToggle = 100;
     PingAnomaly pingAnomaly = 101;
+    PingInfo pingInfo = 102;
     PingAgentError pingAgentError = 190;
   }
 }

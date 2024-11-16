@@ -40,18 +40,18 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     /// <param name="context">Represents the context of a server-side call.</param>
     /// <returns>An empty task.</returns>
     /// <exception cref="RpcException"></exception>
-    public override async Task<Empty> StartPinging(PingTarget request, ServerCallContext context)
+    public override async Task<Empty> StartPinging(StartPingingRequest request, ServerCallContext context)
     {
         try
         {
             if (_pingMonitoringJobManager.IsPinging())
             {
-                _logger.LogDebug($"PingBoardService: StartPinging: Was already pinging {request.Target}");
+                _logger.LogDebug($"PingBoardService: StartPinging: Was already pinging {request.Target.Target}");
                 throw new RpcException(new Status(StatusCode.FailedPrecondition, "Was already pinging!"));
             }
 
-            _logger.LogDebug($"PingBoardService StartPinging: {request.Target}");
-            _pingMonitoringJobManager.StartPinging(request.Target);
+            _logger.LogDebug($"PingBoardService StartPinging: {request.Target.Target}");
+            _pingMonitoringJobManager.StartPinging(request.Target.Target);
             return new Empty();
         }
         
@@ -183,18 +183,18 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
     public override async Task<ListPingsResponse> ListPings(ListPingsRequest request, ServerCallContext context)
     {
         var response = new ListPingsResponse();
-        var summaries = await _crudOperations.ListPingsAsync(
-            
-            request.StartingTime.ToDateTime(), 
-            request.NumberRequested, 
+        var results = _crudOperations(
+            request.StartingTime,
+            request.EndingTime,
+            request.PingTarget,
+            request.Metric,
+            request.Statistic,
             context.CancellationToken,
-            request.PingTarget.Target
-            
-        );
-        response.Summaries.Add(summaries);
-        return response;
-    }*/
+            request.Quantum);
 
+    }*/
+    
+    
     public override async Task<ListAnomaliesResponse> ListAnomalies(ListAnomaliesRequest request, ServerCallContext context)
     {
         _logger.LogDebug("GetLatestServerEvent: Starting API call");
@@ -230,5 +230,24 @@ public class PingBoardService : global::PingBoardService.PingBoardServiceBase
         response.Anomalies.Add(anomalies);
         
         return response;
+    }
+
+    public override async Task<ShowPingsResponse> ShowPings(ShowPingsRequest request, ServerCallContext context)
+    {
+        _logger.LogDebug("ShowPings: Starting API call");
+        try
+        {
+            var response = await _crudOperations.ShowPingsAsync(request.StartingTime.ToDateTime(),
+                request.EndingTime.ToDateTime(),
+                request.Target.ToString(), context.CancellationToken);
+            _logger.LogDebug($"ShowPing: number of results: {response.Pings.Count}");
+            return response;
+        }
+        
+        catch (Exception e)
+        {
+            _logger.LogError(e.ToString());
+            throw;
+        }
     }
 }

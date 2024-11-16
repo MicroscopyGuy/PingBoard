@@ -68,22 +68,19 @@ public class PingMonitoringJobRunner : IDisposable
             {
                 result = await _groupPinger.SendPingGroupAsync(IPAddress.Parse(_target), stoppingToken);
                 Console.WriteLine(result.ToString());
-
+                await _crudOperations.InsertPingGroupSummaryAsync(result, stoppingToken);
                 var trippedFlags = _pingQualifier.CalculatePingQualityFlags(result);
                 bool anomaly = !PingQualification.PingQualityWithinThresholds(trippedFlags);
+                string caller = "PingMonitoringJobRunner: ExecutePingingAsync";
                 
                 if(anomaly)
                 {
-                    _logger.LogDebug($"PingMonitoringJobRunner: New anomaly detected {PingQualification.DescribePingQualityFlags(trippedFlags)}");
-                    _serverEventEmitter.IndicatePingAnomaly(
-                        _target, 
-                        PingQualification.DescribePingQualityFlags(trippedFlags),
-                        "PingMonitoringJobRunner: ExecutePingingAsync"
-                        );
+                    var anomalyDescription = PingQualification.DescribePingQualityFlags(trippedFlags);
+                    _logger.LogDebug($"PingMonitoringJobRunner: New anomaly detected {anomalyDescription}");
+                    _serverEventEmitter.IndicatePingAnomaly(_target, anomalyDescription, caller);
                 }
-                
-                await _crudOperations.InsertPingGroupSummaryAsync(result, stoppingToken);
-                
+
+                _serverEventEmitter.IndicatePingInfo(_target, caller);
             }
         }
         

@@ -2,7 +2,6 @@ import type { Maybe } from "../types";
 import { PingBoardService } from "client";
 import { ServerEvent } from "client/dist/gen/service_pb";
 
-
 // caller will be presented with something.apiName(request)
 class PingBackendClientProxy {
   constructor() {
@@ -18,19 +17,21 @@ class PingBackendClientProxy {
             return iterateServerEvents;
           }
 
-          return async (requestObj: any) => {
+          return async (requestObj: { toJson: () => any }) => {
             const response = (await (window as any).apiBridge.makeApiRequest(
               apiName,
-              requestObj
+              requestObj.toJson()
             )) as Maybe<any>;
 
             console.log("PingBackendClientProxy.ts: ");
             console.log(response);
 
             if (response.successful) {
-              return PingBoardService.methods[apiName as keyof typeof PingBoardService.methods].O.fromJson(response.result);
+              return PingBoardService.methods[
+                apiName as keyof typeof PingBoardService.methods
+              ].O.fromJson(response.result);
             } else if (response.successful === false) {
-              throw response.error; 
+              throw response.error;
             }
           };
         },

@@ -2,8 +2,8 @@ import { useState, useContext, useCallback } from 'react';
 import './App.css';
 import { DatabaseContext } from './PingBackendContext';
 import { useServerEventListener } from "./ServerEventListener";
-import { ServerEvent_PingOnOffToggle } from "client/dist/gen/service_pb";
-
+import { PingTarget, ServerEvent_PingOnOffToggle, StartPingingRequest } from "client/dist/gen/service_pb";
+import { Empty } from "@bufbuild/protobuf";
 
 interface PingStartButtonProps{
     pingTarget: string,
@@ -24,8 +24,14 @@ function PingStartButton({pingTarget, pingingActive}: PingStartButtonProps){
       }
   
       const client = databaseContext.client;
-      client!.startPinging({ target: pingTarget })
-        .catch((err) => console.log( err instanceof Error && 'code' in err
+      var request = new StartPingingRequest({
+        target: new PingTarget({
+            target: '8.8.8.8'
+        })
+      });
+
+      client!.startPinging(request)
+        .catch((err: Error) => console.log( err instanceof Error && 'code' in err
                               ? `Start Pinging: Error code:${err.code}, message: ${err.message}`
                               : `Error message:${err.message}`));
     }
@@ -45,8 +51,8 @@ function PingStopButton({pingingActive} : PingStopButtonProps ){
     const databaseContext = useContext(DatabaseContext);
   
     const stopPinging = useCallback( () =>{
-      databaseContext.client!.stopPinging({}) 
-        .catch((err) => console.log(`Stop Pinging: message: ${err.message}`));
+      databaseContext.client!.stopPinging(new Empty()) 
+        .catch((err: Error) => console.log(`Stop Pinging: message: ${err.message}`));
     }, [databaseContext]);
   
     return <button className="ping-button ping-stop" onClick = {stopPinging} disabled = { !pingingActive }>Stop</button>
