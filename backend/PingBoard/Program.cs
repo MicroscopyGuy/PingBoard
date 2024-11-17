@@ -45,7 +45,7 @@ public class Program
         
         // Pinging-related classes
         builder.Services.AddTransient<IGroupPinger, GroupPinger>();
-        builder.Services.AddTransient<PingQualification>();
+        builder.Services.AddTransient<PingGroupQualifier>();
         builder.Services.AddTransient<IIndividualPinger, IndividualPinger>();
         builder.Services.AddTransient<Ping>();
         builder.Services.AddTransient<PingOptions>();
@@ -133,7 +133,7 @@ public class Program
         /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());*/
         
-        builder.Services.AddSingleton<Func<string, PingMonitoringJobRunner>>((svc) =>
+        builder.Services.AddSingleton<Func<string, GroupPingMonitoringJobRunner>>((svc) =>
         {
             return (str) =>
             {
@@ -143,15 +143,15 @@ public class Program
                 var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
                 var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
                 var crudOperations = svc.GetRequiredService<CrudOperations>();
-                var pingQualifier = svc.GetRequiredService<PingQualification>();
+                var pingQualifier = svc.GetRequiredService<PingGroupQualifier>();
                 var cancellationTokenSource = new CancellationTokenSource();
                 var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
-                var logger = svc.GetRequiredService<ILogger<PingMonitoringJobRunner>>();
+                var logger = svc.GetRequiredService<ILogger<GroupPingMonitoringJobRunner>>();
                 logger.LogDebug(
                     "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
                     cancellationTokenSource.GetHashCode());
 
-                return new PingMonitoringJobRunner(
+                return new GroupPingMonitoringJobRunner(
                     groupPinger, pingingBehavior, pingingThresholds,
                     behaviorConfigValidator, pingingThresholdsConfigValidator, crudOperations,
                     pingQualifier, new CancellationTokenSource(), serverEventEmitter, str, logger);

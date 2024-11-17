@@ -201,6 +201,63 @@ PingGroupSummaryPublic.fields = proto3.util.newFieldList(() => [
     { no: 10, name: "lastAbnormalStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
 ]);
 /**
+ * @generated from message PingResultPublic
+ */
+export class PingResultPublic extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: int32 rtt = 3;
+         */
+        this.rtt = 0;
+        /**
+         * @generated from field: string target = 4;
+         */
+        this.target = "";
+        /**
+         * @generated from field: string targetType = 5;
+         */
+        this.targetType = "";
+        /**
+         * @generated from field: string ipStatus = 6;
+         */
+        this.ipStatus = "";
+        /**
+         * @generated from field: int32 ttl = 7;
+         */
+        this.ttl = 0;
+        /**
+         * @generated from field: string replyAddress = 8;
+         */
+        this.replyAddress = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new PingResultPublic().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new PingResultPublic().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new PingResultPublic().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(PingResultPublic, a, b);
+    }
+}
+PingResultPublic.runtime = proto3;
+PingResultPublic.typeName = "PingResultPublic";
+PingResultPublic.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "start", kind: "message", T: Timestamp },
+    { no: 2, name: "end", kind: "message", T: Timestamp },
+    { no: 3, name: "rtt", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 4, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "targetType", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "ipStatus", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "ttl", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 8, name: "replyAddress", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
  * @generated from message ShowPingsRequest
  */
 export class ShowPingsRequest extends Message {

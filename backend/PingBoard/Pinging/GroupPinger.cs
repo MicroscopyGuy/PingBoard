@@ -14,11 +14,11 @@ public class GroupPinger : IGroupPinger{
     private readonly ILogger<IGroupPinger> _logger;
     private readonly PingingBehaviorConfig _pingBehavior;
     private readonly PingingThresholdsConfig _pingThresholds;
-    private readonly PingQualification _pingQualifier; 
+    private readonly PingGroupQualifier _pingQualifier; 
     private readonly IIndividualPinger _individualPinger;
     private readonly IPingScheduler _scheduler;
     
-    public GroupPinger(IIndividualPinger individualPinger, PingQualification pingQualifier, IPingScheduler scheduler,
+    public GroupPinger(IIndividualPinger individualPinger, PingGroupQualifier pingQualifier, IPingScheduler scheduler,
                        IOptions<PingingBehaviorConfig> pingBehavior, IOptions<PingingThresholdsConfig> pingThresholds,
                        ILogger<IGroupPinger> logger){
         _pingQualifier    = pingQualifier;
@@ -158,4 +158,3 @@ public class GroupPinger : IGroupPinger{
     }
 
 }
-

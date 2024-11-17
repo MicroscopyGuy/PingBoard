@@ -91,7 +91,7 @@ public class PingGroupSummary{
     /// Treated as a bitmap to compactly store information about the quality of the pings summarized by a PingGroupSummary.
     /// For more information, see ThresholdExceededFlags.cs.
     /// </summary>
-    public PingQualification.ThresholdExceededFlags PingQualityFlags {get; set;}
+    public PingGroupQualifier.ThresholdExceededFlags PingQualityFlags {get; set;}
 
     /// <summary>
     /// Safely initializes and returns a PingGroupSummmary object with five properties safely intialized to default values:

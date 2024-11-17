@@ -12,7 +12,7 @@ using System.Net;
 /// A disposable, self-contained class created by the PingMonitoringJobManager in response to a request
 /// to ping a particular domain or IP address. 
 /// </summary>
-public class PingMonitoringJobRunner : IDisposable
+public class GroupPingMonitoringJobRunner : IDisposable
 {
     private readonly IGroupPinger _groupPinger;
     private readonly CrudOperations _crudOperations;
@@ -20,14 +20,14 @@ public class PingMonitoringJobRunner : IDisposable
     private readonly string _target;
     private Task _pingingTask;
     private ServerEventEmitter _serverEventEmitter;
-    private PingQualification _pingQualifier;
-    private readonly ILogger<PingMonitoringJobRunner> _logger;
+    private PingGroupQualifier _pingQualifier;
+    private readonly ILogger<GroupPingMonitoringJobRunner> _logger;
 
-    public PingMonitoringJobRunner(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
+    public GroupPingMonitoringJobRunner(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
                                    IOptions<PingingThresholdsConfig> pingingThresholds, PingingBehaviorConfigValidator behaviorValidator, 
                                    PingingThresholdsConfigValidator thresholdsValidator, CrudOperations crudOperations, 
-                                   PingQualification pingQualifier, CancellationTokenSource cancellationTokenSource,
-                                   ServerEventEmitter serverEventEmitter, string target, ILogger<PingMonitoringJobRunner> logger){
+                                   PingGroupQualifier pingQualifier, CancellationTokenSource cancellationTokenSource,
+                                   ServerEventEmitter serverEventEmitter, string target, ILogger<GroupPingMonitoringJobRunner> logger){
         _logger = logger;
         _logger.LogDebug("PingMonitoringJobRunner: Entered Constructor");
         _groupPinger = groupPinger;
@@ -70,12 +70,12 @@ public class PingMonitoringJobRunner : IDisposable
                 Console.WriteLine(result.ToString());
                 await _crudOperations.InsertPingGroupSummaryAsync(result, stoppingToken);
                 var trippedFlags = _pingQualifier.CalculatePingQualityFlags(result);
-                bool anomaly = !PingQualification.PingQualityWithinThresholds(trippedFlags);
+                bool anomaly = !PingGroupQualifier.PingQualityWithinThresholds(trippedFlags);
                 string caller = "PingMonitoringJobRunner: ExecutePingingAsync";
                 
                 if(anomaly)
                 {
-                    var anomalyDescription = PingQualification.DescribePingQualityFlags(trippedFlags);
+                    var anomalyDescription = PingGroupQualifier.DescribePingQualityFlags(trippedFlags);
                     _logger.LogDebug($"PingMonitoringJobRunner: New anomaly detected {anomalyDescription}");
                     _serverEventEmitter.IndicatePingAnomaly(_target, anomalyDescription, caller);
                 }
