@@ -69,10 +69,12 @@ public class Program
         // Database-related classes
         builder.Services.AddTransient<DatabaseConstants>();
         builder.Services.AddTransient<DatabaseStatementsGenerator>();
-        builder.Services.AddTransient<DatabaseHelper>();
         builder.Services.AddTransient<SqliteConnection>();
         builder.Services.AddTransient<CrudOperations>();
 
+        // Probe-related information
+        //builder.Services.AddTransient<INetworkProbe, >
+        
         // Service-related information
         builder.Services.AddSingleton<DatabaseInitializer>();
         builder.Services.AddHostedService<DatabaseInitializer>((svc) =>
@@ -133,7 +135,7 @@ public class Program
         /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());*/
         
-        builder.Services.AddSingleton<Func<string, GroupPingMonitoringJobRunner>>((svc) =>
+        builder.Services.AddTransient<Func<string, GroupPinger>>((svc) =>
         {
             return (str) =>
             {
@@ -146,12 +148,12 @@ public class Program
                 var pingQualifier = svc.GetRequiredService<PingGroupQualifier>();
                 var cancellationTokenSource = new CancellationTokenSource();
                 var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
-                var logger = svc.GetRequiredService<ILogger<GroupPingMonitoringJobRunner>>();
+                var logger = svc.GetRequiredService<ILogger<GroupPingProbe>>();
                 logger.LogDebug(
                     "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
                     cancellationTokenSource.GetHashCode());
 
-                return new GroupPingMonitoringJobRunner(
+                return new GroupPingProbe(
                     groupPinger, pingingBehavior, pingingThresholds,
                     behaviorConfigValidator, pingingThresholdsConfigValidator, crudOperations,
                     pingQualifier, new CancellationTokenSource(), serverEventEmitter, str, logger);
@@ -177,7 +179,10 @@ public class Program
         builder.Services.AddDbContextFactory<PingInfoContext>(
             options =>
                 options.UseSqlite(connectionString));
-        
+
+        builder.Services.AddDbContextFactory<ProbeResultsContext>(
+            options =>
+                options.UseSqlite(connectionString));
         
         //Enable Cors Support
         var allowCorsPolicy = "_allowCorsPolicy";

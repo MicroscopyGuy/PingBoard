@@ -1,6 +1,5 @@
 namespace PingBoard.Services;
 using PingBoard.Database.Utilities;
-using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Models;
 using FluentValidation;
 using Microsoft.Extensions.Options;
@@ -12,7 +11,7 @@ using System.Net;
 /// A disposable, self-contained class created by the PingMonitoringJobManager in response to a request
 /// to ping a particular domain or IP address. 
 /// </summary>
-public class GroupPingMonitoringJobRunner : IDisposable
+public class GroupPingProbe : IDisposable, NetworkProbeLiason
 {
     private readonly IGroupPinger _groupPinger;
     private readonly CrudOperations _crudOperations;
@@ -21,13 +20,13 @@ public class GroupPingMonitoringJobRunner : IDisposable
     private Task _pingingTask;
     private ServerEventEmitter _serverEventEmitter;
     private PingGroupQualifier _pingQualifier;
-    private readonly ILogger<GroupPingMonitoringJobRunner> _logger;
+    private readonly ILogger<GroupPinger> _logger;
 
-    public GroupPingMonitoringJobRunner(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
+    public GroupPingProbe(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
                                    IOptions<PingingThresholdsConfig> pingingThresholds, PingingBehaviorConfigValidator behaviorValidator, 
                                    PingingThresholdsConfigValidator thresholdsValidator, CrudOperations crudOperations, 
                                    PingGroupQualifier pingQualifier, CancellationTokenSource cancellationTokenSource,
-                                   ServerEventEmitter serverEventEmitter, string target, ILogger<GroupPingMonitoringJobRunner> logger){
+                                   ServerEventEmitter serverEventEmitter, string target, ILogger<GroupPinger> logger){
         _logger = logger;
         _logger.LogDebug("PingMonitoringJobRunner: Entered Constructor");
         _groupPinger = groupPinger;
@@ -45,7 +44,7 @@ public class GroupPingMonitoringJobRunner : IDisposable
         _logger.LogDebug("PingMonitoringJobRunner: Constructor: CancellationTokenSourceHash: {ctsHash}", 
             _cancellationTokenSource.GetHashCode());
     }
-
+    
     public void StartPinging(){
         _logger.LogDebug("PingMonitoringJobRunner: StartPinging Entered");
 

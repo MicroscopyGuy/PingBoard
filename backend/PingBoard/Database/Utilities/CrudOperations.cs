@@ -1,6 +1,7 @@
 using System.Text.Json;
 using Google.Rpc.Context;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using PingBoard.Services;
 
 namespace PingBoard.Database.Utilities;
 using Microsoft.Extensions.Options;
@@ -14,6 +15,7 @@ using PingBoard.Database.Models;
 public class CrudOperations
 {
     private IDbContextFactory<PingInfoContext> _pingInfoContextFactory;
+    private IDbContextFactory<ProbeResultsContext> _probeResultsContextFactory;
     private PingingThresholdsConfig _pingingThresholds;
     private ILogger<CrudOperations> _logger;
 
@@ -130,6 +132,25 @@ public class CrudOperations
         response.Pings.Add(results);
         
         return response;
+    }
+
+    public async Task InsertProbeResult(ProbeResult result, CancellationToken cancellationToken)
+    {
+      
+        try
+        {
+            await using var _probeDbContext = await _probeResultsContextFactory.CreateDbContextAsync(cancellationToken);
+           _probeDbContext.Add(result);
+           _probeDbContext.SaveChanges();
+        }
+
+        catch (Exception e)
+        {
+            _logger.LogError("CrudOperations: InsertPingGroupSummaryAsync: Insertion of PingGroupSummary failed. {e}", e);
+            throw;
+        }
+        
+        
     }
     
     /*

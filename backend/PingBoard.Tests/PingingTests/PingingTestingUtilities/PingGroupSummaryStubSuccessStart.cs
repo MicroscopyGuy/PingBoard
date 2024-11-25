@@ -80,7 +80,7 @@ public static partial class PingGroupSummaryStub
         // Finally, make the GroupPinger
         var groupPinger = new GroupPinger(
             pingerStub,
-            new PingQualification(thresholdsOptions),
+            new PingGroupQualifier(thresholdsOptions),
             pingScheduler,
             behaviorOptions,
             thresholdsOptions,
@@ -124,7 +124,7 @@ public static partial class PingGroupSummaryStub
         // Finally, make the GroupPinger
         var groupPinger = new GroupPinger(
             pingerStub,
-            new PingQualification(thresholdsOptions),
+            new PingGroupQualifier(thresholdsOptions),
             pingScheduler,
             behaviorOptions,
             thresholdsOptions,
@@ -165,7 +165,7 @@ public static partial class PingGroupSummaryStub
         // Finally, make the GroupPinger
         var groupPinger = new GroupPinger(
             pingerStub,
-            new PingQualification(thresholdsOptions),
+            new PingGroupQualifier(thresholdsOptions),
             pingScheduler,
             behaviorOptions,
             thresholdsOptions,
@@ -206,7 +206,7 @@ public static partial class PingGroupSummaryStub
         // Finally, make the GroupPinger
         var groupPinger = new GroupPinger(
             pingerStub,
-            new PingQualification(thresholdsOptions),
+            new PingGroupQualifier(thresholdsOptions),
             pingScheduler,
             behaviorOptions,
             thresholdsOptions,
@@ -247,7 +247,7 @@ public static partial class PingGroupSummaryStub
         // Finally, make the GroupPinger
         var groupPinger = new GroupPinger(
             pingerStub,
-            new PingQualification(thresholdsOptions),
+            new PingGroupQualifier(thresholdsOptions),
             pingScheduler,
             behaviorOptions,
             thresholdsOptions,

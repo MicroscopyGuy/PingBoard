@@ -25,7 +25,7 @@ public class DatabaseInsertionTests{
 
         // make the qualifer that DatabaseHelper needs, using the same PingingThresholdsOptions from 
         // SendPingGroupAsyncTesting 
-        PingQualification pingQualifier = new PingQualification(SendPingGroupAsyncTestingConfig.PingThresholdsOptions);
+        PingGroupQualifier pingQualifier = new PingGroupQualifier(SendPingGroupAsyncTestingConfig.PingThresholdsOptions);
         
         DatabaseHelper dbHelper = new DatabaseHelper(
             dbStatementsGenerator, 

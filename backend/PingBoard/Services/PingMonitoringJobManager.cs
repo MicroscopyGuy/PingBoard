@@ -6,16 +6,18 @@ namespace PingBoard.Services;
 /// Handles the logistics of pinging by creating, destroying, and directing PingMonitoringJobRunners
 /// in response to requests passed from the front end. <see cref="GroupPingMonitoringJobRunner"/>
 /// </summary>
-public class PingMonitoringJobManager
+public class PingMonitoringJobManager : BackgroundService
 {
-    private readonly Func<string, GroupPingMonitoringJobRunner> _getPingMonitoringJobRunner;
+    private readonly Func<string, GroupPinger> _getPingMonitoringJobRunner;
     private readonly ILogger<PingMonitoringJobManager> _logger;
     private ServerEventEmitter _serverEventEmitter;
-    private volatile GroupPingMonitoringJobRunner? _currentJobRunner;
+    private volatile GroupPinger? _currentJobRunner;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
+    // private Func<INetworkTarget, INetworkProbe, NetworkProbeLiason> _probeLiasonFactory;
     
-    public PingMonitoringJobManager(Func<string, GroupPingMonitoringJobRunner> pingMonitoringJobRunnerSource,
+    
+    public PingMonitoringJobManager(Func<string, GroupPinger> pingMonitoringJobRunnerSource,
         ServerEventEmitter serverEventEmitter, ILogger<PingMonitoringJobManager> logger)
     {
         _getPingMonitoringJobRunner = pingMonitoringJobRunnerSource;
@@ -23,7 +25,7 @@ public class PingMonitoringJobManager
         _logger = logger;
     }
     
-    /*
+    
     /// <summary>
     /// The continuous loop that monitors the Pinging job to see if any administrative action is necessary,
     /// such as getting rid of the PingMonitoringJobRunner, informing the front end that its no longer pinging, etc.
@@ -83,7 +85,7 @@ public class PingMonitoringJobManager
                 await Task.Delay(_checkRunningJobsDelayMs);
             }
         }
-    } */
+    } 
 
     /// <summary>
     /// Returns whether any jobs are running.

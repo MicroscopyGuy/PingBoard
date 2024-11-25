@@ -6,7 +6,7 @@ using PingBoard.Pinging.Configuration;
 
 
 namespace PingBoard.Tests.PingingTests{
-    public class PingQualificationTesting
+    public class PingGroupQualifierTesting
     {
         [Fact]
         public void QualityDeterminedOutsideThresholds_OnPingQualityOutsideThresholds()
@@ -20,10 +20,10 @@ namespace PingBoard.Tests.PingingTests{
             };
             
             IOptions<PingingThresholdsConfig> testThresholdOptions = Options.Create(testThresholdsConfig);
-            PingQualification pingQualifier = new PingQualification(testThresholdOptions);
+            PingGroupQualifier pingQualifier = new PingGroupQualifier(testThresholdOptions);
 
-            PingQualification.ThresholdExceededFlags testFlags = (PingQualification.ThresholdExceededFlags) 0b0010_0000;
-            Assert.False(PingQualification.PingQualityWithinThresholds(testFlags));
+            PingGroupQualifier.ThresholdExceededFlags testFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0010_0000;
+            Assert.False(PingGroupQualifier.PingQualityWithinThresholds(testFlags));
         }
 
         [Fact]
@@ -38,10 +38,10 @@ namespace PingBoard.Tests.PingingTests{
             };
             
             IOptions<PingingThresholdsConfig> testThresholdOptions = Options.Create(testThresholdsConfig);
-            PingQualification pingQualifier = new PingQualification(testThresholdOptions);
+            PingGroupQualifier pingQualifier = new PingGroupQualifier(testThresholdOptions);
 
-            PingQualification.ThresholdExceededFlags testFlags = (PingQualification.ThresholdExceededFlags) 0b0000_0000;
-            Assert.True(PingQualification.PingQualityWithinThresholds(testFlags));
+            PingGroupQualifier.ThresholdExceededFlags testFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0000_0000;
+            Assert.True(PingGroupQualifier.PingQualityWithinThresholds(testFlags));
         }
 
         [Fact]
@@ -63,8 +63,8 @@ namespace PingBoard.Tests.PingingTests{
             poorQualityResult.PacketLoss = 0.5f;
 
             IOptions<PingingThresholdsConfig> testThresholdOptions = Options.Create(testThresholdsConfig);
-            PingQualification pingQualifier = new PingQualification(testThresholdOptions);
-            PingQualification.ThresholdExceededFlags correctFlags = (PingQualification.ThresholdExceededFlags) 0b0001_1111;
+            PingGroupQualifier pingQualifier = new PingGroupQualifier(testThresholdOptions);
+            PingGroupQualifier.ThresholdExceededFlags correctFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0001_1111;
             Assert.Equal(correctFlags, pingQualifier.CalculatePingQualityFlags(poorQualityResult));
         }
 
@@ -87,8 +87,8 @@ namespace PingBoard.Tests.PingingTests{
             goodQualityResult.PacketLoss = 0.0f;
 
             IOptions<PingingThresholdsConfig> testThresholdOptions = Options.Create(testThresholdsConfig);
-            PingQualification pingQualifier = new PingQualification(testThresholdOptions);
-            PingQualification.ThresholdExceededFlags correctFlags = (PingQualification.ThresholdExceededFlags) 0b0000_0000;
+            PingGroupQualifier pingQualifier = new PingGroupQualifier(testThresholdOptions);
+            PingGroupQualifier.ThresholdExceededFlags correctFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0000_0000;
             Assert.Equal(correctFlags, pingQualifier.CalculatePingQualityFlags(goodQualityResult));
         }
 
@@ -110,36 +110,36 @@ namespace PingBoard.Tests.PingingTests{
             mixedQualityResult.PacketLoss = 0.1f;
 
             IOptions<PingingThresholdsConfig> testThresholdOptions = Options.Create(testThresholdsConfig);
-            PingQualification pingQualifier = new PingQualification(testThresholdOptions);
-            PingQualification.ThresholdExceededFlags correctFlags = (PingQualification.ThresholdExceededFlags) 0b0001_0100;
+            PingGroupQualifier pingQualifier = new PingGroupQualifier(testThresholdOptions);
+            PingGroupQualifier.ThresholdExceededFlags correctFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0001_0100;
             Assert.Equal(correctFlags, pingQualifier.CalculatePingQualityFlags(mixedQualityResult));
         }
 
         [Fact]
         public void EmptyQualityDescriptionOnNoFlagsSet(){
-            PingQualification.ThresholdExceededFlags emptyFlags = PingQualification.ThresholdExceededFlags.NotExceeded; 
-            Assert.Equal("", PingQualification.DescribePingQualityFlags(emptyFlags));
+            PingGroupQualifier.ThresholdExceededFlags emptyFlags = PingGroupQualifier.ThresholdExceededFlags.NotExceeded; 
+            Assert.Equal("", PingGroupQualifier.DescribePingQualityFlags(emptyFlags));
         }
 
         [Fact]
         public void FullQualityDescriptionOnAllFlagsSet(){
-            PingQualification.ThresholdExceededFlags fullFlags = (PingQualification.ThresholdExceededFlags) 0b0001_1111;
+            PingGroupQualifier.ThresholdExceededFlags fullFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0001_1111;
             string fullDescription = "HighMinimumPing, HighAveragePing, HighMaximumPing, HighJitter, HighPacketLoss"; 
-            Assert.Equal(fullDescription, PingQualification.DescribePingQualityFlags(fullFlags));
+            Assert.Equal(fullDescription, PingGroupQualifier.DescribePingQualityFlags(fullFlags));
         }
 
         [Fact]
         public void MixedQualityDescriptionOnSomeFlagsSet(){
-            PingQualification.ThresholdExceededFlags mixedFlags = (PingQualification.ThresholdExceededFlags) 0b0001_1010;
+            PingGroupQualifier.ThresholdExceededFlags mixedFlags = (PingGroupQualifier.ThresholdExceededFlags) 0b0001_1010;
             string fullDescription = "HighAveragePing, HighJitter, HighPacketLoss"; 
-            Assert.Equal(fullDescription, PingQualification.DescribePingQualityFlags(mixedFlags));
+            Assert.Equal(fullDescription, PingGroupQualifier.DescribePingQualityFlags(mixedFlags));
         }
 
         [Fact]
         public void SingleThresholdMentionedInDescriptionOnSingleFlagSet(){
-            PingQualification.ThresholdExceededFlags singleFlag = (PingQualification.ThresholdExceededFlags) 0b0000_0001;
+            PingGroupQualifier.ThresholdExceededFlags singleFlag = (PingGroupQualifier.ThresholdExceededFlags) 0b0000_0001;
             string shortDescription = "HighMinimumPing"; 
-            Assert.Equal(shortDescription, PingQualification.DescribePingQualityFlags(singleFlag));
+            Assert.Equal(shortDescription, PingGroupQualifier.DescribePingQualityFlags(singleFlag));
         }
     }
 }

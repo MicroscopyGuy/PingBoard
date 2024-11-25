@@ -1,4 +1,8 @@
-﻿namespace PingBoard.Database.Models;
+﻿using System.Text.Json;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using PingBoard.Services;
+
+namespace PingBoard.Database.Models;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
@@ -10,7 +14,7 @@ using PingBoard.Pinging;
 /// Defines a class meant to encapsulate the values returned by the SendPingGroupAsync() function
 /// in the <see cref="GroupPinger"/> class.
 /// </summary>
-public class PingResult{
+public class PingResult : ProbeResult{
         
     /// <summary>
     /// The time the attempt to send the group of pings either started, or attempted to start
@@ -65,7 +69,6 @@ public class PingResult{
             Start = DateTime.MinValue,
             End   = DateTime.MaxValue,
             IpStatus = null,
-            PingQualityFlags = 0b0000_0000 // bitmask for PingQualityFlags
         };
     }
 
@@ -92,7 +95,10 @@ public class PingResult{
     
     public static implicit operator PingResultPublic(PingResult result)
         => PingResult.ToApiModel(result);
-    
-    
+
+    public string ToJson()
+    {
+        return JsonSerializer.Serialize(this);
+    }
 
 }
