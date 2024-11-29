@@ -8,20 +8,24 @@ namespace PingBoard.Services;
 /// of ongoing probes. 
 public class NetworkProbeLiason
 {
-    private INetworkProbe _baseNetworkProbe;
+    private INetworkProbeBase _baseNetworkProbe;
     private CancellationTokenSource _cancellationTokenSource;
     private CrudOperations _crudOperations;
     private ServerEventEmitter _serverEventEmitter;
+    private INetworkProbeTarget _networkProbeTarget;
+    private ProbeStrategy _probeStrategy;
     private ILogger<NetworkProbeLiason> _logger;
     
-    public NetworkProbeLiason(INetworkProbe baseNetworkProbe, CrudOperations crudOperations, 
+    public NetworkProbeLiason(INetworkProbeBase baseNetworkProbe, CrudOperations crudOperations, 
         CancellationTokenSource cancellationTokenSource, ServerEventEmitter serverEventEmitter, 
-        ILogger<NetworkProbeLiason> logger)
+        INetworkProbeTarget networkProbeTarget, ProbeStrategy probeStrategy, ILogger<NetworkProbeLiason> logger)
     {
         _baseNetworkProbe = baseNetworkProbe;
         _crudOperations = crudOperations;
         _cancellationTokenSource = cancellationTokenSource;
         _serverEventEmitter = serverEventEmitter;
+        _networkProbeTarget = networkProbeTarget;
+        _probeStrategy = probeStrategy;
         _logger = logger;
     }
 
@@ -38,7 +42,7 @@ public class NetworkProbeLiason
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
             // 
-            result = await _baseNetworkProbe.ProbeAsync(token);
+            result = await _baseNetworkProbe.ProbeAsync(_networkProbeTarget, token);
             await _crudOperations.InsertProbeResult(result, token);
             // emit a server event? How is this handled?
         }

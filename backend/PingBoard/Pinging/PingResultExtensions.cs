@@ -5,8 +5,8 @@ namespace PingBoard.Pinging;
 
 public static class PingResultExtensions
 {
-    public static bool PingQualityWithinThresholds(this PingResult pingResult, int rttThreshold)
+    public static bool PingQualityWithinThresholds(this PingProbeResult pingProbeResult, int rttThreshold)
     {
-        return (pingResult.Rtt < rttThreshold && pingResult.IpStatus == IPStatus.Success);
+        return (pingProbeResult.Rtt < rttThreshold && pingProbeResult.IpStatus == IPStatus.Success);
     }
 }

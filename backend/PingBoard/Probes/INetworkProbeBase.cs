@@ -2,9 +2,9 @@
 
 public interface INetworkProbeBase
 {
-    string Name { get; set; }
-    List<Type> SupportedTargetTypes { get; set; }
-    Task<ProbeResult> ProbeAsync(PingTarget probeTarget, CancellationToken cancellationToken);
+    public string Name { get; }
+    List<Type> SupportedTargetTypes { get; }
+    Task<ProbeResult> ProbeAsync(INetworkProbeTarget probeTarget, CancellationToken cancellationToken);
     bool ShouldContinue(ProbeResult result);
 }
 

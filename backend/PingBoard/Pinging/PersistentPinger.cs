@@ -38,7 +38,7 @@ public class PersistentPinger : IPersistentPinger{
     /// <returns> 
     ///     A PingGroupSummary object which summarizes the results of the pings that were sent
     /// </returns>
-    public async IAsyncEnumerable<PingResult> SendPingsAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
+    public async IAsyncEnumerable<PingProbeResult> SendPingsAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)){
         _logger.LogInformation("GroupPinger: Entered SendPingsAsync");
         PingingStates.PingState currentPingState = PingingStates.PingState.Continue;
         string ipVersion = target.AddressFamily == AddressFamily.InterNetwork ? "Ipv4" : "Ipv6";
@@ -48,10 +48,10 @@ public class PersistentPinger : IPersistentPinger{
 
         while(PingStateNotHalt() && NotCancelled())
         {
-            PingResult result = StartPingResult(target.ToString(), ipVersion, (short) _pingBehavior.Ttl, DateTime.UtcNow);
+            PingProbeResult result = StartPingProbeResult(target.ToString(), ipVersion, (short) _pingBehavior.Ttl, DateTime.UtcNow);
             _scheduler.StartIntervalTracking();
             PingReply response = await _individualPinger.SendPingIndividualAsync(target, stoppingToken);
-            result = CompletePingResult(result, DateTime.UtcNow, response.Address.ToString(), (int)response.RoundtripTime, response.Status);
+            result = CompletePingProbeResult(result, DateTime.UtcNow, response.Address.ToString(), (int)response.RoundtripTime, response.Status);
 
             currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
             _scheduler.EndIntervalTracking();
@@ -61,9 +61,9 @@ public class PersistentPinger : IPersistentPinger{
      
     }
 
-    public PingResult StartPingResult(string target, string targetType, short ttl, DateTime start)
+    public PingProbeResult StartPingProbeResult(string target, string targetType, short ttl, DateTime start)
     {
-        return new PingResult()
+        return new PingProbeResult()
         {
             Target = target,
             TargetType = targetType,
@@ -72,7 +72,7 @@ public class PersistentPinger : IPersistentPinger{
         };
     }
 
-    public PingResult CompletePingResult(PingResult inProgress, DateTime end, string replyAddress, int rtt, 
+    public PingProbeResult CompletePingProbeResult(PingProbeResult inProgress, DateTime end, string replyAddress, int rtt, 
         IPStatus status)
     {
         inProgress.End = end;
