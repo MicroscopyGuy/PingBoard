@@ -147,7 +147,7 @@ public class Program
                 var pingQualifier = svc.GetRequiredService<PingGroupQualifier>();
                 var cancellationTokenSource = new CancellationTokenSource();
                 var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
-                var logger = svc.GetRequiredService<ILogger<GroupPingProbe>>();
+                var logger = svc.GetRequiredService<ILogger<GroupPinger>>();
                 logger.LogDebug(
                     "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
                     cancellationTokenSource.GetHashCode());

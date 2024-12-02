@@ -12,7 +12,7 @@ using PingBoard.Pinging.Configuration;
 /// <summary>
 /// A class which allows the sending of *groups* of pings, an abstraction of the IndividualPinger class.
 /// </summary>
-public class PersistentPinger : IPersistentPinger{
+public class PersistentPinger{
     private readonly ILogger<IGroupPinger> _logger;
     private readonly PingingBehaviorConfig _pingBehavior;
     private readonly PingingThresholdsConfig _pingThresholds;
@@ -53,7 +53,7 @@ public class PersistentPinger : IPersistentPinger{
             PingReply response = await _individualPinger.SendPingIndividualAsync(target, stoppingToken);
             result = CompletePingProbeResult(result, DateTime.UtcNow, response.Address.ToString(), (int)response.RoundtripTime, response.Status);
 
-            currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
+            //currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
             _scheduler.EndIntervalTracking();
             await _scheduler.DelayPingingAsync();
             yield return result;

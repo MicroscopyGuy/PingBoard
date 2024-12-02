@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using PingBoard.Database.Models;
 using PingBoard.Pinging;
 using PingBoard.Probes.Services;
 using PingBoard.Services;
@@ -7,12 +8,14 @@ namespace PingBoard.Probes;
 
 public class PingProbe : INetworkProbeBase
 {
+    public string Name { get; } = "PingProbe";
     private IndividualPinger _pinger;
-    private DnsProbe _dnsProbe;
-    public List<Type> SupportedTypes => new List<Type>()
+    private DnsProbe _dnsProbe; 
+    public List<Type> SupportedTargetTypes => new List<Type>()
     { 
         typeof (Hostname), typeof (IPAddress)
     };
+    
 
     public void SetTtl(int newTtl)
     {
@@ -40,18 +43,29 @@ public class PingProbe : INetworkProbeBase
         _pinger = pinger;
     }
 
+    public bool ShouldContinue(ProbeResult pingProbeResult)
+    {
+        var pProbeRes = (PingProbeResult)pingProbeResult;
+        if (pProbeRes.IpStatus == null)
+        {
+            return false;
+        }
+        return pProbeRes.IpStatus.Value.GetInfo().State != PingingStates.PingState.Halt;
+    }
+    
     public async Task<ProbeResult> ProbeAsync(INetworkProbeTarget probeTarget, CancellationToken cancellationToken)
     {
-        
-        var result = await _pinger.SendPingIndividualAsync(IPAddress.Parse(probeTarget.Target));
-
-        var pResult = new ProbeResult()
+        var pResult = new PingProbeResult();
+        //pResult.Id = Guid.CreateVersion7(); requires .NET 9
+        if (probeTarget.TargetType != typeof (IPAddress))
         {
-            Id = Guid.CreateNew7(),
-            
-            
+            var dnsResult = await _dnsProbe.ProbeAsync(probeTarget, cancellationToken);
+            pResult.dnsProbeResult = (DnsProbeResult) dnsResult;
         }
-        return result;
+        
+        var result = await _pinger.SendPingIndividualAsync(IPAddress.Parse(probeTarget.Target!.ToString()));
+
+        return pResult;
     } 
         
         

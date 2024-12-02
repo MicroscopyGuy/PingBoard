@@ -7,8 +7,8 @@ service PingBoardService {
   rpc StartPinging (StartPingingRequest) returns (google.protobuf.Empty);
   rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
   
-  rpc StartIndividualPinging (StartPingingIndividualRequest) returns (google.protobuf.Empty)
-  rpc StopIndividualPinging(google.protobuf.Empty) returns (google.protobuf.Empty)   
+  //rpc StartIndividualPinging (StartPingingIndividualRequest) returns (google.protobuf.Empty);
+  //rpc StopIndividualPinging(google.protobuf.Empty) returns (google.protobuf.Empty);
   
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
   rpc ListPings(ListPingsRequest) returns (ListPingsResponse);

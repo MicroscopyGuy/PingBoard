@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using PingBoard.Pinging;
 
 namespace PingBoard.Services;
 
@@ -41,8 +42,8 @@ public class PingMonitoringJobManager : BackgroundService
             lock (_lockingObject) {
                 if (IsPinging()) {
                     //_logger.LogDebug("PingMonitoringJobManager: ExecuteAsync: AlreadyPinging");
-                    pingingTask = _currentJobRunner!.GetPingingTask();
-                    pingingTarget = _currentJobRunner.GetTarget();
+                    //pingingTask = _currentJobRunner!.GetPingingTask();
+                    //pingingTarget = _currentJobRunner.GetTarget();
                 }
 
                 else {
@@ -120,8 +121,8 @@ public class PingMonitoringJobManager : BackgroundService
             
             _currentJobRunner = _getPingMonitoringJobRunner(target);
             //_logger.LogDebug($"PingMonitoringJobManager: StartPinging: new job runner created:{_currentJobRunner.GetHashCode()}");
-            _currentJobRunner.StartPinging();
-            _serverEventEmitter.IndicatePingOnOffToggle(_currentJobRunner.GetTarget(), true, "StartPinging");
+            //_currentJobRunner.StartPinging();
+            //_serverEventEmitter.IndicatePingOnOffToggle(_currentJobRunner.GetTarget(), true, "StartPinging");
         }
     }
 
@@ -144,8 +145,8 @@ public class PingMonitoringJobManager : BackgroundService
         if (safeToStop)
         {
             // save before getting rid of the job runner, so UI knows the target that is no longer being pinged
-            var oldTarget = _currentJobRunner.GetTarget();
-            await _currentJobRunner.CancelTokenSourceAsync();
+            //var oldTarget = _currentJobRunner.GetTarget();
+            //await _currentJobRunner.CancelTokenSourceAsync();
             ResetJobRunner();
             _serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPingingAsync");
         }
@@ -168,7 +169,7 @@ public class PingMonitoringJobManager : BackgroundService
                 _logger.LogDebug("PingMonitoringJobManager: ResetJobRunner: Going to dispose of job runner");
                 var cjr = _currentJobRunner;
                 _currentJobRunner = null; // defensive measure to prevent intermediate state of disposed job runner, but non-null currentJobRunner
-                cjr.Dispose();
+                //cjr.Dispose();
 
             }
         }

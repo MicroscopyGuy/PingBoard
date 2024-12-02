@@ -10,11 +10,13 @@ namespace PingBoard.Pinging{
     public struct IcmpStatusCodeEntry{
 
         /// <summary>
-        /// IPStatus is an enum defined in System.Net.NetworkInformation, and which represents
-        /// the exact status of an individual ping sent via a ping function call 
+        /// A remapping of an IPStatus enum to a new enum type for the purpose of separating two IpStatus enums
+        /// which both had the same ordinal value.
+        ///
+        /// <seealso> IpStatusExtensions.cs </seealso>
         /// </summary>
         [JsonConverter(typeof(JsonStringEnumConverter))]
-        public IPStatus IcmpStatusCode { get; set;}
+        public IpStatusExtensions.DisambiguatedIpStatus IcmpStatusCode { get; set;}
 
         /// <summary>
         /// A brief description of the ICMP StatusCode, intended for storage in DB and display in UI

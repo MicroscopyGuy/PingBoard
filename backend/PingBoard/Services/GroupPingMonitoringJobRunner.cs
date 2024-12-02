@@ -11,7 +11,7 @@ using System.Net;
 /// A disposable, self-contained class created by the PingMonitoringJobManager in response to a request
 /// to ping a particular domain or IP address. 
 /// </summary>
-public class GroupPingProbe : IDisposable, NetworkProbeLiason
+public class GroupPingProbe : IDisposable
 {
     private readonly IGroupPinger _groupPinger;
     private readonly CrudOperations _crudOperations;

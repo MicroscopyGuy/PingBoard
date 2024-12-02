@@ -56,7 +56,8 @@ public class GroupPinger : IGroupPinger{
             _scheduler.StartIntervalTracking();
             PingReply response = await _individualPinger.SendPingIndividualAsync(target, stoppingToken);
             pingGroupInfo.End = DateTime.UtcNow;  // set time received, since may terminate prematurely keep this up to date
-            currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
+            //currentPingState = IcmpStatusCodeLookup.StatusCodes[response.Status].State;
+            currentPingState = response.Status.GetInfo().State;
             pingGroupInfo.PacketsSent++;
             pingGroupInfo.ExcludedPings += (byte) ((response.Status == IPStatus.Success) ? 0 : 1);
             
