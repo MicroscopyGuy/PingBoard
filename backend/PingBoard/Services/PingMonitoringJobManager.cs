@@ -51,6 +51,7 @@ public class PingMonitoringJobManager : BackgroundService
                 }
             }
 
+            /*
             if (IsPinging())
             {
                //logger.LogDebug($"PingMonitoringJobManager: ExecuteAsync: Currently pinging {pingingTarget}");
@@ -79,12 +80,12 @@ public class PingMonitoringJobManager : BackgroundService
                 {
                     _logger.LogCritical("PingMonitoringJobManager: ExecuteAsync: pinging task of target {target} had an unhandled exception", pingingTarget);
                 }
-            }
+            } 
 
             else
             {
                 await Task.Delay(_checkRunningJobsDelayMs);
-            }
+            }*/
         }
     } 
 
@@ -148,7 +149,7 @@ public class PingMonitoringJobManager : BackgroundService
             //var oldTarget = _currentJobRunner.GetTarget();
             //await _currentJobRunner.CancelTokenSourceAsync();
             ResetJobRunner();
-            _serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPingingAsync");
+            //_serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPingingAsync");
         }
 
     }

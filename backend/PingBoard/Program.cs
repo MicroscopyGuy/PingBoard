@@ -134,11 +134,12 @@ public class Program
         /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());*/
         
-        builder.Services.AddTransient<Func<string, GroupPinger>>((svc) =>
+        /*
+        builder.Services.AddTransient<Func<string, IndividualPingMonitoringJobRunner>>((svc) =>
         {
             return (str) =>
             {
-                var groupPinger = svc.GetRequiredService<IGroupPinger>();
+                var groupPinger = svc.GetRequiredService<IIndividualPinger>();
                 var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();
                 var pingingThresholds = svc.GetRequiredService<IOptions<PingingThresholdsConfig>>();
                 var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
@@ -152,12 +153,12 @@ public class Program
                     "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
                     cancellationTokenSource.GetHashCode());
 
-                return new GroupPingProbe(
+                return new GroupPinger(
                     groupPinger, pingingBehavior, pingingThresholds,
                     behaviorConfigValidator, pingingThresholdsConfigValidator, crudOperations,
                     pingQualifier, new CancellationTokenSource(), serverEventEmitter, str, logger);
             };
-        });
+        });*/
 
         //EFCore Framework related information
         var databaseName = "Summaries";

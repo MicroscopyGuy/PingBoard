@@ -49,7 +49,7 @@ public static class IpStatusExtensions
     /// <returns></returns>
     public static DisambiguatedIpStatus Disambiguate(this IPStatus ambiguousStatus)
     {
-        var stringified = nameof(ambiguousStatus);
+        var stringified = ambiguousStatus.ToString();
         switch (stringified)
         {
             case "DestinationProhibited":

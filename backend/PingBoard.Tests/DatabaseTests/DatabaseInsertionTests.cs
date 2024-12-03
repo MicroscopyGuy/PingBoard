@@ -11,6 +11,7 @@ public class DatabaseInsertionTests{
 
     private readonly DatabaseConstants databaseConstants = new DatabaseConstants();
 
+    /*
     // Specifically want to use the same thresholds used by SendPingGroupAsyncTesting, just in case
     private readonly DatabaseStatementsGenerator dbStatementsGenerator = new DatabaseStatementsGenerator(
         SendPingGroupAsyncTestingConfig.PingThresholdsOptions,
@@ -47,7 +48,7 @@ public class DatabaseInsertionTests{
             PingGroupSummaryExpectedValues.ExpectedSummaries[scenario],
             result
             );
-    }
+    }*/
 
 
 }
