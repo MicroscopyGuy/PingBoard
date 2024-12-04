@@ -50,7 +50,7 @@ public class SendPingGroupAsyncTesting {
     /// <param name="scenarioName">The name of the scenario being tested</param>
     [Theory]
     [MemberData(nameof(PingGroupSummaryTestGenerator.GetScenarioFunctions), MemberType = typeof(PingGroupSummaryTestGenerator))]
-    public async void TestAllScenarios(string scenarioName){
+    public async Task TestAllScenarios(string scenarioName){
 
         // use reflection to translate the scenarioName into the appropriate function, and then invoke it
         PingGroupSummary actual = await PingGroupSummaryStub.RunFunctionByName(

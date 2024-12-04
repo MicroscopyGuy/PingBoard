@@ -7,7 +7,7 @@ public class ICMPStatusCodeLookupTestGenerator
     public static IEnumerable<object[]> GetIPStatuses(){
         foreach (var status in Enum.GetValues<IPStatus>())
         {
-            yield return new object[] { status, status.ToString() };
+            yield return new object[] { status };
         }
     }
     

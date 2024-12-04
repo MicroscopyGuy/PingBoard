@@ -56,7 +56,7 @@ public class IndividualPingerStubTesting{
     #region "PreparePingReplyStubs"
 
     [Fact]
-    public async void PreparePingReplyStubs_CreatesPingReplyStubs_OnTwoIPStatusSuccessStubs()
+    public async Task PreparePingReplyStubs_CreatesPingReplyStubs_OnTwoIPStatusSuccessStubs()
     {
         IndividualPingerStub pingerStub = new IndividualPingerStub();
         string target = "8.8.8.8";
@@ -80,7 +80,7 @@ public class IndividualPingerStubTesting{
     }
     
     [Fact]
-    public async void PreparePingReplyStubs_CreatesTwoPingReplyStubs_OnTwoUnsuccessfulPingReplies()
+    public async Task PreparePingReplyStubs_CreatesTwoPingReplyStubs_OnTwoUnsuccessfulPingReplies()
     {
         IndividualPingerStub pingerStub = new IndividualPingerStub();
         string target = "0.0.0.0";
