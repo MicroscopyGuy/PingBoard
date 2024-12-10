@@ -7,6 +7,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingBoard", "backend\PingBo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingBoard.Tests", "backend\PingBoard.Tests\PingBoard.Tests.csproj", "{9D55D769-C9BB-4BC8-9FCE-DE81011172B2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingBoard.IntegrationTests", "backend\PingBoard.IntegrationTests\PingBoard.IntegrationTests.csproj", "{5533D429-F805-430D-A36F-F75AF1A1DEAD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PingBoard.TestUtilities", "backend\PingBoard.TestUtilities\PingBoard.TestUtilities.csproj", "{304D7FB6-B12A-47C4-B42C-3F21C7952A36}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{EA27DD5E-D56C-4A5C-BBA4-340B4C142846}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +30,18 @@ Global
 		{9D55D769-C9BB-4BC8-9FCE-DE81011172B2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D55D769-C9BB-4BC8-9FCE-DE81011172B2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D55D769-C9BB-4BC8-9FCE-DE81011172B2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5533D429-F805-430D-A36F-F75AF1A1DEAD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5533D429-F805-430D-A36F-F75AF1A1DEAD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5533D429-F805-430D-A36F-F75AF1A1DEAD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5533D429-F805-430D-A36F-F75AF1A1DEAD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{304D7FB6-B12A-47C4-B42C-3F21C7952A36}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{304D7FB6-B12A-47C4-B42C-3F21C7952A36}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{304D7FB6-B12A-47C4-B42C-3F21C7952A36}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{304D7FB6-B12A-47C4-B42C-3F21C7952A36}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5533D429-F805-430D-A36F-F75AF1A1DEAD} = {EA27DD5E-D56C-4A5C-BBA4-340B4C142846}
+		{9D55D769-C9BB-4BC8-9FCE-DE81011172B2} = {EA27DD5E-D56C-4A5C-BBA4-340B4C142846}
+		{304D7FB6-B12A-47C4-B42C-3F21C7952A36} = {EA27DD5E-D56C-4A5C-BBA4-340B4C142846}
 	EndGlobalSection
 EndGlobal

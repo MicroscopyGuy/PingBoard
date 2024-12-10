@@ -18,17 +18,15 @@ public class IndividualPinger : IIndividualPinger{
     private int _ttl;
     private int _timeoutMs;
     private string _payloadStr;
-    private bool _dontFragment;
-
+    private const bool _DONT_FRAGMENT = true;
     public IndividualPinger(Ping pinger, IOptions<PingingBehaviorConfig> pingBehavior, 
                             ILogger<IndividualPinger> logger){
         _pinger = pinger;
         _pingBehavior = pingBehavior.Value;
         _logger = logger;
         
-        // used when not pinging functionality not provided more granular directions
+        // used when pinging functionality not provided more granular directions
         _ttl = _pingBehavior.Ttl;
-        _dontFragment = true;
         _payloadStr = _pingBehavior.PayloadStr!;
         _timeoutMs = _pingBehavior.TimeoutMs;
     }
@@ -59,7 +57,7 @@ public class IndividualPinger : IIndividualPinger{
     }
     
 
-    public async Task<PingReply> SendPingIndividualAsync(IPAddress target, int timeoutMs, string payloadStr, int ttl,
+    public async Task<PingReply> SendPingIndividualAsync(string target, int timeoutMs, string payloadStr, int ttl,
         bool dontFragment, CancellationToken cancellationToken)
     {
         _logger.LogTrace("IndividualPinger: Sending ping");
@@ -84,14 +82,14 @@ public class IndividualPinger : IIndividualPinger{
 
         return response;
     }
-    public async Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken))
+    public async Task<PingReply> SendPingIndividualAsync(string target, CancellationToken stoppingToken = default(CancellationToken))
     {
         var result = await SendPingIndividualAsync(
             target,
             _timeoutMs,
             _payloadStr!,
             _ttl,
-            _dontFragment,
+            _DONT_FRAGMENT,
             stoppingToken
         );
 

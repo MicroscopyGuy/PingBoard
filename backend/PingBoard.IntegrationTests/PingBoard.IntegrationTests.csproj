@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <OutputType>Exe</OutputType>
+        <RootNamespace>PingBoard.IntegrationTests</RootNamespace>
+        <TargetFramework>net9.0</TargetFramework>
+          <TestingPlatformDotnetTestSupport>true</TestingPlatformDotnetTestSupport>
+          <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\PingBoard\PingBoard.csproj" />
+        <ProjectReference Include="..\PingBoard.TestUtilities\PingBoard.TestUtilities.csproj" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="Xunit"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0"/>
+        <PackageReference Include="xunit.v3" Version="0.7.0-pre.15"/>
+    </ItemGroup>
+
+</Project>

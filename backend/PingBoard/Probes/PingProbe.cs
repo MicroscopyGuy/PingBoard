@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Runtime;
 using PingBoard.Database.Models;
 using PingBoard.Pinging;
 using PingBoard.Probes.Services;
@@ -9,8 +10,8 @@ namespace PingBoard.Probes;
 public class PingProbe : INetworkProbeBase
 {
     public string Name { get; } = "PingProbe";
-    private IndividualPinger _pinger;
-    private DnsProbe _dnsProbe; 
+    private IIndividualPinger _pinger;
+    // private DnsProbe _dnsProbe; perhaps later, for now use SendPingAsync function with DNS
     public List<Type> SupportedTargetTypes => new List<Type>()
     { 
         typeof (Hostname), typeof (IPAddress)
@@ -38,7 +39,7 @@ public class PingProbe : INetworkProbeBase
         return _pinger.GetTimeout();
     }
     
-    PingProbe(DnsProbe dnsProbe, IndividualPinger pinger)
+    PingProbe(IIndividualPinger pinger)
     {
         _pinger = pinger;
     }
@@ -55,15 +56,11 @@ public class PingProbe : INetworkProbeBase
     
     public async Task<ProbeResult> ProbeAsync(INetworkProbeTarget probeTarget, CancellationToken cancellationToken)
     {
+
         var pResult = new PingProbeResult();
-        //pResult.Id = Guid.CreateVersion7(); requires .NET 9
-        if (probeTarget.TargetType != typeof (IPAddress))
-        {
-            var dnsResult = await _dnsProbe.ProbeAsync(probeTarget, cancellationToken);
-            pResult.dnsProbeResult = (DnsProbeResult) dnsResult;
-        }
-        
-        var result = await _pinger.SendPingIndividualAsync(IPAddress.Parse(probeTarget.Target!.ToString()));
+        pResult.Id = Guid.CreateVersion7();
+
+        var result = await _pinger.SendPingIndividualAsync(probeTarget.Target.ToString(), cancellationToken);
 
         return pResult;
     } 

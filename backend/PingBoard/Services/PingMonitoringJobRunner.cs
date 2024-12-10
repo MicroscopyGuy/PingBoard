@@ -11,7 +11,7 @@ using System.Net;
 /// A disposable, self-contained class created by the PingMonitoringJobManager in response to a request
 /// to ping a particular domain or IP address. 
 /// </summary>
-public class GroupPingProbe : IDisposable
+public class PingMonitoringJobRunner : IDisposable
 {
     private readonly IGroupPinger _groupPinger;
     private readonly CrudOperations _crudOperations;
@@ -20,14 +20,14 @@ public class GroupPingProbe : IDisposable
     private Task _pingingTask;
     private ServerEventEmitter _serverEventEmitter;
     private PingGroupQualifier _pingQualifier;
-    private readonly ILogger<GroupPinger> _logger;
+    private readonly ILogger<NetworkProbeLiason> _logger;
 
-    public GroupPingProbe(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
+    public PingMonitoringJobRunner(IGroupPinger groupPinger, IOptions<PingingBehaviorConfig> pingingBehavior, 
                                    IOptions<PingingThresholdsConfig> pingingThresholds, PingingBehaviorConfigValidator behaviorValidator, 
                                    PingingThresholdsConfigValidator thresholdsValidator, CrudOperations crudOperations, 
                                    PingGroupQualifier pingQualifier, CancellationTokenSource cancellationTokenSource,
-                                   ServerEventEmitter serverEventEmitter, string target, ILogger<GroupPinger> logger){
-        _logger = logger;
+                                   ServerEventEmitter serverEventEmitter, string target){
+        //_logger = logger;
         _logger.LogDebug("PingMonitoringJobRunner: Entered Constructor");
         _groupPinger = groupPinger;
         _crudOperations = crudOperations;

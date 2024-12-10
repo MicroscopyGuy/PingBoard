@@ -1,5 +1,6 @@
 using PingBoard.Pinging;
 using PingBoard.Tests.PingingTests.PingingTestingUtilities;
+using PingBoard.TestUtilities.PingingTestingUtilities;
 
 
 public class PingGroupSummaryTestGenerator{

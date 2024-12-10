@@ -1,11 +1,11 @@
 ﻿using PingBoard.Database.Models;
+using Xunit;
 
-namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
+namespace PingBoard.TestUtilities.PingingTestingUtilities;
 using PingBoard.Pinging;
 using System.Reflection;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
-
 
 public static class PingGroupSummaryExpectedValues
 {

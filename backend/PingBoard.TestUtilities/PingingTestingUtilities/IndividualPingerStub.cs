@@ -1,6 +1,4 @@
-using System.Diagnostics;
-
-namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
+namespace PingBoard.TestUtilities.PingingTestingUtilities;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
@@ -10,7 +8,7 @@ using System.Reflection;
 using System.Net;
 
 /// <summary>
-/// This class should not be used for production, it is only used for testing SendPingGroupAsync.
+/// This class should not be used for production, it is only used for testing.
 /// <see cref="GroupPinger"/>.
 /// All values used 
 ///
@@ -37,7 +35,7 @@ using System.Net;
 ///|     buffer = Array.Empty byte(); //(angle brackets removed for xml comment formatting)                 |
 ///|*********************************************************************************************************
 /// As shown, the round trip time, ping options, and returned buffer are only set if the ping was successful.
-/// Otherwise the round trip time is set to 0, the options are null, and the buffer is empty.
+/// Otherwise, the round trip time is set to 0, the options are null, and the buffer is empty.
 /// 
 /// </summary>                      
 public class IndividualPingerStub : IIndividualPinger
@@ -47,7 +45,16 @@ public class IndividualPingerStub : IIndividualPinger
     /// order of ascending index.
     /// </summary>
     private List<PingReply> _pingReplyStubs = [];
-    
+
+    /// <summary>
+    /// for compatibility for testing
+    /// </summary>
+    private int _ttl;
+
+    /// <summary>
+    /// for compatibility for testing
+    /// </summary>
+    private int _timeoutMs;
     
     /// <summary>
     /// The index of next PingReply from _pingReplyStubs that should be returned by
@@ -72,14 +79,14 @@ public class IndividualPingerStub : IIndividualPinger
     /// <param name="ipaddresses">A list of Address property values for the PingReply objects to have set</param>
     /// <param name="ttls">A list of ttl's for the PingReply's PingOptions objects to have set </param>
     public void PrepareStubbedPingReplies(List<long> rtts, List<IPStatus> ipstatuses, List<byte[]> buffers,
-        List<IPAddress> ipaddresses, List<int> ttls) {
+        List<string> ipaddresses, List<int> ttls) {
         for (int i = 0; i < rtts.Count; i++){
             _pingReplyStubs.Add(MakePingReplyStub(rtts[i], ipstatuses[i], buffers[i], ipaddresses[i], ttls[i]));
         }
     }
     
     public static PingReply MakePingReplyStub(long rtt, IPStatus status, byte[] buffer, 
-                                              IPAddress ipaddress, int ttl = 0, bool dontFragment = true){
+                                              string ipaddress, int ttl = 0, bool dontFragment = true){
         if (status != IPStatus.Success){
             return MakeEmptyPingReplyStub(status);
         }
@@ -112,7 +119,7 @@ public class IndividualPingerStub : IIndividualPinger
             typeof(PingReply),
             bindingFlags,
             null,
-            new object?[] { IPAddress.Any, null, status, 0, Array.Empty<byte>() },
+            new object?[] { "", null, status, 0, Array.Empty<byte>() },
             null)!;
 
         return stub;
@@ -130,22 +137,38 @@ public class IndividualPingerStub : IIndividualPinger
     /// <param name="target"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public async Task<PingReply> SendPingIndividualAsync(IPAddress target, CancellationToken stoppingToken = default(CancellationToken)) {
+    public async Task<PingReply> SendPingIndividualAsync(string target, 
+        CancellationToken stoppingToken = default(CancellationToken)) {
         if (_pingReplyStubs.Count == 0) {
-            throw new Exception("""
-                                          _pingReplyStubs accessed without proper intialization by
-                                          PrepareStubbedPingReplies() function call.
-                                        """);
+            throw new Exception("_pingReplyStubs accessed without proper intialization by PrepareStubbedPingReplies()");
         }
         
         if (_pingReplyIndex >= _pingReplyStubs.Count) {
-            throw new Exception("""
-                                          There are no additional PingReply objects to be returned.
-                                        """);
+            throw new Exception("There are no additional PingReply objects to be returned.");
         }
         
         await Task.Delay(1); // to return as Task<PingReply> instead of simply PingReply
         return _pingReplyStubs[_pingReplyIndex++];
+    }
+
+    public void SetTtl(int newTtl)
+    {
+        this._ttl = newTtl;
+    }
+
+    public void SetTimeout(int newTimeoutMs)
+    {
+        this._timeoutMs = newTimeoutMs;
+    }
+
+    public int GetTtl()
+    {
+        return this._ttl;
+    }
+
+    public int GetTimeout()
+    {
+        return this._timeoutMs;
     }
     
 }

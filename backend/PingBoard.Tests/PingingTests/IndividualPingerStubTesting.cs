@@ -1,6 +1,5 @@
 ﻿namespace PingBoard.Tests.PingingTests;
-using PingBoard.Tests.PingingTests.PingingTestingUtilities;
-using System.Net;
+using PingBoard.TestUtilities.PingingTestingUtilities;
 using System.Net.NetworkInformation;
 
 public class IndividualPingerStubTesting{
@@ -29,7 +28,7 @@ public class IndividualPingerStubTesting{
     [Fact]
     public void MakePingReplyStub_ConstructsValidPingReply_WithoutNullOptions() {
         PingReply stub = IndividualPingerStub.MakePingReplyStub(
-            5, IPStatus.Success, new byte[] { }, IPAddress.Any, 64);
+            5, IPStatus.Success, new byte[] { }, "", 64);
         Assert.Equal(5, stub.RoundtripTime);
         Assert.Equal(IPStatus.Success, stub.Status);
         Assert.Empty(stub.Buffer);
@@ -41,7 +40,7 @@ public class IndividualPingerStubTesting{
     [Fact]
     public void MakePingReplyStub_ConstructsValidPingReply_WithNullOptions() {
         PingReply stub = IndividualPingerStub.MakePingReplyStub(
-            5, IPStatus.DestinationHostUnreachable, new byte[] { }, IPAddress.Any, 64);
+            5, IPStatus.DestinationHostUnreachable, new byte[] { }, "", 64);
         Assert.Equal(0, stub.RoundtripTime);
         Assert.Equal(IPStatus.DestinationHostUnreachable, stub.Status);
         Assert.Empty(stub.Buffer);
@@ -64,7 +63,7 @@ public class IndividualPingerStubTesting{
         List<long> rtts = [5, 4];
         List<IPStatus> statuses = [IPStatus.Success, IPStatus.Success];
         List<byte[]> buffers = [[], []];
-        List<IPAddress> addresses = [IPAddress.Parse(target), IPAddress.Parse(target)];
+        List<string> addresses = [target, target];
         List<int> ttls = [64, 64];
         pingerStub.PrepareStubbedPingReplies(rtts, statuses, buffers, addresses, ttls);
 
@@ -74,7 +73,7 @@ public class IndividualPingerStubTesting{
             Assert.Equal(rtts[i], latestReply.RoundtripTime);
             Assert.Equal(statuses[i], latestReply.Status);
             Assert.Equal(buffers[i], latestReply.Buffer);
-            Assert.Equal(addresses[i], latestReply.Address);
+            Assert.Equal(addresses[i], latestReply.Address.ToString());
             Assert.Equal(ttls[i], latestReply.Options!.Ttl);
         }
     }
@@ -88,7 +87,7 @@ public class IndividualPingerStubTesting{
         List<long> rtts = [0, 0];
         List<IPStatus> statuses = [IPStatus.BadRoute, IPStatus.BadRoute];
         List<byte[]> buffers = [[], []];
-        List<IPAddress> addresses = [IPAddress.Parse(target), IPAddress.Parse(target)];
+        List<string> addresses = [target, target];
         List<int> ttls = [64, 64];
         
 
@@ -107,7 +106,7 @@ public class IndividualPingerStubTesting{
             Assert.Equal(rtts[i], latestReply.RoundtripTime);
             Assert.Equal(statuses[i], latestReply.Status);
             Assert.Equal(buffers[i], latestReply.Buffer);
-            Assert.Equal(addresses[i], latestReply.Address);
+            Assert.Equal(addresses[i], latestReply.Address.ToString());
         }
     }
     

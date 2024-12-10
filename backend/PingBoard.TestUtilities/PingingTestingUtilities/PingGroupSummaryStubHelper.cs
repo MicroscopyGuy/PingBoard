@@ -1,6 +1,6 @@
 using PingBoard.Database.Models;
+namespace PingBoard.TestUtilities.PingingTestingUtilities;
 
-namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
 using Microsoft.Extensions.Options;

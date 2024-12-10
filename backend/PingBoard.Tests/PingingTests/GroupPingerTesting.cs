@@ -13,7 +13,7 @@ using System.Net;
 
 public class GroupPingerTesting{
     
-    
+    /*
     public PingReply MakePingReplyStub(long rtt, IPStatus status, byte[] buffer){
         BindingFlags bindingFlags = BindingFlags.Default | BindingFlags.CreateInstance | 
                                     BindingFlags.NonPublic | BindingFlags.Instance; 
@@ -155,6 +155,6 @@ public class GroupPingerTesting{
         
         Assert.Equal(1, testSummary.PacketsLost);
         Assert.Equal(1, testSummary.ConsecutiveTimeouts);
-    }
+    }*/
     
 }

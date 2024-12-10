@@ -44,7 +44,7 @@ public class Program
         
         
         // Pinging-related classes
-        builder.Services.AddTransient<IGroupPinger, GroupPinger>();
+        //builder.Services.AddTransient<IGroupPinger, GroupPinger>();
         builder.Services.AddTransient<PingGroupQualifier>();
         builder.Services.AddTransient<IIndividualPinger, IndividualPinger>();
         builder.Services.AddTransient<Ping>();

@@ -1,4 +1,4 @@
-﻿namespace PingBoard.Tests.PingingTests.PingingTestingUtilities;
+﻿namespace PingBoard.TestUtilities.PingingTestingUtilities;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging.Configuration;
 

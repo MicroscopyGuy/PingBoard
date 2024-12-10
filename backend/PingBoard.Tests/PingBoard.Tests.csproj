@@ -18,18 +18,32 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="xunit.v3" Version="0.7.0-pre.15"/>
-    <PackageReference Include="xunit.v3.assert" Version="0.7.0-pre.15"/>
     <PackageReference Include="coverlet.collector" Version="3.1.2">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
+    <PackageReference Include="xunit.v3.assert" Version="0.7.0-pre.15" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\PingBoard\PingBoard.csproj" />
+    <ProjectReference Include="..\PingBoard.TestUtilities\PingBoard.TestUtilities.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
+    <PackageReference Include="xunit.v3" Version="0.3.0-pre.18" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0-pre.30" />
+  </ItemGroup>
+  
   <ItemGroup>
     <Content Include="PingingTests\PingingTestingUtilities\PingGroupSummaryExpectedValues.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

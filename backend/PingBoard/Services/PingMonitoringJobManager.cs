@@ -9,16 +9,16 @@ namespace PingBoard.Services;
 /// </summary>
 public class PingMonitoringJobManager : BackgroundService
 {
-    private readonly Func<string, GroupPinger> _getPingMonitoringJobRunner;
+    private readonly Func<string, NetworkProbeLiason> _getPingMonitoringJobRunner;
     private readonly ILogger<PingMonitoringJobManager> _logger;
     private ServerEventEmitter _serverEventEmitter;
-    private volatile GroupPinger? _currentJobRunner;
+    private volatile NetworkProbeLiason? _currentJobRunner;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
     // private Func<INetworkTarget, INetworkProbe, NetworkProbeLiason> _probeLiasonFactory;
     
     
-    public PingMonitoringJobManager(Func<string, GroupPinger> pingMonitoringJobRunnerSource,
+    public PingMonitoringJobManager(Func<string, NetworkProbeLiason> pingMonitoringJobRunnerSource,
         ServerEventEmitter serverEventEmitter, ILogger<PingMonitoringJobManager> logger)
     {
         _getPingMonitoringJobRunner = pingMonitoringJobRunnerSource;

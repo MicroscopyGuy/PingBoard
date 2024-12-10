@@ -1,10 +1,6 @@
 using PingBoard.Pinging.Configuration;
-using PingBoard.Pinging;
 using Limits = PingBoard.Pinging.Configuration.PingingBehaviorConfigLimits;
-using FluentValidation;
 using FluentValidation.TestHelper;
-using FluentValidation.Results;
-
 
 namespace PingBoard.Tests.PingingTests.ConfigurationTests{
     public class PingingBehaviorConfigValidatorTest{
