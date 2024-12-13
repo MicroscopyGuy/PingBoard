@@ -1,7 +1,10 @@
 using System.Collections.Immutable;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Channels;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.EntityFrameworkCore.Internal;
+using PingBoard.Probes;
 using Serilog;
 
 namespace PingBoard;
@@ -48,7 +51,7 @@ public class Program
         builder.Services.AddTransient<PingGroupQualifier>();
         builder.Services.AddTransient<IIndividualPinger, IndividualPinger>();
         builder.Services.AddTransient<Ping>();
-        builder.Services.AddTransient<IPingScheduler, PingScheduler>();
+        builder.Services.AddTransient<IProbeScheduler, ProbeScheduler>();
 
         // Pinging configuration-related classes
         builder.Services.AddTransient<PingingBehaviorConfigValidator>();
@@ -64,7 +67,6 @@ public class Program
         builder.Services.AddTransient<MonitoringBehaviorConfig>();
         builder.Services.AddTransient<MonitoringBehaviorConfigLimits>();
         builder.Services.AddTransient<MonitoringBehaviorConfigValidator>();
-
         // Database-related classes
         builder.Services.AddTransient<DatabaseConstants>();
         builder.Services.AddTransient<DatabaseStatementsGenerator>();
@@ -75,33 +77,53 @@ public class Program
         //builder.Services.AddTransient<INetworkProbe, >
         
         // Service-related information
-        builder.Services.AddSingleton<DatabaseInitializer>();
-        builder.Services.AddHostedService<DatabaseInitializer>((svc) =>
-            svc.GetRequiredService<DatabaseInitializer>());
+
+        void RegisterServerEventChannels()
+        {
+            var typeNames = Enum.GetNames<ServerEvent.ServerEventOneofCase>().ToHashSet();
+            var serverEventTypes = typeof(ServerEvent).GetProperties()
+                .Select(prop => prop.PropertyType)
+                .Where(pt => typeNames.Contains(pt.Name))
+                .ToList();
+            
+            foreach (Type serverEventType in serverEventTypes)
+            {
+                var channel = typeof(Channel).GetMethods(BindingFlags.Static | BindingFlags.Public)
+                    .Where(m => m.Name.StartsWith("CreateBounded"))
+                    .Where(m => m.GetGenericArguments().Length == 1)
+                    .First(m => m.GetParameters()[0].ParameterType == typeof(BoundedChannelOptions))
+                    .MakeGenericMethod(serverEventType)
+                    .Invoke(null, new object?[]
+                    {
+                        new BoundedChannelOptions(100)
+                    });
+            }
+            /*
+            builder.Services.AddSingleton<Channel<ServerEvent.Types.PingOnOffToggle>>(
+                Channel.CreateBounded<ServerEvent.Types.PingOnOffToggle>(
+                    new BoundedChannelOptions(100))
+            );
         
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingOnOffToggle>>(
-            Channel.CreateBounded<ServerEvent.Types.PingOnOffToggle>(
-                new BoundedChannelOptions(100))
-        );
+            builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAnomaly>>(
+                Channel.CreateBounded<ServerEvent.Types.PingAnomaly>(
+                    new BoundedChannelOptions(100)
+                )
+            );
         
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAnomaly>>(
-            Channel.CreateBounded<ServerEvent.Types.PingAnomaly>(
-                new BoundedChannelOptions(100)
-            )
-        );
-        
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAgentError>>(
-            Channel.CreateBounded<ServerEvent.Types.PingAgentError>(
-                new BoundedChannelOptions(100)
-            )
-        );
-        
-        
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingInfo>>(
-            Channel.CreateBounded<ServerEvent.Types.PingInfo>(
-                new BoundedChannelOptions(100)
-            )
-        );
+            builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAgentError>>(
+                Channel.CreateBounded<ServerEvent.Types.PingAgentError>(
+                    new BoundedChannelOptions(100)
+                )
+            );
+            
+            builder.Services.AddSingleton<Channel<ServerEvent.Types.PingInfo>>(
+                Channel.CreateBounded<ServerEvent.Types.PingInfo>(
+                    new BoundedChannelOptions(100)
+                )
+            );*/
+        }
+
+        RegisterServerEventChannels();
         
 
         builder.Services.AddKeyedSingleton<IImmutableList<IChannelReaderAdapter>>("ServerEventChannelReaders", (svc, _) =>
@@ -183,6 +205,15 @@ public class Program
         builder.Services.AddDbContextFactory<ProbeResultsContext>(
             options =>
                 options.UseSqlite(connectionString));
+
+        // ONLY used for testing
+        builder.Services.AddTransient<Func<IDbContextFactory<ProbeResultsContext>>>((svc) =>
+        {
+            var dbContextFactory = svc.GetRequiredService<IDbContextFactory<ProbeResultsContext>>();
+    
+            // Return a lambda that provides this factory
+            return () => dbContextFactory;
+        });
         
         //Enable Cors Support
         var allowCorsPolicy = "_allowCorsPolicy";

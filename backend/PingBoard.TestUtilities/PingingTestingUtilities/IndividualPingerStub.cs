@@ -140,15 +140,16 @@ public class IndividualPingerStub : IIndividualPinger
     public async Task<PingReply> SendPingIndividualAsync(string target, 
         CancellationToken stoppingToken = default(CancellationToken)) {
         if (_pingReplyStubs.Count == 0) {
-            throw new Exception("_pingReplyStubs accessed without proper intialization by PrepareStubbedPingReplies()");
+            throw new Exception("_pingReplyStubs accessed without proper initialization by PrepareStubbedPingReplies()");
         }
         
+        /*
         if (_pingReplyIndex >= _pingReplyStubs.Count) {
             throw new Exception("There are no additional PingReply objects to be returned.");
-        }
+        }*/
         
         await Task.Delay(1); // to return as Task<PingReply> instead of simply PingReply
-        return _pingReplyStubs[_pingReplyIndex++];
+        return _pingReplyStubs[_pingReplyIndex++ % _pingReplyStubs.Count]; // so we don't exhaust the data 
     }
 
     public void SetTtl(int newTtl)

@@ -2,9 +2,9 @@
 using PingBoard.Pinging;
 
 
-public class PingSchedulerImmediate : IPingScheduler
+public class ProbeSchedulerImmediate : IProbeScheduler
 {
-    public async Task DelayPingingAsync()
+    public async Task DelayProbingAsync()
     {
         await Task.Delay(TimeSpan.FromMilliseconds(0));
     }

@@ -20,10 +20,12 @@ public class CrudOperations
     private ILogger<CrudOperations> _logger;
 
     public CrudOperations(IDbContextFactory<PingInfoContext> pingInfoContextFactory,
+                          IDbContextFactory<ProbeResultsContext> probeResultsContextFactory,
                           IOptions<PingingThresholdsConfig> pingingThresholds,
                           ILogger<CrudOperations> logger)
     {
         _pingInfoContextFactory = pingInfoContextFactory;
+        _probeResultsContextFactory = probeResultsContextFactory;
         _pingingThresholds = pingingThresholds.Value;
         _logger = logger;
     }

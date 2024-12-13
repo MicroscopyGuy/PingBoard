@@ -39,7 +39,7 @@ public class PingProbe : INetworkProbeBase
         return _pinger.GetTimeout();
     }
     
-    PingProbe(IIndividualPinger pinger)
+    public PingProbe(IIndividualPinger pinger)
     {
         _pinger = pinger;
     }

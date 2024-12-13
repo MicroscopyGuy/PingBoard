@@ -8,6 +8,6 @@ public interface INetworkProbeTarget
     string Name { get; }
     public Type TargetType { get; }
     public object Target { get; }
-    byte[] ToProtobufBytes();
-    static abstract bool Validate();
+    //byte[] ToProtobufBytes();
+    //static abstract bool Validate();
 }

@@ -1,8 +1,8 @@
 ﻿namespace PingBoard.Pinging;
 
-public interface IPingScheduler
+public interface IProbeScheduler
 {
-    public Task DelayPingingAsync();
+    public Task DelayProbingAsync();
     public void StartIntervalTracking();
     public void EndIntervalTracking();
 }

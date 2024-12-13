@@ -1,4 +1,5 @@
 ﻿using PingBoard.Database.Utilities;
+using PingBoard.Probes;
 
 namespace PingBoard.Services;
 
@@ -13,19 +14,22 @@ public class NetworkProbeLiason
     private CrudOperations _crudOperations;
     private ServerEventEmitter _serverEventEmitter;
     private INetworkProbeTarget _networkProbeTarget;
-    private ProbeStrategy _probeStrategy;
+    // private ProbeStrategy _probeStrategy;
+    // private ProbeScheduler _probeScheduler;
     private ILogger<NetworkProbeLiason> _logger;
+    private Task _probeTask;
     
     public NetworkProbeLiason(INetworkProbeBase baseNetworkProbe, CrudOperations crudOperations, 
         CancellationTokenSource cancellationTokenSource, ServerEventEmitter serverEventEmitter, 
-        INetworkProbeTarget networkProbeTarget, ProbeStrategy probeStrategy, ILogger<NetworkProbeLiason> logger)
+        INetworkProbeTarget networkProbeTarget, ILogger<NetworkProbeLiason> logger)
     {
         _baseNetworkProbe = baseNetworkProbe;
         _crudOperations = crudOperations;
         _cancellationTokenSource = cancellationTokenSource;
         _serverEventEmitter = serverEventEmitter;
         _networkProbeTarget = networkProbeTarget;
-        _probeStrategy = probeStrategy;
+        //_probeStrategy = probeStrategy;
+        //_probeScheduler = probeScheduler;
         _logger = logger;
     }
 
@@ -33,21 +37,34 @@ public class NetworkProbeLiason
     // how does the database handle the new result types?
     // what if one requires a foreign key? Need to somehow give the data and the type to CrudOperations?
     // What ServerEvent to emit?
-    public async Task StartProbing()
+    public async Task StartProbingAsync()
     {
-        _logger.LogDebug("<ClassName>: Entered StartProbing");
+        _logger.LogTrace($"NetworkProbeLiason with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync");
+        _probeTask = DoProbingAsync();
+    }
+
+    private async Task DoProbingAsync()
+    {
+        //logging here
+        _logger.LogTrace($"NetworkProbeLiason with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync");
         var token = _cancellationTokenSource.Token;
         var result = ProbeResult.Default();
         
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
-            // 
+            //_probeScheduler.StartIntervalTracking();
             result = await _baseNetworkProbe.ProbeAsync(_networkProbeTarget, token);
             await _crudOperations.InsertProbeResult(result, token);
+            //_probeScheduler.DelayProbingAsync();
+            
             // emit a server event? How is this handled?
+            await Task.Delay(100, token);
         }
-
-        return;
+    }
+    
+    public TaskStatus GetProbingStatus()
+    {
+        return _probeTask.Status;
     }
     
 }
