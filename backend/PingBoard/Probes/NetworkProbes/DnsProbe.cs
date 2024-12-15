@@ -1,16 +1,15 @@
-﻿using PingBoard.Database.Models;
-
-namespace PingBoard.Probes;
-using PingBoard.Services;
-using PingBoard.Pinging;
+﻿using System.Net;
+using PingBoard.Database.Models;
 using PingBoard.Probes.Services;
 
-using System.Net;
+namespace PingBoard.Probes.NetworkProbes;
 
 public class DnsProbe : INetworkProbeBase
 {
-    public string Name { get; } = "DnsLookup"; 
-    
+    private readonly string _name = "DnsLookup";
+
+    public string Name => _name;
+
     public List<Type> SupportedTargetTypes => new List<Type>()
     { 
         typeof (Hostname)

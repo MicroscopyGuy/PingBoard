@@ -1,4 +1,6 @@
-﻿namespace PingBoard.Services;
+﻿using PingBoard.Services;
+
+namespace PingBoard.Probes.NetworkProbes;
 
 public class ProbeResult
 {

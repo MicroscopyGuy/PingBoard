@@ -1,13 +1,13 @@
-﻿namespace PingBoard.Services;
+﻿namespace PingBoard.Probes.NetworkProbes;
 /// <summary>
 /// Represents the desired target of a Network Probe.
-/// At the time of writing, it could be an IpAddress (v4 or v6) or a Hostname.
 /// </summary>
-public interface INetworkProbeTarget
+public interface INetworkProbeTarget<T>
 {
     string Name { get; }
     public Type TargetType { get; }
     public object Target { get; }
+    public static abstract bool TryParse(string stringifiedTarget, out T? target);
     //byte[] ToProtobufBytes();
     //static abstract bool Validate();
 }

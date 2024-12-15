@@ -1,16 +1,18 @@
 ﻿using System.Net;
-using System.Runtime;
 using PingBoard.Database.Models;
 using PingBoard.Pinging;
 using PingBoard.Probes.Services;
-using PingBoard.Services;
 
-namespace PingBoard.Probes;
+namespace PingBoard.Probes.NetworkProbes;
 
-public class PingProbe : INetworkProbeBase
+public class PingProbe : INetworkProbeBase<string, bool, ErrorResult, PingProbeResult>
 {
-    public string Name { get; } = "PingProbe";
+    public string Name => _name;
+
     private IIndividualPinger _pinger;
+
+    private readonly string _name = "PingProbe";
+
     // private DnsProbe _dnsProbe; perhaps later, for now use SendPingAsync function with DNS
     public List<Type> SupportedTargetTypes => new List<Type>()
     { 

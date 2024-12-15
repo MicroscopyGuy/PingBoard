@@ -7,9 +7,6 @@ service PingBoardService {
   rpc StartPinging (StartPingingRequest) returns (google.protobuf.Empty);
   rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
   
-  //rpc StartIndividualPinging (StartPingingIndividualRequest) returns (google.protobuf.Empty);
-  //rpc StopIndividualPinging(google.protobuf.Empty) returns (google.protobuf.Empty);
-  
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
   rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
   rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
@@ -17,8 +14,12 @@ service PingBoardService {
   
 }
 
-message StartIndividualPingingRequest{
-  PingTarget target = 1;
+message TracerouteTarget{
+  string target = 1;
+}
+
+message DnsTarget {
+  string target = 1;
 }
 
 message StartPingingRequest{
@@ -92,6 +93,9 @@ enum Statistic{
   COUNT = 6;
 }
 
+
+
+
 message ListPingsDatapoint{
   google.protobuf.Timestamp Timestamp = 1;
   double Value = 2;
@@ -132,12 +136,61 @@ message ServerEvent{
     PingTarget pingTarget = 1;
   }
   
+  // **************** DNS related information *******************
+  message DnsOnOffToggle{
+    DnsTarget dnsTarget = 1;
+    bool active = 2;
+  }
+  
+  message DnsAnomaly{
+    DnsTarget pingTarget = 1;
+    string anomalyDescription = 2;
+  }
+
+  message DnsAgentError{
+    DnsTarget pingTarget = 1;
+    string errorDescription = 2;
+  }
+  
+  message DnsInfo{
+    DnsTarget pingTarget = 1;
+  }
+  
+  // ***************** Traceroute related information ****************
+
+  message TracerouteOnOffToggle{
+    TracerouteTarget tracerouteTarget = 1;
+    bool active = 2;
+  }
+
+  message TracerouteAnomaly{
+    TracerouteTarget tracerouteTarget = 1;
+    string anomalyDescription = 2;
+  }
+
+  message TracerouteAgentError{
+    TracerouteTarget TracerouteTarget = 1;
+    string errorDescription = 2;
+  }
+
+  message TracerouteInfo{
+    TracerouteTarget tracerouteTarget = 1;
+  }
+  
   google.protobuf.Timestamp eventTime = 1;
 
   oneof ServerEvent{
     PingOnOffToggle pingOnOffToggle = 100;
     PingAnomaly pingAnomaly = 101;
     PingInfo pingInfo = 102;
-    PingAgentError pingAgentError = 190;
+    PingAgentError pingAgentError = 109;
+    DnsOnOffToggle dnsOnOffToggle = 110;
+    DnsAnomaly dnsAnomaly = 111;
+    DnsInfo dnsInfo = 112;
+    DnsAgentError dnsAgentError = 119;
+    TracerouteOnOffToggle tracerouteOnOffToggle = 120;
+    TracerouteAnomaly tracerouteAnomaly = 121;
+    TracerouteInfo tracerouteInfo = 122;
+    TracerouteAgentError tracerouteAgentError = 129;
   }
 }

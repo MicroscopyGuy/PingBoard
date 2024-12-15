@@ -1,20 +1,22 @@
-﻿using System.Net;
-using PingBoard.Probes.Services;
-using PingBoard.Services;
+﻿namespace PingBoard.Probes.NetworkProbes;
 
-namespace PingBoard.Probes;
-
-public class PingProbeTarget : INetworkProbeTarget
+public class IpOrHostnameTarget : INetworkProbeTarget<IpOrHostnameTarget>
 {
-    public string Name { get; }
-    public object Target { get; }
-    public Type TargetType { get; }
+    private readonly string _name;
+    private readonly object _target;
+    private readonly Type _targetType;
 
-    public PingProbeTarget(string name, object target)
+    public string Name => _name;
+
+    public object Target => _target;
+
+    public Type TargetType => _targetType;
+
+    public IpOrHostnameTarget(string name, object target)
     {
-        Name = name;
-        TargetType = target.GetType();
-        Target = target;
+        _name = name;
+        _targetType = target.GetType();
+        _target = target;
     }
 
     /*

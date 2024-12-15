@@ -1,7 +1,7 @@
-﻿using PingBoard.Database.Utilities;
-using PingBoard.Probes;
+﻿namespace PingBoard.Probes.NetworkProbes;
+using PingBoard.Database.Utilities;
+using PingBoard.Services;
 
-namespace PingBoard.Services;
 
 /// A class that implements INetworkProbeBase (sic) can combine as many other low level probes (raw networking functionality)
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe
@@ -12,7 +12,7 @@ public class NetworkProbeLiason
     private INetworkProbeBase _baseNetworkProbe;
     private CancellationTokenSource _cancellationTokenSource;
     private CrudOperations _crudOperations;
-    private ServerEventEmitter _serverEventEmitter;
+    private ServerEventEmitter<> _serverEventEmitter;
     private INetworkProbeTarget _networkProbeTarget;
     // private ProbeStrategy _probeStrategy;
     // private ProbeScheduler _probeScheduler;
@@ -33,6 +33,13 @@ public class NetworkProbeLiason
         _logger = logger;
     }
 
+
+    public async Task StopProbingAsync()
+    {
+        _cancellationTokenSource.Cancel();
+        
+    }
+    
     // need to find the return type somehow of the result
     // how does the database handle the new result types?
     // what if one requires a foreign key? Need to somehow give the data and the type to CrudOperations?

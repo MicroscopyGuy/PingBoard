@@ -1,3 +1,5 @@
+using PingBoard.Probes.NetworkProbes;
+
 namespace PingBoard.Services;
 using System.Threading.Channels;
 using Grpc.Core;
@@ -8,12 +10,16 @@ using static ServerEvent.Types;
 /// Provides a single, combined stream of the ServerEvent channels to the frontend, through which all ServerEvents
 /// are communicated. 
 /// </summary>
-public class ServerEventEmitter
+///
+
+public class ServerEventEmitter//<T> where T: INetworkProbeBase
 {
     private readonly Channel<PingAnomaly> _pingAnomalyChannel;
     private readonly Channel<PingOnOffToggle> _pingOnOffToggleChannel;
     private readonly Channel<PingAgentError> _pingAgentErrorChannel;
     private readonly Channel<PingInfo> _pingInfoChannel;
+
+    //private readonly Func<INetworkProbeBase, channels> channelFactory;
     private readonly ILogger<ServerEventEmitter> _logger;
 
 

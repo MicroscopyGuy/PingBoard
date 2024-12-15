@@ -1,5 +1,6 @@
 ﻿using System.Text.Json;
 using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
+using PingBoard.Probes.NetworkProbes;
 using PingBoard.Services;
 
 namespace PingBoard.Database.Models;

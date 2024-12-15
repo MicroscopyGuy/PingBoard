@@ -1,4 +1,6 @@
-﻿namespace PingBoard.Database.Models;
+﻿using PingBoard.Probes.NetworkProbes;
+
+namespace PingBoard.Database.Models;
 using System.Text.Json;
 using System.Net;
 using PingBoard.Services;

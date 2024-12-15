@@ -6,6 +6,7 @@ using PingBoard.Database.Models;
 using PingBoard.Database.Utilities;
 using PingBoard.Pinging.Configuration;
 using PingBoard.Probes;
+using PingBoard.Probes.NetworkProbes;
 using PingBoard.TestUtilities.PingingTestingUtilities;
 
 namespace PingBoard.IntegrationTests;
@@ -45,7 +46,7 @@ public class NetworkProbeLiasonTests
             NullLogger<CrudOperations>.Instance
         );
 
-        var target = new PingProbeTarget("google.com", "8.8.8.8");
+        var target = new IpOrHostnameTarget("google.com", "8.8.8.8");
         
         var networkProbeLiason = new NetworkProbeLiason(
             pingProbe,

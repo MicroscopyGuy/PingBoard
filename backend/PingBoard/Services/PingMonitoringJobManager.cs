@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PingBoard.Pinging;
+using PingBoard.Probes.NetworkProbes;
 
 namespace PingBoard.Services;
 

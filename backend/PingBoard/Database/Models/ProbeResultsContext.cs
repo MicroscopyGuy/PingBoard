@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Utilities;
+using PingBoard.Probes.NetworkProbes;
 using PingBoard.Services;
 
 namespace PingBoard.Database.Models;

@@ -1,3 +1,4 @@
+using PingBoard.Probes.NetworkProbes;
 using PingBoard.Services;
 
 namespace PingBoard.Probes;

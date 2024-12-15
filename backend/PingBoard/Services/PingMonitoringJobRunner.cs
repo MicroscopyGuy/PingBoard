@@ -1,3 +1,5 @@
+using PingBoard.Probes.NetworkProbes;
+
 namespace PingBoard.Services;
 using PingBoard.Database.Utilities;
 using PingBoard.Database.Models;
