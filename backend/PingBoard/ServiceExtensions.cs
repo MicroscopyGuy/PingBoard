@@ -244,6 +244,8 @@ public static class ServiceExtensions
         }
     }
 
+    //public void AddProbesMenu() { }
+
     /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
             => svc.GetRequiredService<PingMonitoringJobManager>());*/
 
@@ -275,8 +277,6 @@ public static class ServiceExtensions
                  case "Ping":
                      
              }
-
-
 
              var groupPinger = svc.GetRequiredService<IIndividualPinger>();
              var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();

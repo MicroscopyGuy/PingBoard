@@ -1,22 +1,48 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
+using System.Net;
+using Services;
+
 public class IpOrHostnameTarget : INetworkProbeTarget<IpOrHostnameTarget>
 {
-    private readonly string _name;
-    private readonly object _target;
-    private readonly Type _targetType;
+    public string Name => "IpOrHostname";
 
-    public string Name => _name;
+    public object Target { get; }
 
-    public object Target => _target;
+    public Type TargetType { get; }
 
-    public Type TargetType => _targetType;
-
-    public IpOrHostnameTarget(string name, object target)
+    public IpOrHostnameTarget(IPAddress ipAddress)
     {
-        _name = name;
-        _targetType = target.GetType();
-        _target = target;
+        TargetType = ipAddress.GetType();
+        Target = ipAddress;
+    }
+
+    public IpOrHostnameTarget(Hostname hostname)
+    {
+        TargetType = hostname.GetType();
+        Target = hostname;
+    }
+
+    public override string ToString()
+    {
+        return Target.ToString()!;
+    }
+
+    public static bool TryParse(string input, out IpOrHostnameTarget? target)
+    {
+        target = null;
+        if (IPAddress.TryParse(input, out var ip))
+        {
+            target = new IpOrHostnameTarget(ip);
+            return true;
+        }
+        else if (Hostname.TryParse(input, out var hostname))
+        {
+            target = new IpOrHostnameTarget(hostname!);
+            return true;
+        }
+
+        return false;
     }
 
     /*
@@ -43,6 +69,4 @@ public class IpOrHostnameTarget : INetworkProbeTarget<IpOrHostnameTarget>
 
         return false;
     }*/
-    
-    
 }
