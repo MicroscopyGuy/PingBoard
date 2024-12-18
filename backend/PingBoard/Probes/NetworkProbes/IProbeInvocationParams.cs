@@ -1,6 +1,6 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
-public interface IProbeConfiguration
+public interface IProbeInvocationParams
 {
     public string GetTarget();
 }

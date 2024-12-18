@@ -6,7 +6,8 @@ using PingBoard.Probes.Services;
 namespace PingBoard.Probes.NetworkProbes;
 
 public class PingProbe
-    : INetworkProbeBase<PingProbeConfiguration, ProbeStatusChange, PingProbeResult>
+    : INetworkProbeBase<PingProbeInvocationParams, ProbeStatusChange, PingProbeResult>,
+        INetworkProbeBase
 {
     public string Name => _name;
 
@@ -43,18 +44,34 @@ public class PingProbe
         _pinger = pinger;
     }
 
-    public bool ShouldContinue(ProbeResult pingProbeResult)
+    bool INetworkProbeBase.ShouldContinue(ProbeResult result)
     {
-        var pProbeRes = (PingProbeResult)pingProbeResult;
-        if (pProbeRes.IpStatus == null)
+        return ShouldContinue((PingProbeResult)result);
+    }
+
+    public bool ShouldContinue(PingProbeResult pingProbeRes)
+    {
+        //var pProbeRes = (PingProbeResult) pingProbeResult;
+        if (pingProbeRes.IpStatus == null)
         {
             return false;
         }
-        return pProbeRes.IpStatus.Value.GetInfo().State != PingingStates.PingState.Halt;
+        return pingProbeRes.IpStatus.Value.GetInfo().State != PingingStates.PingState.Halt;
+    }
+
+    async Task<ProbeResult> INetworkProbeBase.ProbeAsync(
+        IProbeInvocationParams probeInvocationParams,
+        CancellationToken cancellationToken
+    )
+    {
+        return await ProbeAsync(
+            (PingProbeInvocationParams)probeInvocationParams,
+            cancellationToken
+        );
     }
 
     public async Task<PingProbeResult> ProbeAsync(
-        PingProbeConfiguration probeConfiguration,
+        PingProbeInvocationParams probeConfiguration,
         CancellationToken cancellationToken
     )
     {
@@ -62,7 +79,7 @@ public class PingProbe
         pResult.Id = Guid.CreateVersion7();
 
         var result = await _pinger.SendPingIndividualAsync(
-            probeTarget.Target.ToString(),
+            probeConfiguration.Target.ToString(),
             cancellationToken
         );
 

@@ -1,13 +1,13 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
+
+using System.Text.Json.Serialization;
+using PingBoard.Probes.Utilities;
+using Services;
+
 /// <summary>
 /// Represents the desired target of a Network Probe.
 /// </summary>
-public interface INetworkProbeTarget<T>
-{
-    string Name { get; }
-    public Type TargetType { get; }
-    public object Target { get; }
-    public static abstract bool TryParse(string stringifiedTarget, out T? target);
-    //byte[] ToProtobufBytes();
-    //static abstract bool Validate();
-}
+[JsonPolymorphic(TypeDiscriminatorPropertyName = "targetType")]
+[JsonDerivedType(typeof(IpAddressTarget), typeDiscriminator: "ipAddress")]
+[JsonDerivedType(typeof(HostnameTarget), typeDiscriminator: "hostname")]
+public interface INetworkProbeTarget { }

@@ -1,0 +1,85 @@
+{
+    "$id": "https://pingboard.local/probes/ping",
+
+    "type": "object",
+    "properties":{
+        "Target": {
+            "oneOf": [
+                {"$ref": "#/$defs/IPAddressTarget"}, 
+                {"$ref":"#/$defs/HostnameTarget"}
+            ]
+        },
+
+        "Ttl": {
+            "$ref": "#/$defs/Ttl"
+        },
+
+        "Timeout" : {
+            "$ref": "#/$defs/Timeout",
+        "description": "The amount of time before a ping (packet) is considered lost."
+        },
+
+        "PacketPayload" : {
+            "$ref": "#/$defs/PacketPayload",
+        "description": "The string sent in each packet. Will not change pinging behavior."
+        }
+    },
+    "additionalProperties": false,
+    "required": ["Target"],
+
+    "$defs" : {
+        "Ttl": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 255,
+            "default" : 128,
+            "title" : "Ttl (Time to Live)",
+            "description" : "The maximum number of hops allowed for a packet before being dropped."
+        },
+
+        "Timeout": {
+            "type" : "integer",
+            "minimum": 500,
+            "maximum": 2000,
+            "default": 1500,
+            "title": "Timeout (ms)"
+        },
+
+        "PacketPayload" : {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64,
+            "default": "@MIT_License@ https://github.com/MicroscopyGuy/PingBoard",
+            "examples": ["Packet payload", "https://github.com/MicroscopyGuy/PingBoard"],
+            "title": "PacketPayload"
+        },
+
+        "IPAddressTarget": {
+            "title": "IpAddress",
+            "type": "object",
+            "properties": {
+                "ipAddress": {
+                    "type": "string", 
+                    "format": "^((?:(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)\\.){3}(?:25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d))|(((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))))$/i"
+                },
+                "targetType": {"const" : "ipAddress"}
+            },
+            "required": ["targetType", "ipAddress"],
+            "additionalProperties": false
+        },
+
+        "HostnameTarget":{
+            "type": "object",
+            "title": "Hostname",
+            "properties": {
+                "hostname":{
+                    "type": "string",
+                    "format": "^((?=.{1,253}\\.?$)[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?(?:\\.[a-z0-9](?:[-0-9a-z]{0,61}[0-9a-z])?)*\\.?)|(((([0-9a-f]{1,4}:){7}([0-9a-f]{1,4}|:))|(([0-9a-f]{1,4}:){6}(:[0-9a-f]{1,4}|((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9a-f]{1,4}:){5}(((:[0-9a-f]{1,4}){1,2})|:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3})|:))|(([0-9a-f]{1,4}:){4}(((:[0-9a-f]{1,4}){1,3})|((:[0-9a-f]{1,4})?:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9a-f]{1,4}:){3}(((:[0-9a-f]{1,4}){1,4})|((:[0-9a-f]{1,4}){0,2}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9a-f]{1,4}:){2}(((:[0-9a-f]{1,4}){1,5})|((:[0-9a-f]{1,4}){0,3}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(([0-9a-f]{1,4}:){1}(((:[0-9a-f]{1,4}){1,6})|((:[0-9a-f]{1,4}){0,4}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))|(:(((:[0-9a-f]{1,4}){1,7})|((:[0-9a-f]{1,4}){0,5}:((25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)(\\.(25[0-5]|2[0-4]\\d|1\\d\\d|[1-9]?\\d)){3}))|:))))$/i"     
+                },
+                "targetType": {"const" : "hostname"}
+            },
+            "required": ["hostname", "targetType"],
+            "additionalProperties": false
+        }
+    }
+}

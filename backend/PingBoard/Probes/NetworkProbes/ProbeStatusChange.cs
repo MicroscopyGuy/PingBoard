@@ -1,7 +1,5 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
-using Microsoft.EntityFrameworkCore.Internal;
-
 public class ProbeStatusChange
 {
     public enum ProbeStatus
@@ -15,9 +13,9 @@ public class ProbeStatusChange
         MISCONFIGURED,
     }
 
-    public ProbeStatus NewStatus;
-    public ProbeStatus OldStatus;
-    public string ProbeType;
-    public string Target;
-    public string Message;
+    public ProbeStatus NewStatus { get; set; }
+    public ProbeStatus OldStatus { get; set; }
+    public string ProbeType { get; set; }
+    public string Target { get; set; }
+    public string Message { get; set; }
 }

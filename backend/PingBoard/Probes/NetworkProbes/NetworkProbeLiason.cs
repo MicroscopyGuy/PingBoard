@@ -9,7 +9,7 @@ using PingBoard.Services;
 /// of ongoing probes.
 public class NetworkProbeLiason
 {
-    private INetworkProbeBase _baseNetworkProbe;
+    private INetworkProbeBase _baseNetworkProbe; // need an INetworkProbeBase factory
     private CancellationTokenSource _cancellationTokenSource;
     private CrudOperations _crudOperations;
     private ServerEventEmitter _serverEventEmitter;
