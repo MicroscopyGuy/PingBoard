@@ -3,7 +3,7 @@
 public record PingProbeInvocationParams(
     INetworkProbeTarget Target,
     int Ttl,
-    TimeSpan TimeoutMs,
+    int TimeoutMs,
     string PacketPayload
 ) : IProbeInvocationParams
 {
