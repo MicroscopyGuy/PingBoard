@@ -1,6 +1,3 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
-public class ProbeStatus
-{
-    
-}
+public interface IProbeInvocationSchedule { }

@@ -6,7 +6,6 @@ public interface INetworkProbeBase<TProbeConfiguration, TStatusChange, TProbeRes
     where TProbeConfiguration : IProbeInvocationParams
 {
     public string Name { get; }
-    List<Type> SupportedTargetTypes { get; }
     Task<TProbeResult> ProbeAsync(
         TProbeConfiguration probeTarget,
         CancellationToken cancellationToken

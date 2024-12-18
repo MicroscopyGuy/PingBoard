@@ -14,6 +14,7 @@ public class NetworkProbeLiason
     private CrudOperations _crudOperations;
     private ServerEventEmitter _serverEventEmitter;
     private INetworkProbeTarget _networkProbeTarget;
+    private IProbeInvocationParams _probeInvocationParams;
 
     // private ProbeStrategy _probeStrategy;
     // private ProbeScheduler _probeScheduler;
@@ -25,7 +26,7 @@ public class NetworkProbeLiason
         CrudOperations crudOperations,
         CancellationTokenSource cancellationTokenSource,
         ServerEventEmitter serverEventEmitter,
-        INetworkProbeTarget networkProbeTarget,
+        IProbeInvocationParams probeInvocationParams,
         ILogger<NetworkProbeLiason> logger
     )
     {
@@ -33,7 +34,9 @@ public class NetworkProbeLiason
         _crudOperations = crudOperations;
         _cancellationTokenSource = cancellationTokenSource;
         _serverEventEmitter = serverEventEmitter;
-        _networkProbeTarget = networkProbeTarget;
+        _probeInvocationParams = probeInvocationParams;
+        //_probeInvocationSchedule = probeInvocationSchedule;
+        //_probeInvocationThresholds = probeInvocationThresholds;
         //_probeStrategy = probeStrategy;
         //_probeScheduler = probeScheduler;
         _logger = logger;
@@ -68,7 +71,7 @@ public class NetworkProbeLiason
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
             //_probeScheduler.StartIntervalTracking();
-            result = await _baseNetworkProbe.ProbeAsync(_networkProbeTarget, token);
+            result = await _baseNetworkProbe.ProbeAsync(_probeInvocationParams, token);
             await _crudOperations.InsertProbeResult(result, token);
             //_probeScheduler.DelayProbingAsync();
 

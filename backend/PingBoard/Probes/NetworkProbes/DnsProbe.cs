@@ -4,29 +4,13 @@ using PingBoard.Probes.Services;
 
 namespace PingBoard.Probes.NetworkProbes;
 
+
+/*
 public class DnsProbe : INetworkProbeBase
 {
     private readonly string _name = "DnsLookup";
 
     public string Name => _name;
-
-    public List<Type> SupportedTargetTypes => new List<Type>()
-    { 
-        typeof (Hostname)
-    };
-
-    private bool IsSupportedTarget(Type targetType)
-    {
-        foreach (Type supportedType in SupportedTargetTypes)
-        {
-            if (targetType == supportedType)
-            {
-                return true;
-            }
-        }
-
-        return false;
-    }
     
     
     public async Task<ProbeResult> ProbeAsync(INetworkProbeTarget probeTarget, CancellationToken cancellationToken)
@@ -37,10 +21,6 @@ public class DnsProbe : INetworkProbeBase
         {
             try
             {
-                if (!IsSupportedTarget(probeTarget.TargetType))
-                {
-                    throw new ArgumentException("Provided target type is not supported by DnsProbe");
-                }
                 var uri = new Uri(probeTarget.Target.ToString()!);
                 var host = uri.Host;
                 var hostEntry = await Dns.GetHostEntryAsync(host);
@@ -65,4 +45,4 @@ public class DnsProbe : INetworkProbeBase
         return true;
     }
 
-}
+}*/

@@ -16,8 +16,6 @@ public class PingProbe
     private readonly string _name = "PingProbe";
 
     // private DnsProbe _dnsProbe; perhaps later, for now use SendPingAsync function with DNS
-    public List<Type> SupportedTargetTypes =>
-        new List<Type>() { typeof(Hostname), typeof(IPAddress) };
 
     public void SetTtl(int newTtl)
     {
