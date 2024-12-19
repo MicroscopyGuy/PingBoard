@@ -3,23 +3,23 @@
 
     "type": "object",
     "properties":{
-        "Target": {
+        "target": {
             "oneOf": [
                 {"$ref": "#/$defs/IPAddressTarget"}, 
                 {"$ref":"#/$defs/HostnameTarget"}
             ]
         },
 
-        "Ttl": {
+        "ttl": {
             "$ref": "#/$defs/Ttl"
-        },
+        },  
 
-        "Timeout" : {
+        "timeout" : {
             "$ref": "#/$defs/Timeout",
         "description": "The amount of time before a ping (packet) is considered lost."
         },
 
-        "PacketPayload" : {
+        "packetPayload" : {
             "$ref": "#/$defs/PacketPayload",
         "description": "The string sent in each packet. Will not change pinging behavior."
         }
@@ -28,7 +28,7 @@
     "required": ["Target"],
 
     "$defs" : {
-        "Ttl": {
+        "ttl": {
             "type": "integer",
             "minimum": 1,
             "maximum": 255,
@@ -37,7 +37,7 @@
             "description" : "The maximum number of hops allowed for a packet before being dropped."
         },
 
-        "Timeout": {
+        "timeout": {
             "type" : "integer",
             "minimum": 500,
             "maximum": 2000,
@@ -45,7 +45,7 @@
             "title": "Timeout (ms)"
         },
 
-        "PacketPayload" : {
+        "packetPayload" : {
             "type": "string",
             "minLength": 1,
             "maxLength": 64,
@@ -54,7 +54,7 @@
             "title": "PacketPayload"
         },
 
-        "IPAddressTarget": {
+        "ipAddressTarget": {
             "title": "IpAddress",
             "type": "object",
             "properties": {
@@ -68,7 +68,7 @@
             "additionalProperties": false
         },
 
-        "HostnameTarget":{
+        "hostnameTarget":{
             "type": "object",
             "title": "Hostname",
             "properties": {

@@ -1,6 +1,8 @@
 ﻿namespace PingBoard.Probes.Utilities;
 
-public class IpAddressTarget
+using NetworkProbes;
+
+public class IpAddressTarget : INetworkProbeTarget
 {
     public string IpAddress { get; set; }
 

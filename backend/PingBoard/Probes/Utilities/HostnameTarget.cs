@@ -1,8 +1,9 @@
 ﻿namespace PingBoard.Probes.Services;
 
 using System.Text.RegularExpressions;
+using NetworkProbes;
 
-public class HostnameTarget
+public class HostnameTarget : INetworkProbeTarget
 {
     public string Hostname { get; private set; }
 
