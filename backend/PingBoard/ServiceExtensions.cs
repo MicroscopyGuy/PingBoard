@@ -14,6 +14,7 @@ using PingBoard.Database.Utilities;
 using Pinging;
 using Pinging.Configuration;
 using Probes;
+using Protos;
 using Serilog;
 using Services;
 

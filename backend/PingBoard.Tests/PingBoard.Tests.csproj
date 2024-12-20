@@ -6,10 +6,16 @@
     <Nullable>enable</Nullable>
 
     <IsPackable>false</IsPackable>
-    <UseMicrosoftTestingPlatformRunner>true</UseMicrosoftTestingPlatformRunner>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.2"/>
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageReference Include="xunit" Version="2.9.2" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="Google.Protobuf" Version="3.28.3" />
     <PackageReference Include="Grpc.Net.Client" Version="2.66.0" />
     <PackageReference Include="Grpc.Net.Client.Web" Version="2.66.0" />
@@ -17,13 +23,6 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeCoverage" Version="17.12.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0" />
-    <PackageReference Include="coverlet.collector" Version="3.1.2">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-      <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="xunit.v3.assert" Version="0.7.0-pre.15" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,23 +31,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="xunit.runner.json" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.11.0" />
-    <PackageReference Include="xunit.v3" Version="0.3.0-pre.18" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="3.0.0-pre.30" />
-  </ItemGroup>
-  <ItemGroup>
     <Protobuf Include="..\..\protos\service.proto" GrpcServices="Client" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="TestResults\" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="coveragereport\**" />

@@ -4,29 +4,30 @@ using PingBoard.Probes.NetworkProbes;
 using PingBoard.Services;
 
 namespace PingBoard.Database.Models;
+
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
 using Google.Protobuf.WellKnownTypes;
 using PingBoard.Pinging;
-
+using Protos;
 
 /// <summary>
 /// Defines a class meant to encapsulate the values returned by the SendPingGroupAsync() function
 /// in the <see cref="GroupPinger"/> class.
 /// </summary>
-public class PingProbeResult : ProbeResult{
-        
+public class PingProbeResult : ProbeResult
+{
     /// <summary>
     /// The time the attempt to send the group of pings either started, or attempted to start
     /// </summary>
-    public DateTime Start { get; set;}
+    public DateTime Start { get; set; }
 
     /// <summary>
     /// The time the attempt to receive the group of pings ended
     /// </summary>
-    public DateTime End {get; set;} 
-    
+    public DateTime End { get; set; }
+
     /// <summary>
     /// The return time of the ping
     /// <summary>
@@ -35,18 +36,18 @@ public class PingProbeResult : ProbeResult{
     /// <summary>
     /// Wherever the user said to ping, could be either a domain or an IP address
     /// </summary>
-    public string Target {get; set;}
-    
+    public string Target { get; set; }
+
     /// <summary>
     /// NEW: Whether the user-specified address is Ipv4 or Ipv6
     /// </summary>
     public string TargetType { get; set; }
-    
+
     /// <summary>
     /// Indicates which IPStatus was returned
     /// </summary>
-    public IPStatus? IpStatus {get; set;}
-    
+    public IPStatus? IpStatus { get; set; }
+
     /// <summary>
     /// The ttl of the ping request
     /// </summary>
@@ -56,7 +57,7 @@ public class PingProbeResult : ProbeResult{
     /// The IP address of the machine which sent the reply
     /// </summary>
     public string ReplyAddress { get; set; }
-    
+
     /// <summary>
     /// If the ping required a DNS lookup, the results will be stored here.
     /// </summary>
@@ -67,12 +68,14 @@ public class PingProbeResult : ProbeResult{
     ///     Start, End, MinimumPing, MaximumPing and AveragePing
     /// </summary>
     /// <returns>
-    ///     a PingGroupSummary object 
+    ///     a PingGroupSummary object
     /// </returns>
-    public static PingProbeResult Empty(){
-        return new PingProbeResult(){
+    public static PingProbeResult Empty()
+    {
+        return new PingProbeResult()
+        {
             Start = DateTime.MinValue,
-            End   = DateTime.MaxValue,
+            End = DateTime.MaxValue,
             IpStatus = null,
         };
     }
@@ -80,10 +83,11 @@ public class PingProbeResult : ProbeResult{
     [ExcludeFromCodeCoverage]
     public override string ToString()
     {
-        return $"Rtt: {Rtt} IpStatus: {IpStatus.ToString()} " + $"EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}" +
-               $"Target: {Target} ReplyAddress: {ReplyAddress}";
+        return $"Rtt: {Rtt} IpStatus: {IpStatus.ToString()} "
+            + $"EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}"
+            + $"Target: {Target} ReplyAddress: {ReplyAddress}";
     }
-    
+
     public static PingResultPublic ToApiModel(PingProbeResult result)
     {
         return new PingResultPublic
@@ -94,16 +98,15 @@ public class PingProbeResult : ProbeResult{
             TargetType = result.TargetType,
             IpStatus = result.IpStatus.ToString(),
             Ttl = result.Ttl,
-            ReplyAddress = result.ReplyAddress
+            ReplyAddress = result.ReplyAddress,
         };
     }
-    
-    public static implicit operator PingResultPublic(PingProbeResult result)
-        => PingProbeResult.ToApiModel(result);
+
+    public static implicit operator PingResultPublic(PingProbeResult result) =>
+        PingProbeResult.ToApiModel(result);
 
     public string ToJson()
     {
         return JsonSerializer.Serialize(this);
     }
-
 }

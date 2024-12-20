@@ -1,5 +1,5 @@
 ﻿syntax = "proto3";
-
+option csharp_namespace = "PingBoard.Protos";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 

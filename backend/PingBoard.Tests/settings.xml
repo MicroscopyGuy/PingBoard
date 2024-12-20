@@ -1,5 +1,0 @@
-<Sources>
-    <Exclude>
-        <Source>.*\\PingBoard\\obj.*</Source>
-    </Exclude>
-</Sources>
