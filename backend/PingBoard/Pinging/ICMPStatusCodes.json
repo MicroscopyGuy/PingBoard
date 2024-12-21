@@ -26,7 +26,6 @@
         "ExtendedDescription" : "The ICMP echo request failed because there is no valid route between the source and destination computers.",
         "State" : "Continue"
     },
-
     
     {
         "IcmpStatusCode" : "DestinationHostUnreachable",
@@ -137,7 +136,7 @@
         "IcmpStatusCode" : "TimedOut",
         "BriefDescription" : "Ping timed out.",
         "ExtendedDescription" : "The ICMP echo request failed because the destination computer that is specified in an ICMP echo message is not reachable; the exact cause of problem is unknown.",
-        "State" : "PacketLossCaution"
+        "State" : "Continue"
     },
 
     {

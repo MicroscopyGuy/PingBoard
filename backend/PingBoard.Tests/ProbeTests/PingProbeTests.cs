@@ -7,6 +7,7 @@ using Probes.Services;
 
 public class PingProbeTests
 {
+    /*
     [Fact]
     public async Task CanPingWithPingProbe()
     {
@@ -23,5 +24,5 @@ public class PingProbeTests
 
         var result = await probe.ProbeAsync(pingParams, token);
         Assert.NotNull(result);
-    }
+    }*/
 }

@@ -47,11 +47,9 @@ public class NetworkProbeLiason
         _cancellationTokenSource.Cancel();
     }
 
-    // need to find the return type somehow of the result
-    // how does the database handle the new result types?
-    // what if one requires a foreign key? Need to somehow give the data and the type to CrudOperations?
     // What ServerEvent to emit?
-    public async Task StartProbingAsync()
+
+    public void StartProbingAsync()
     {
         _logger.LogTrace(
             $"NetworkProbeLiason with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync"
