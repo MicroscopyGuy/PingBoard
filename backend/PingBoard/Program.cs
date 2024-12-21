@@ -13,6 +13,7 @@ public class Program
         builder.AddGrpc();
         builder.AddPingingClasses();
         builder.AddMonitoringClasses();
+        builder.AddProbes();
         builder.AddDatabase();
         builder.AddServerEventClasses();
         builder.Services.AddSingleton<PingMonitoringJobManager>();

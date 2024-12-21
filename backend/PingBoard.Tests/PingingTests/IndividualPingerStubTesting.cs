@@ -3,6 +3,8 @@
 using System.Net;
 using System.Net.NetworkInformation;
 using PingBoard.TestUtilities.PingingTestingUtilities;
+using Probes.NetworkProbes;
+using Probes.Utilities;
 
 public class IndividualPingerStubTesting
 {
@@ -89,7 +91,16 @@ public class IndividualPingerStubTesting
 
         for (int i = 0; i < rtts.Count; i++)
         {
-            PingReply latestReply = await pingerStub.SendPingIndividualAsync(addresses[i]);
+            PingReply latestReply = await pingerStub.SendPingIndividualAsync(
+                new PingProbeInvocationParams(
+                    new IpAddressTarget(addresses[i]),
+                    1,
+                    10,
+                    "this is a test, and the string here doesn't matter"
+                ),
+                CancellationToken.None
+            );
+
             Assert.NotNull(latestReply);
             Assert.Equal(rtts[i], latestReply.RoundtripTime);
             Assert.Equal(statuses[i], latestReply.Status);
@@ -124,7 +135,15 @@ public class IndividualPingerStubTesting
 
         for (int i = 0; i < rtts.Count; i++)
         {
-            PingReply latestReply = await pingerStub.SendPingIndividualAsync(addresses[i]);
+            PingReply latestReply = await pingerStub.SendPingIndividualAsync(
+                new PingProbeInvocationParams(
+                    new IpAddressTarget(addresses[i]),
+                    1,
+                    10,
+                    "this is a test, and the string here doesn't matter"
+                ),
+                CancellationToken.None
+            );
             Assert.NotNull(latestReply);
             Assert.Null(latestReply.Options);
             Assert.Equal(rtts[i], latestReply.RoundtripTime);

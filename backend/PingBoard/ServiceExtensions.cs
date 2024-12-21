@@ -14,6 +14,7 @@ using PingBoard.Database.Utilities;
 using Pinging;
 using Pinging.Configuration;
 using Probes;
+using Probes.NetworkProbes;
 using Protos;
 using Serilog;
 using Services;
@@ -191,7 +192,6 @@ public static class ServiceExtensions
 
         // Database-related classes
         builder.Services.AddTransient<DatabaseConstants>();
-        builder.Services.AddTransient<DatabaseStatementsGenerator>();
         builder.Services.AddTransient<SqliteConnection>();
         builder.Services.AddTransient<CrudOperations>();
     }
@@ -223,6 +223,13 @@ public static class ServiceExtensions
         builder.Services.AddTransient<MonitoringBehaviorConfig>();
         builder.Services.AddTransient<MonitoringBehaviorConfigLimits>();
         builder.Services.AddTransient<MonitoringBehaviorConfigValidator>();
+    }
+
+    public static void AddProbes(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<PingProbe>();
+        //builder.Services.AddTransient<DnsProbe>();
+        //builder.Services.AddTransient<TracerouteProbe>();
     }
 
     public static void AddLogging(this WebApplicationBuilder builder)

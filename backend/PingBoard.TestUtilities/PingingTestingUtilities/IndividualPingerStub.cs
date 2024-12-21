@@ -9,6 +9,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
 using PingBoard.Pinging.Configuration;
+using Probes.NetworkProbes;
 
 /// <summary>
 /// This class should not be used for production, it is only used for testing.
@@ -134,12 +135,16 @@ public class IndividualPingerStub : IIndividualPinger
     /// <summary>
     /// Returned the next stubbed Task|PingReply| object from the private _pingReplyStubs property,
     /// and then updates the index.
+    ///
+    /// Note: The values of the properties on the PingProbeInvocationParams object have absolutely no relevance here.
+    /// The IndividualPingerStub class fakes output results, not input parameters. It is passed here for interface
+    /// compliance only.
     /// </summary>
     /// <param name="target"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public async Task<PingReply> SendPingIndividualAsync(
-        string target,
+        PingProbeInvocationParams pingParams,
         CancellationToken stoppingToken = default(CancellationToken)
     )
     {
