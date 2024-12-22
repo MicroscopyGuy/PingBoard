@@ -9,10 +9,8 @@ using Endpoints;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Monitoring.Configuration;
 using PingBoard.Database.Utilities;
 using Pinging;
-using Pinging.Configuration;
 using Probes;
 using Probes.NetworkProbes;
 using Protos;
@@ -182,10 +180,6 @@ public static class ServiceExtensions
             DataSource = dbPath,
         }.ToString();
 
-        builder.Services.AddDbContextFactory<PingInfoContext>(options =>
-            options.UseSqlite(connectionString)
-        );
-
         builder.Services.AddDbContextFactory<ProbeResultsContext>(options =>
             options.UseSqlite(connectionString)
         );
@@ -200,29 +194,9 @@ public static class ServiceExtensions
     {
         // Pinging-related classes
         //builder.Services.AddTransient<IGroupPinger, GroupPinger>();
-        builder.Services.AddTransient<PingGroupQualifier>();
         builder.Services.AddTransient<IIndividualPinger, IndividualPinger>();
         builder.Services.AddTransient<Ping>();
         builder.Services.AddTransient<IProbeScheduler, ProbeScheduler>();
-
-        // Pinging configuration-related classes
-        builder.Services.AddTransient<PingingBehaviorConfigValidator>();
-        builder.Services.AddTransient<PingingThresholdsConfigValidator>();
-        builder.Services.AddTransient<PingingBehaviorConfigLimits>();
-        builder.Services.AddTransient<PingingThresholdsConfigLimits>();
-        builder.Services.Configure<PingingBehaviorConfig>(
-            builder.Configuration.GetSection("PingingBehavior")
-        );
-        builder.Services.Configure<PingingThresholdsConfig>(
-            builder.Configuration.GetSection("PingingThresholds")
-        );
-    }
-
-    public static void AddMonitoringClasses(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddTransient<MonitoringBehaviorConfig>();
-        builder.Services.AddTransient<MonitoringBehaviorConfigLimits>();
-        builder.Services.AddTransient<MonitoringBehaviorConfigValidator>();
     }
 
     public static void AddProbes(this WebApplicationBuilder builder)

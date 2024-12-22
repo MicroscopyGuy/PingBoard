@@ -7,9 +7,7 @@ using PingBoard.Services;
 namespace PingBoard.Database.Utilities;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 using PingBoard.Database.Models;
-using PingBoard.Pinging.Configuration;
 using Protos;
 
 /// <summary>
@@ -17,24 +15,19 @@ using Protos;
 /// </summary>
 public class CrudOperations
 {
-    private IDbContextFactory<PingInfoContext> _pingInfoContextFactory;
     private IDbContextFactory<ProbeResultsContext> _probeResultsContextFactory;
-    private PingingThresholdsConfig _pingingThresholds;
     private ILogger<CrudOperations> _logger;
 
     public CrudOperations(
-        IDbContextFactory<PingInfoContext> pingInfoContextFactory,
         IDbContextFactory<ProbeResultsContext> probeResultsContextFactory,
-        IOptions<PingingThresholdsConfig> pingingThresholds,
         ILogger<CrudOperations> logger
     )
     {
-        _pingInfoContextFactory = pingInfoContextFactory;
         _probeResultsContextFactory = probeResultsContextFactory;
-        _pingingThresholds = pingingThresholds.Value;
         _logger = logger;
     }
 
+    /*
     /// <summary>
     /// Inserts a PingGroupSummary (private) into the database
     /// </summary>
@@ -61,8 +54,9 @@ public class CrudOperations
             );
             throw;
         }
-    }
+    }*/
 
+    /*
     /// <summary>
     /// Retrieves the next N number of records from the database from a certain point in time, returned
     /// as a list of PingGroupSummaryPublic objects
@@ -92,8 +86,9 @@ public class CrudOperations
             .ToList();
 
         return summaries;
-    }
+    }*/
 
+    /*
     /// <summary>
     /// Retrieves the next N number of records from the database from a certain point in time, returned
     /// as a list of PingGroupSummaryPublic objects
@@ -137,8 +132,9 @@ public class CrudOperations
         var convertedSummaries = summaries.Select(s => PingGroupSummary.ToApiModel(s)).ToList();
 
         return convertedSummaries;
-    }
+    }*/
 
+    /*
     public async Task<ShowPingsResponse> ShowPingsAsync(
         DateTime startingTime,
         DateTime endingTime,
@@ -150,7 +146,7 @@ public class CrudOperations
             cancellationToken
         );
         var results = pingInfoContext
-            .Summaries.Where(s => /*s.Start >= startingTime && s.End < endingTime && */
+            .Summaries.Where(s => /*s.Start >= startingTime && s.End < endingTime &&
                 s.Target == pingTarget
             )
             .Select(s => PingGroupSummary.ToApiModel(s))
@@ -161,7 +157,7 @@ public class CrudOperations
         response.Pings.Add(results);
 
         return response;
-    }
+    } */
 
     public async Task InsertProbeResult(ProbeResult result, CancellationToken cancellationToken)
     {

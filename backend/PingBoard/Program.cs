@@ -12,7 +12,6 @@ public class Program
         builder.ConfigureWebServer();
         builder.AddGrpc();
         builder.AddPingingClasses();
-        builder.AddMonitoringClasses();
         builder.AddProbes();
         builder.AddDatabase();
         builder.AddServerEventClasses();

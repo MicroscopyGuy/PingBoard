@@ -44,5 +44,8 @@
   <ItemGroup>
     <None Remove="coveragereport\**" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="DatabaseTests\" />
+  </ItemGroup>
 
 </Project>

@@ -5,7 +5,6 @@ using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
 using Microsoft.Extensions.Options;
-using PingBoard.Pinging.Configuration;
 using Probes.NetworkProbes;
 
 /// <summary>

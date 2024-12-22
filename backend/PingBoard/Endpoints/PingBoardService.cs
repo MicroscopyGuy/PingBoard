@@ -207,6 +207,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
     }*/
 
 
+    /*
     public override async Task<ListAnomaliesResponse> ListAnomalies(
         ListAnomaliesRequest request,
         ServerCallContext context
@@ -250,8 +251,9 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         response.Anomalies.Add(anomalies);
 
         return response;
-    }
+    }*/
 
+    /*
     public override async Task<ShowPingsResponse> ShowPings(
         ShowPingsRequest request,
         ServerCallContext context
@@ -274,5 +276,5 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             _logger.LogError(e.ToString());
             throw;
         }
-    }
+    }*/
 }

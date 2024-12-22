@@ -4,7 +4,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
 using PingBoard.Database.Models;
 using PingBoard.Database.Utilities;
-using PingBoard.Pinging.Configuration;
 using PingBoard.Probes;
 using PingBoard.Probes.NetworkProbes;
 using PingBoard.TestUtilities.PingingTestingUtilities;
