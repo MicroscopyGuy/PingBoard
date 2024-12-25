@@ -1,4 +1,6 @@
 ﻿namespace PingBoard.Pinging;
+
+using System.Net;
 using System.Net.NetworkInformation;
 
 /// <summary>
@@ -15,7 +17,8 @@ public static class IpStatusExtensions
     /// being that DestinationProtocolUnreachable and DestinationProhibited and have been remapped to ordinal values 4 and 6,
     /// respectively.
     /// </summary>
-    public enum DisambiguatedIpStatus{
+    public enum DisambiguatedIpStatus
+    {
         Unknown = -1,
         Success = 0,
         DestinationProtocolUnreachable = 4,
@@ -39,30 +42,34 @@ public static class IpStatusExtensions
         BadHeader = 11042,
         UnrecognizedNextHeader = 11043,
         IcmpError = 11044,
-        DestinationScopeMismatch = 11045
+        DestinationScopeMismatch = 11045,
     };
-    
+
     /// <summary>
-    /// Translates an IPStatus into one of the remapped DisambiguatedIpStatus enums. 
+    /// Translates an IPStatus into one of the remapped DisambiguatedIpStatus enums.
+    /// Both IPStatus.DestinationProtocolUnreacahble and IPStatus.DestinationProhibited are mapped to 11004.
     /// </summary>
-    /// <param name="ambiguousStatus"></param>
+    /// <param name="ambiguousStatus">The (inherently) ambiguous IPStatus enum to disambiguate</param>
+    /// <param name="ipv4"> Whether or not the IPStatus resulted from an ipv4 pinging operation </param>
     /// <returns></returns>
-    public static DisambiguatedIpStatus Disambiguate(this IPStatus ambiguousStatus)
+    public static DisambiguatedIpStatus Disambiguate(this IPStatus ambiguousStatus, bool ipv4)
     {
-        var stringified = ambiguousStatus.ToString();
-        switch (stringified)
+        var ordinalValue = (int)ambiguousStatus;
+        if (ordinalValue != 11004)
         {
-            case "DestinationProhibited":
-                return DisambiguatedIpStatus.DestinationProhibited;
-            case "DestinationProtocolUnreachable":
-                return DisambiguatedIpStatus.DestinationProtocolUnreachable;
-            default:
-                return (DisambiguatedIpStatus) ambiguousStatus;
+            return (DisambiguatedIpStatus)ambiguousStatus;
         }
+
+        if (ipv4)
+        {
+            return DisambiguatedIpStatus.DestinationProtocolUnreachable;
+        }
+
+        return DisambiguatedIpStatus.DestinationProhibited;
     }
 
-    public static IcmpStatusCodeEntry GetInfo(this IPStatus ipStatus)
+    public static IcmpStatusCodeEntry GetInfo(this IPStatus ipStatus, IPAddress ip)
     {
-        return IcmpStatusCodeLookup.Lookup(ipStatus);
+        return IcmpStatusCodeLookup.Lookup(ipStatus, ip);
     }
 }

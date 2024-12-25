@@ -9,7 +9,6 @@ using Probes.NetworkProbes;
 
 /// <summary>
 /// This class should not be used for production, it is only used for testing.
-/// <see cref="GroupPinger"/>.
 /// All values used
 ///
 /// FOR ADDITIONAL CONTEXT:

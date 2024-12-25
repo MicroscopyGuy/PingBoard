@@ -1,0 +1,5 @@
+﻿bin
+obj
+coveragereport
+output.coverage
+output.cobertura.xml

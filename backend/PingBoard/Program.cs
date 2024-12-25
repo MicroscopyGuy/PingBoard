@@ -9,21 +9,10 @@ public class Program
     public static void Main(string[] args)
     {
         var builder = WebApplication.CreateBuilder(args);
-        builder.ConfigureWebServer();
-        builder.AddGrpc();
-        builder.AddPingingClasses();
-        builder.AddProbes();
-        builder.AddDatabase();
-        builder.AddServerEventClasses();
-        builder.Services.AddSingleton<PingMonitoringJobManager>();
-        builder.ConfigureCorsPolicy();
-        builder.AddLogging();
-
+        builder.AddServices();
         /*********************** Build the application ******************/
         var app = builder.Build();
-        app.UsePermissiveCorsPolicy();
-        app.ConfigureHttpRequestPipeline();
-        app.UseGrpc();
+        app.Configure();
         app.Run();
     }
 }

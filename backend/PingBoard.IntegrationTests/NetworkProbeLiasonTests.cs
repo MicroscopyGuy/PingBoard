@@ -11,53 +11,42 @@ using PingBoard.TestUtilities.PingingTestingUtilities;
 namespace PingBoard.IntegrationTests;
 
 using PingBoard.Services;
+using Probes.Utilities;
 
 public class NetworkProbeLiasonTests
 {
+    /*
+    [Fact]
     public async Task NetworkProbeLiason_CanProbe_WithPingProbe()
     {
-        /*
-        var pingProbe = new PingProbe(
-            new IndividualPingerStub()
-        );
-
-        var services = new ServiceCollection();
-        var serviceProvider = services.BuildServiceProvider();
+        var pingProbe = new PingProbe(new IndividualPingerStub());
 
         // Get the factory and create a context
-        var probeContextFactory = serviceProvider.GetRequiredService<IDbContextFactory<ProbeResultsContext>>();
-        var pingInfoFactory = serviceProvider.GetRequiredService<IDbContextFactory<PingInfoContext>>(); // will be removed soon, added here for compatibility
+        var probeContextFactory = serviceProvider.GetRequiredService<
+            IDbContextFactory<ProbeResultsContext>
+        >();
 
-        PingingThresholdsConfig testThresholdsConfig = new PingingThresholdsConfig(){
-            MinimumPingMs = 50,
-            AveragePingMs = 60,
-            MaximumPingMs = 100,
-            JitterMs      = 15,
-            PacketLossPercentage = 0
-        };
-            
-        IOptions<PingingThresholdsConfig> testThresholdOptions = Options.Create(testThresholdsConfig);
-        
+        var contextFactory = new IDbContextFactory<ProbeResultsContext>();
+
         var crudOperations = new CrudOperations(
-            pingInfoFactory,
             probeContextFactory,
-            testThresholdOptions,
             NullLogger<CrudOperations>.Instance
         );
 
-        var target = new IpOrHostnameTarget("google.com", "8.8.8.8");
-        
+        var target = new IpAddressTarget("8.8.8.8");
+
+        var probeParams = new PingProbeInvocationParams(target, 64, 500, "This is a test");
         var networkProbeLiason = new NetworkProbeLiason(
             pingProbe,
             crudOperations,
             new CancellationTokenSource(),
             serviceProvider.GetRequiredService<ServerEventEmitter>(),
-            target,
+            probeParams,
             new NullLogger<NetworkProbeLiason>()
         );
 
         var testTime = DateTime.UtcNow;
-        await networkProbeLiason.StartProbingAsync();
-        await Task.Delay(20); */
-    }
+        networkProbeLiason.StartProbingAsync();
+        await Task.Delay(20);
+    } */
 }

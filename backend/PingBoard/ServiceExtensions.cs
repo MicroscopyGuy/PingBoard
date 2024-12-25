@@ -226,6 +226,26 @@ public static class ServiceExtensions
         }
     }
 
+    public static void AddServiceLayerTypes(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<NetworkProbeLiason>();
+        //builder.Services.AddSingleton<NetworkProbeManager>();
+        builder.Services.AddSingleton<PingMonitoringJobManager>();
+    }
+
+    public static void AddServices(this WebApplicationBuilder builder)
+    {
+        builder.ConfigureWebServer();
+        builder.AddGrpc();
+        builder.AddPingingClasses();
+        builder.AddProbes();
+        builder.AddDatabase();
+        builder.AddServerEventClasses();
+        builder.AddServiceLayerTypes();
+        builder.ConfigureCorsPolicy();
+        builder.AddLogging();
+    }
+
     //public void AddProbesMenu() { }
 
     /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
@@ -308,5 +328,12 @@ public static class ServiceExtensions
             () =>
                 "This gRPC service is gRPC-Web enabled and is callable from browser apps using the gRPC-Web protocol"
         );
+    }
+
+    public static void Configure(this WebApplication app)
+    {
+        app.UsePermissiveCorsPolicy();
+        app.ConfigureHttpRequestPipeline();
+        app.UseGrpc();
     }
 }

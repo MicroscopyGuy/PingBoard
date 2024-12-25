@@ -36,7 +36,10 @@ public class PingProbe
         {
             return false;
         }
-        return pingProbeRes.IpStatus.Value.GetInfo().State != PingingStates.PingState.Halt;
+
+        var responseIp = IPAddress.Parse(pingProbeRes.ReplyAddress);
+        return pingProbeRes.IpStatus.Value.GetInfo(responseIp).State
+            != PingingStates.PingState.Halt;
     }
 
     /// <summary>
