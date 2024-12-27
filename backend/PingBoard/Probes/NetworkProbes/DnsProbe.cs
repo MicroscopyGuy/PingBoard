@@ -5,13 +5,13 @@ using PingBoard.Probes.Services;
 namespace PingBoard.Probes.NetworkProbes;
 
 
+
+
+
 /*
 public class DnsProbe : INetworkProbeBase
 {
-    private readonly string _name = "DnsLookup";
-
-    public string Name => _name;
-    
+    public static string Name =>  "DnsLookup";
     
     public async Task<ProbeResult> ProbeAsync(INetworkProbeTarget probeTarget, CancellationToken cancellationToken)
     {

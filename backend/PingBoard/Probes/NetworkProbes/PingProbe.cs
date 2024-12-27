@@ -9,11 +9,8 @@ public class PingProbe
     : INetworkProbeBase<PingProbeInvocationParams, ProbeStatusChange, PingProbeResult>,
         INetworkProbeBase
 {
-    public string Name => _name;
-
+    public static string Name => "Ping";
     private IIndividualPinger _pinger;
-
-    private readonly string _name = "PingProbe";
 
     public PingProbe(IIndividualPinger pinger)
     {

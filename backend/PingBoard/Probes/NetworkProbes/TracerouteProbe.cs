@@ -5,14 +5,13 @@ using PingBoard.Probes.Services;
 namespace PingBoard.Probes.NetworkProbes;
 
 
+
+
 /*
 public class TracerouteProbe : INetworkProbeBase
 {
-    public string Name => _name;
-
+    public static string Name => "Traceroute";
     private IIndividualPinger _pinger;
-
-    private readonly string _name = "TracerouteProbe";
 
     // private DnsProbe _dnsProbe; perhaps later, for now use SendPingAsync function with DNS
     public List<Type> SupportedTargetTypes => new List<Type>()

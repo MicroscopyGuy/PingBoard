@@ -23,8 +23,30 @@ public static class ServiceExtensions
     private const Environment.SpecialFolder _folder = Environment
         .SpecialFolder
         .LocalApplicationData;
+
     private static string _path = Environment.GetFolderPath(_folder);
     private static string _appDataPath = System.IO.Path.Join(_path, "PingBoard");
+    private static List<Type> _probeTypes = typeof(Program)
+        .Assembly.GetTypes()
+        .Where(T => T.IsAssignableTo(typeof(INetworkProbeBase)))
+        .Where(T => T.IsClass)
+        .ToList();
+
+    private static List<string> _probeNames = _probeTypes
+        .Select(T => T.GetProperty("Name"))
+        .Select(p => p.GetValue(null) as string)
+        .Where(i => i != null)
+        .ToList();
+
+    private static string ProbeName(this Type probeType)
+    {
+        return probeType.GetProperty("Name").GetValue(null) as string;
+    }
+
+    private static Dictionary<string, Type> _probes = _probeTypes.ToDictionary(
+        pt => pt.ProbeName(),
+        pt => pt
+    );
 
     public static void ConfigureWebServer(this WebApplicationBuilder builder)
     {
@@ -68,9 +90,27 @@ public static class ServiceExtensions
                 .First(m => m.GetParameters()[0].ParameterType == typeof(BoundedChannelOptions))
                 .MakeGenericMethod(serverEventType)
                 .Invoke(null, new object?[] { new BoundedChannelOptions(100) })!;
-            builder.Services.AddSingleton(channel);
+
+            builder.Services.AddSingleton(
+                typeof(Channel<>).MakeGenericType(serverEventType),
+                channel
+            );
         }
     }
+
+    /*
+    public static void AssServerEventChannels(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAgentError>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAnomaly>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingInfo>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.DnsAgentError>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.DnsAnomaly>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.DnsInfo>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.TracerouteAgentError>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.TracerouteAnomaly>>();
+        builder.Services.AddSingleton<Channel<ServerEvent.Types.TracerouteInfo>>();
+    }(*/
 
     public static void AddServerEventChannelReaders(this WebApplicationBuilder builder)
     {
@@ -192,8 +232,6 @@ public static class ServiceExtensions
 
     public static void AddPingingClasses(this WebApplicationBuilder builder)
     {
-        // Pinging-related classes
-        //builder.Services.AddTransient<IGroupPinger, GroupPinger>();
         builder.Services.AddTransient<IIndividualPinger, IndividualPinger>();
         builder.Services.AddTransient<Ping>();
         builder.Services.AddTransient<IProbeScheduler, ProbeScheduler>();
@@ -226,11 +264,49 @@ public static class ServiceExtensions
         }
     }
 
+    public static void AddNetworkProbeLiasonFactory(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddTransient<
+            Func<string, IProbeInvocationParams, INetworkProbeTarget, NetworkProbeLiason>
+        >(
+            (svc) =>
+            {
+                return (
+                    string probeName,
+                    IProbeInvocationParams invocParams,
+                    INetworkProbeTarget target
+                ) =>
+                {
+                    var crudOperations = svc.GetRequiredService<CrudOperations>();
+                    var cancellationTokenSource = new CancellationTokenSource();
+                    var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
+                    var probeScheduler = svc.GetRequiredService<ProbeScheduler>();
+                    var logger = svc.GetRequiredService<Logger<NetworkProbeLiason>>();
+                    logger.LogDebug(
+                        "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
+                        cancellationTokenSource.GetHashCode()
+                    );
+
+                    return new NetworkProbeLiason(
+                        (svc.GetRequiredService(_probes[probeName]) as INetworkProbeBase)!,
+                        crudOperations,
+                        new CancellationTokenSource(),
+                        serverEventEmitter,
+                        invocParams,
+                        target,
+                        probeScheduler,
+                        logger
+                    );
+                };
+            }
+        );
+    }
+
     public static void AddServiceLayerTypes(this WebApplicationBuilder builder)
     {
-        builder.Services.AddTransient<NetworkProbeLiason>();
         //builder.Services.AddSingleton<NetworkProbeManager>();
         builder.Services.AddSingleton<PingMonitoringJobManager>();
+        builder.AddNetworkProbeLiasonFactory();
     }
 
     public static void AddServices(this WebApplicationBuilder builder)
@@ -245,62 +321,6 @@ public static class ServiceExtensions
         builder.ConfigureCorsPolicy();
         builder.AddLogging();
     }
-
-    //public void AddProbesMenu() { }
-
-    /*builder.Services.AddHostedService<PingMonitoringJobManager>((svc)
-            => svc.GetRequiredService<PingMonitoringJobManager>());*/
-
-
-    /*
-    INetworkProbeBase GetProbeForOperation(string operationName)
-    {
-        var svc = new ServiceCollection();
-        switch (operationName)
-        {
-            case ("Ping"):
-                return svc.BuildServiceProvider().GetService<PingProbe>() ?? throw new NullReferenceException("PingProbe doesn't exist");
-            
-            case ("Dns"):
-                return svc.BuildServiceProvider().GetService<DnsProbe>() ??
-                       throw new NullReferenceException("DnsProbe doesn't exist");
-            case ("Traceroute"):
-                return svc.BuildServiceProvider().GetService<TracerouteProbe>() ??
-                       throw new NullReferenceException("TracerouteProbe doesn't exist");
-        }
-    }*/
-    /*
-     builder.Services.AddTransient<Func<string, INetworkProbeTarget, NetworkProbeLiason>>((svc) =>
-     {
-         return (str, networkProbeTarget) =>
-         {
-             switch (str)
-             {
-                 case "Ping":
-                     
-             }
-
-             var groupPinger = svc.GetRequiredService<IIndividualPinger>();
-             var pingingBehavior = svc.GetRequiredService<IOptions<PingingBehaviorConfig>>();
-             var pingingThresholds = svc.GetRequiredService<IOptions<PingingThresholdsConfig>>();
-             var behaviorConfigValidator = svc.GetRequiredService<PingingBehaviorConfigValidator>();
-             var pingingThresholdsConfigValidator = svc.GetRequiredService<PingingThresholdsConfigValidator>();
-             var crudOperations = svc.GetRequiredService<CrudOperations>();
-             var pingQualifier = svc.GetRequiredService<PingGroupQualifier>();
-             var cancellationTokenSource = new CancellationTokenSource();
-             var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
-             var logger = svc.GetRequiredService<ILogger<GroupPinger>>();
-             logger.LogDebug(
-                 "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
-                 cancellationTokenSource.GetHashCode());
-
-             return new GroupPinger(
-                 groupPinger, pingingBehavior, pingingThresholds,
-                 behaviorConfigValidator, pingingThresholdsConfigValidator, crudOperations,
-                 pingQualifier, new CancellationTokenSource(), serverEventEmitter, str, logger);
-         };
-     }); */
-
 
     /******************* Web Application related extensions *******************/
 

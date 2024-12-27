@@ -5,7 +5,6 @@ public interface INetworkProbeBase<TProbeConfiguration, TStatusChange, TProbeRes
     where TStatusChange : ProbeStatusChange
     where TProbeConfiguration : IProbeInvocationParams
 {
-    public string Name { get; }
     Task<TProbeResult> ProbeAsync(
         TProbeConfiguration probeTarget,
         CancellationToken cancellationToken
@@ -15,6 +14,7 @@ public interface INetworkProbeBase<TProbeConfiguration, TStatusChange, TProbeRes
 
 public interface INetworkProbeBase
 {
+    public static abstract string Name { get; }
     Task<ProbeResult> ProbeAsync(
         IProbeInvocationParams probeTarget,
         CancellationToken cancellationToken

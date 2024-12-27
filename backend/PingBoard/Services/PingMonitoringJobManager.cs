@@ -10,10 +10,15 @@ namespace PingBoard.Services;
 /// </summary>
 public class PingMonitoringJobManager : BackgroundService
 {
-    //private readonly Func<string, NetworkProbeLiason> _getPingMonitoringJobRunner;
-    private readonly ILogger<PingMonitoringJobManager> _logger;
+    private readonly Func<
+        string,
+        IProbeInvocationParams,
+        INetworkProbeTarget,
+        NetworkProbeLiason
+    > _probeLiasonFactory;
     private ServerEventEmitter _serverEventEmitter;
-    private volatile NetworkProbeLiason? _currentJobRunner;
+    private readonly ILogger<PingMonitoringJobManager> _logger;
+    private volatile NetworkProbeLiason? _currentLiason;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
 
@@ -21,12 +26,17 @@ public class PingMonitoringJobManager : BackgroundService
 
 
     public PingMonitoringJobManager(
-        Func<string, NetworkProbeLiason> pingMonitoringJobRunnerSource,
+        Func<
+            string,
+            IProbeInvocationParams,
+            INetworkProbeTarget,
+            NetworkProbeLiason
+        > probeLiasonFactory,
         ServerEventEmitter serverEventEmitter,
         ILogger<PingMonitoringJobManager> logger
     )
     {
-        //_getPingMonitoringJobRunner = pingMonitoringJobRunnerSource;
+        _probeLiasonFactory = probeLiasonFactory;
         _serverEventEmitter = serverEventEmitter;
         _logger = logger;
     }
@@ -104,7 +114,7 @@ public class PingMonitoringJobManager : BackgroundService
         //_logger.LogDebug("PingMonitoringJobManager: IsPinging: Entered");
         lock (_lockingObject)
         {
-            return _currentJobRunner != null;
+            return _currentLiason != null;
         }
     }
 
@@ -155,7 +165,7 @@ public class PingMonitoringJobManager : BackgroundService
             // save before getting rid of the job runner, so UI knows the target that is no longer being pinged
             //var oldTarget = _currentJobRunner.GetTarget();
             //await _currentJobRunner.CancelTokenSourceAsync();
-            ResetJobRunner();
+            ResetLiason();
             //_serverEventEmitter.IndicatePingOnOffToggle(oldTarget, false, "StopPingingAsync");
         }
     }
@@ -165,7 +175,7 @@ public class PingMonitoringJobManager : BackgroundService
     /// used as a cleanup function when the pinging is stopped by the user, halted for any reason, or
     /// cancelled using a cancellation token.
     /// </summary>
-    public void ResetJobRunner()
+    public void ResetLiason()
     {
         lock (_lockingObject)
         {
@@ -176,8 +186,8 @@ public class PingMonitoringJobManager : BackgroundService
                 _logger.LogDebug(
                     "PingMonitoringJobManager: ResetJobRunner: Going to dispose of job runner"
                 );
-                var cjr = _currentJobRunner;
-                _currentJobRunner = null; // defensive measure to prevent intermediate state of disposed job runner, but non-null currentJobRunner
+                var npl = _currentLiason;
+                _currentLiason = null; // defensive measure to prevent intermediate state of disposed job runner, but non-null currentJobRunner
                 //cjr.Dispose();
             }
         }

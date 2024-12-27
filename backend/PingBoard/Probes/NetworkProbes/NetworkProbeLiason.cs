@@ -15,9 +15,11 @@ public class NetworkProbeLiason
     private ServerEventEmitter _serverEventEmitter;
     private INetworkProbeTarget _networkProbeTarget;
     private IProbeInvocationParams _probeInvocationParams;
+    private ProbeScheduler _probeScheduler;
 
+    //_probeInvocationThresholds = probeInvocationThresholds;
     // private ProbeStrategy _probeStrategy;
-    // private ProbeScheduler _probeScheduler;
+
     private ILogger<NetworkProbeLiason> _logger;
     private Task _probeTask;
 
@@ -27,6 +29,8 @@ public class NetworkProbeLiason
         CancellationTokenSource cancellationTokenSource,
         ServerEventEmitter serverEventEmitter,
         IProbeInvocationParams probeInvocationParams,
+        INetworkProbeTarget networkProbeTarget,
+        ProbeScheduler probeScheduler,
         ILogger<NetworkProbeLiason> logger
     )
     {
@@ -34,12 +38,14 @@ public class NetworkProbeLiason
         _crudOperations = crudOperations;
         _cancellationTokenSource = cancellationTokenSource;
         _serverEventEmitter = serverEventEmitter;
+        _networkProbeTarget = networkProbeTarget;
         _probeInvocationParams = probeInvocationParams;
+        _probeScheduler = probeScheduler;
+        _logger = logger;
+
         //_probeInvocationSchedule = probeInvocationSchedule;
         //_probeInvocationThresholds = probeInvocationThresholds;
         //_probeStrategy = probeStrategy;
-        //_probeScheduler = probeScheduler;
-        _logger = logger;
     }
 
     public async Task StopProbingAsync()

@@ -2,8 +2,8 @@
 
 public class ProbeStrategy
 {
-    private int GroupCount { get; set; }
-    private TimeSpan DelayGroup { get; set; }
-    private TimeSpan DelayIndividual { get; set; }
-    private int FailuresBeforeStop { get; set; }
+    public int GroupCount { get; set; }
+    public TimeSpan DelayGroup { get; set; }
+    public TimeSpan DelayIndividual { get; set; }
+    public int FailuresBeforeStop { get; set; }
 }
