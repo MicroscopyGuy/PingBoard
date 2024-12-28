@@ -13,14 +13,6 @@ public class AppTests
     [Fact]
     public void DI_Can_Create_NetworkProbeLiasonFactory()
     {
-        /*
-        var tokenSource = new CancellationTokenSource();
-        var args = Array.Empty<string>();
-        
-        var result = Program.RunAppAsync(args, tokenSource.Token);
-        Assert.True(true);
-        tokenSource.Cancel();*/
-
         var builder = WebApplication.CreateSlimBuilder();
         builder.AddServices();
         var app = builder.Build();

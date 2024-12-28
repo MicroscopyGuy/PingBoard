@@ -305,7 +305,7 @@ public static class ServiceExtensions
     public static void AddServiceLayerTypes(this WebApplicationBuilder builder)
     {
         //builder.Services.AddSingleton<NetworkProbeManager>();
-        builder.Services.AddSingleton<PingMonitoringJobManager>();
+        builder.Services.AddSingleton<ProbeOperationsCenter>();
         builder.AddNetworkProbeLiasonFactory();
     }
 

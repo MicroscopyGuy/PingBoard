@@ -1,5 +1,6 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
+using Microsoft.AspNetCore.Components.Infrastructure;
 using PingBoard.Database.Utilities;
 using PingBoard.Services;
 
@@ -7,7 +8,7 @@ using PingBoard.Services;
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe
 /// bundles utilities needed to present the manager with a simple API for starting, stopping and viewing the status
 /// of ongoing probes.
-public class NetworkProbeLiason
+public class NetworkProbeLiason : IDisposable
 {
     private INetworkProbeBase _baseNetworkProbe; // need an INetworkProbeBase factory
     private CancellationTokenSource _cancellationTokenSource;
@@ -51,6 +52,7 @@ public class NetworkProbeLiason
     public async Task StopProbingAsync()
     {
         _cancellationTokenSource.Cancel();
+        // emit server event: OnOffToggle
     }
 
     // What ServerEvent to emit?
@@ -60,8 +62,27 @@ public class NetworkProbeLiason
         _logger.LogTrace(
             $"NetworkProbeLiason with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync"
         );
-        _probeTask = DoProbingAsync();
+        _probeTask = DoProbingAsync().ContinueWith(AfterProbingAsync);
     }
+
+    // csharpier-ignore-start
+    private async Task AfterProbingAsync(Task t)
+    {
+        if (!t.IsFaulted)
+        {
+            return;
+        }
+        if (!t.IsCanceled)
+        {
+            _logger.LogCritical("An exception occured while probing {target} Exception: {exception}",
+                _probeInvocationParams.GetTarget(), t.Exception);
+        }
+        else
+        {
+            _logger.LogDebug("Probing of {target} was canceled", _probeInvocationParams.GetTarget());
+        }
+    }
+    // csharpier-ignore-end
 
     private async Task DoProbingAsync()
     {
@@ -72,20 +93,32 @@ public class NetworkProbeLiason
         var token = _cancellationTokenSource.Token;
         var result = ProbeResult.Default();
 
+        //emit server event, OnOffToggle
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
             //_probeScheduler.StartIntervalTracking();
             result = await _baseNetworkProbe.ProbeAsync(_probeInvocationParams, token);
             await _crudOperations.InsertProbeResult(result, token);
-            //_probeScheduler.DelayProbingAsync();
+            //emit server event, Info
 
-            // emit a server event? How is this handled?
+            //_probeScheduler.DelayProbingAsync();
             await Task.Delay(100, token);
         }
     }
 
+    //https://learn.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskStatus?view=net-9.0
     public TaskStatus GetProbingStatus()
     {
         return _probeTask.Status;
+    }
+
+    public INetworkProbeTarget GetTarget()
+    {
+        return _networkProbeTarget;
+    }
+
+    public void Dispose()
+    {
+        _cancellationTokenSource.Dispose();
     }
 }

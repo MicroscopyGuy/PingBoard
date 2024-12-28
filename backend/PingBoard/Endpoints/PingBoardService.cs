@@ -13,20 +13,20 @@ using Protos;
 /// </summary>
 public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBoardServiceBase
 {
-    private PingMonitoringJobManager _pingMonitoringJobManager;
+    private ProbeOperationsCenter _probeOperationsCenter;
     private readonly IImmutableList<IChannelReaderAdapter> _serverEventChannelReaders;
     private readonly ILogger<PingBoardService> _logger;
     private readonly CrudOperations _crudOperations;
 
     public PingBoardService(
-        PingMonitoringJobManager pingMonitoringJobManager,
+        ProbeOperationsCenter probeOperationsCenter,
         CrudOperations crudOperations,
         [FromKeyedServices("ServerEventChannelReaders")]
             IImmutableList<IChannelReaderAdapter> serverEventChannelReaders,
         ILogger<PingBoardService> logger
     )
     {
-        _pingMonitoringJobManager = pingMonitoringJobManager;
+        _probeOperationsCenter = probeOperationsCenter;
         _crudOperations = crudOperations;
         _serverEventChannelReaders = serverEventChannelReaders;
         _logger = logger;
@@ -34,7 +34,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
 
     /// <summary>
     /// This function directly handles each request from the frontend to begin pinging a target,
-    /// by directing the PingMonitoringJobManager to StartPinging, if it isn't already.
+    /// by directing the ProbeOperationsCenter to StartPinging, if it isn't already.
     /// </summary>
     /// <param name="request">The target the user wishes to ping.</param>
     /// <param name="context">Represents the context of a server-side call.</param>
@@ -47,7 +47,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
     {
         try
         {
-            if (_pingMonitoringJobManager.IsPinging())
+            if (_probeOperationsCenter.IsProbingActive())
             {
                 _logger.LogDebug(
                     $"PingBoardService: StartPinging: Was already pinging {request.Target.Target}"
@@ -58,7 +58,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             }
 
             _logger.LogDebug($"PingBoardService StartPinging: {request.Target.Target}");
-            _pingMonitoringJobManager.StartPinging(request.Target.Target);
+            _probeOperationsCenter.StartPinging(request.Target.Target);
             return new Empty();
         }
         catch (RpcException rpcException)
@@ -77,7 +77,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
 
     /// <summary>
     /// This function directly handles each request from the frontend to cease the pinging of a target,
-    /// by directing the PingMonitoringJobManager to StopPinging, if it is already.
+    /// by directing the ProbeOperationsCenter to StopPinging, if it is already.
     /// </summary>
     /// <param name="request">The target the user wishes to cease sending pings to.</param>
     /// <param name="context">Represents the context of a server-side call.</param>
@@ -87,7 +87,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
     {
         try
         {
-            if (!_pingMonitoringJobManager.IsPinging())
+            if (!_probeOperationsCenter.IsProbingActive())
             {
                 _logger.LogDebug("PingBoardService: StopPinging: Was not pinging");
                 // case covered, gRPC will cover this and return to user as friendly
@@ -97,7 +97,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             }
 
             _logger.LogDebug($"PingBoardService: StopPinging");
-            await _pingMonitoringJobManager.StopPingingAsync();
+            await _probeOperationsCenter.StopPingingAsync();
             return new Empty();
         }
         catch (RpcException rpcException)
