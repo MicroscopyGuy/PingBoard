@@ -5,6 +5,8 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using PingBoard.Database.Utilities;
 using PingBoard.Endpoints;
+using Probes.NetworkProbes;
+using Probes.Utilities;
 using Protos;
 
 /// <summary>
@@ -58,17 +60,24 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             }
 
             _logger.LogDebug($"PingBoardService StartPinging: {request.Target.Target}");
-            _probeOperationsCenter.StartPinging(request.Target.Target);
+
+            // fake the input for right now, while new NetworkProbeLiaison paradigm is being ironed out
+            //_probeOperationsCenter.StartPinging(request.Target.Target);
+            var operation = "Ping";
+            var target = new IpAddressTarget("8.8.8.8");
+            var probeParams = new PingProbeInvocationParams(target, 64, 500, "This is a test");
+
+            _probeOperationsCenter.StartProbing(operation, probeParams);
             return new Empty();
         }
         catch (RpcException rpcException)
         {
-            _logger.LogError($"PingBoardService: StartPinging: {rpcException}");
+            _logger.LogError($"PingBoardService: StartProbing: {rpcException}");
             Console.WriteLine($"{rpcException}");
         }
         catch (Exception e)
         {
-            _logger.LogError($"PingBoardService: StartPinging: {e}");
+            _logger.LogError($"PingBoardService: StartProbing: {e}");
             Console.WriteLine($"{e}");
         }
 
@@ -97,7 +106,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             }
 
             _logger.LogDebug($"PingBoardService: StopPinging");
-            await _probeOperationsCenter.StopPingingAsync();
+            await _probeOperationsCenter.StopProbingAsync();
             return new Empty();
         }
         catch (RpcException rpcException)

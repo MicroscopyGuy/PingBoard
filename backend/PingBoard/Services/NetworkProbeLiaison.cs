@@ -8,38 +8,35 @@ using PingBoard.Services;
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe
 /// bundles utilities needed to present the manager with a simple API for starting, stopping and viewing the status
 /// of ongoing probes.
-public class NetworkProbeLiason : IDisposable
+public class NetworkProbeLiaison : IDisposable
 {
     private INetworkProbeBase _baseNetworkProbe; // need an INetworkProbeBase factory
     private CancellationTokenSource _cancellationTokenSource;
     private CrudOperations _crudOperations;
     private ServerEventEmitter _serverEventEmitter;
-    private INetworkProbeTarget _networkProbeTarget;
     private IProbeInvocationParams _probeInvocationParams;
     private ProbeScheduler _probeScheduler;
 
     //_probeInvocationThresholds = probeInvocationThresholds;
     // private ProbeStrategy _probeStrategy;
 
-    private ILogger<NetworkProbeLiason> _logger;
+    private ILogger<NetworkProbeLiaison> _logger;
     private Task _probeTask;
 
-    public NetworkProbeLiason(
+    public NetworkProbeLiaison(
         INetworkProbeBase baseNetworkProbe,
         CrudOperations crudOperations,
         CancellationTokenSource cancellationTokenSource,
         ServerEventEmitter serverEventEmitter,
         IProbeInvocationParams probeInvocationParams,
-        INetworkProbeTarget networkProbeTarget,
         ProbeScheduler probeScheduler,
-        ILogger<NetworkProbeLiason> logger
+        ILogger<NetworkProbeLiaison> logger
     )
     {
         _baseNetworkProbe = baseNetworkProbe;
         _crudOperations = crudOperations;
         _cancellationTokenSource = cancellationTokenSource;
         _serverEventEmitter = serverEventEmitter;
-        _networkProbeTarget = networkProbeTarget;
         _probeInvocationParams = probeInvocationParams;
         _probeScheduler = probeScheduler;
         _logger = logger;
@@ -60,12 +57,11 @@ public class NetworkProbeLiason : IDisposable
     public void StartProbingAsync()
     {
         _logger.LogTrace(
-            $"NetworkProbeLiason with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync"
+            $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync"
         );
         _probeTask = DoProbingAsync().ContinueWith(AfterProbingAsync);
     }
 
-    // csharpier-ignore-start
     private async Task AfterProbingAsync(Task t)
     {
         if (!t.IsFaulted)
@@ -74,21 +70,35 @@ public class NetworkProbeLiason : IDisposable
         }
         if (!t.IsCanceled)
         {
-            _logger.LogCritical("An exception occured while probing {target} Exception: {exception}",
-                _probeInvocationParams.GetTarget(), t.Exception);
+            _logger.LogCritical(
+                "An exception occured while probing {target} Exception: {exception}",
+                _probeInvocationParams.GetTarget(),
+                t.Exception
+            );
+            _serverEventEmitter.IndicatePingAgentError(
+                _probeInvocationParams.GetTarget(),
+                t.Exception.ToString()
+            );
         }
         else
         {
-            _logger.LogDebug("Probing of {target} was canceled", _probeInvocationParams.GetTarget());
+            _logger.LogDebug(
+                "Probing of {target} was canceled",
+                _probeInvocationParams.GetTarget()
+            );
+            _serverEventEmitter.IndicatePingOnOffToggle(
+                _probeInvocationParams.GetTarget(),
+                false,
+                "NetworkProbeLiaison: AfterProbingAsync"
+            ); // hardcode for now
         }
     }
-    // csharpier-ignore-end
 
     private async Task DoProbingAsync()
     {
         //logging here
         _logger.LogTrace(
-            $"NetworkProbeLiason with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync"
+            $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync"
         );
         var token = _cancellationTokenSource.Token;
         var result = ProbeResult.Default();
@@ -98,8 +108,18 @@ public class NetworkProbeLiason : IDisposable
         {
             //_probeScheduler.StartIntervalTracking();
             result = await _baseNetworkProbe.ProbeAsync(_probeInvocationParams, token);
+            //hardcode event type for now
+            _serverEventEmitter.IndicatePingOnOffToggle(
+                _probeInvocationParams.GetTarget(),
+                false,
+                "NetworkProbeLiaison: DoProbingAsync"
+            );
+
             await _crudOperations.InsertProbeResult(result, token);
-            //emit server event, Info
+            _serverEventEmitter.IndicatePingInfo(
+                _probeInvocationParams.GetTarget(),
+                "NetworkProbeLiaison: DoProbingAsync"
+            );
 
             //_probeScheduler.DelayProbingAsync();
             await Task.Delay(100, token);
@@ -114,7 +134,7 @@ public class NetworkProbeLiason : IDisposable
 
     public INetworkProbeTarget GetTarget()
     {
-        return _networkProbeTarget;
+        return _probeInvocationParams.Target;
     }
 
     public void Dispose()

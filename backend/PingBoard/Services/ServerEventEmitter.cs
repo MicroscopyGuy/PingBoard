@@ -9,8 +9,6 @@ using static Protos.ServerEvent.Types;
 /// Provides a single, combined stream of the ServerEvent channels to the frontend, through which all ServerEvents
 /// are communicated.
 /// </summary>
-///
-
 public class ServerEventEmitter //<T> where T: INetworkProbeBase
 {
     private readonly Channel<PingAnomaly> _pingAnomalyChannel;
@@ -131,6 +129,42 @@ public class ServerEventEmitter //<T> where T: INetworkProbeBase
         {
             var writeSuccess = _pingInfoChannel.Writer.TryWrite(
                 new PingInfo() { PingTarget = new PingTarget { Target = target } }
+            );
+
+            if (!writeSuccess)
+            {
+                string message =
+                    "An attempt to write to the PingAnomalyIndicator channel was unsuccessful.";
+                throw (new InvalidOperationException(message));
+            }
+            _logger.LogDebug(
+                $"ServerEventEmitter: IndicatePingInfo: target{target}, caller:{caller}",
+                target,
+                caller
+            );
+        }
+        catch (Exception e)
+        {
+            _logger.LogCritical(
+                "ServerEventEmitter: IndicatePingInfo: ${caller}: ${eText}",
+                caller,
+                e.ToString()
+            );
+        }
+    }
+
+    /// <summary>
+    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
+    /// </summary>
+    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
+    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
+    /// <exception cref="InvalidOperationException"></exception>
+    public void IndicatePingAgentError(string target, string caller)
+    {
+        try
+        {
+            var writeSuccess = _pingAgentErrorChannel.Writer.TryWrite(
+                new PingAgentError() { PingTarget = new PingTarget { Target = target } }
             );
 
             if (!writeSuccess)

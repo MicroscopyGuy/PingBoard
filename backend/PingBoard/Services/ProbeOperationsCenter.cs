@@ -14,34 +14,21 @@ using Serilog;
 /// </summary>
 public class ProbeOperationsCenter : BackgroundService
 {
-    private readonly Func<
-        string,
-        IProbeInvocationParams,
-        INetworkProbeTarget,
-        NetworkProbeLiason
-    > _probeLiasonFactory;
-    private ServerEventEmitter _serverEventEmitter;
+    private readonly Func<string, IProbeInvocationParams, NetworkProbeLiaison> _probeLiaisonFactory;
     private readonly ILogger<ProbeOperationsCenter> _logger;
-    private volatile NetworkProbeLiason? _currentLiason;
+    private volatile NetworkProbeLiaison? _currentLiaison;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
 
-    // private Func<INetworkTarget, INetworkProbe, NetworkProbeLiason> _probeLiasonFactory;
+    // private Func<INetworkTarget, INetworkProbe, NetworkProbeLiaison> _probeLiaisonFactory;
 
 
     public ProbeOperationsCenter(
-        Func<
-            string,
-            IProbeInvocationParams,
-            INetworkProbeTarget,
-            NetworkProbeLiason
-        > probeLiasonFactory,
-        ServerEventEmitter serverEventEmitter,
+        Func<string, IProbeInvocationParams, NetworkProbeLiaison> probeLiaisonFactory,
         ILogger<ProbeOperationsCenter> logger
     )
     {
-        _probeLiasonFactory = probeLiasonFactory;
-        _serverEventEmitter = serverEventEmitter;
+        _probeLiaisonFactory = probeLiaisonFactory;
         _logger = logger;
     }
 
@@ -55,12 +42,12 @@ public class ProbeOperationsCenter : BackgroundService
         _logger.LogDebug("ProbeOperationsCenter: ExecuteAsync: Entered");
         while (!stoppingToken.IsCancellationRequested)
         {
-            if (_currentLiason is not null)
+            if (_currentLiaison is not null)
             {
                 lock (_lockingObject)
                 {
-                    var target = _currentLiason.GetTarget();
-                    var currentStatus = _currentLiason.GetProbingStatus();
+                    var target = _currentLiaison.GetTarget();
+                    var currentStatus = _currentLiaison.GetProbingStatus();
                     var resetStatuses = new TaskStatus[3]
                     {
                         TaskStatus.RanToCompletion,
@@ -72,7 +59,7 @@ public class ProbeOperationsCenter : BackgroundService
                         _logger.LogTrace(
                             $"ProbeOperationsCenter: ExecuteAsync: status of probing of target {target}: {Enum.GetName(currentStatus)}"
                         );
-                        ResetLiason();
+                        ResetLiaison();
                     }
                 }
             }
@@ -90,7 +77,7 @@ public class ProbeOperationsCenter : BackgroundService
         //_logger.LogDebug("ProbeOperationsCenter: IsProbingActive: Entered");
         lock (_lockingObject)
         {
-            return _currentLiason != null;
+            return _currentLiaison != null;
         }
     }
 
@@ -104,30 +91,28 @@ public class ProbeOperationsCenter : BackgroundService
     /// Parametric values entered by the user which will govern the probing operation
     /// </param>
     /// <param name="target"> </param>
-    public void StartProbing(
-        string probeOperation,
-        IProbeInvocationParams probeParams,
-        INetworkProbeTarget target
-    )
+    public void StartProbing(string probeOperation, IProbeInvocationParams probeParams)
     {
         lock (_lockingObject)
         {
-            _logger.LogDebug($"ProbeOperationsCenter: StartPinging: Entered with target:{target}");
-            // simply do nothing if the target is already being pinged
+            _logger.LogDebug(
+                $"ProbeOperationsCenter: StartPinging: Entered with target:{probeParams.Target}"
+            );
+            // simply do nothing if the target is already being probed
             if (IsProbingActive())
             {
                 _logger.LogDebug($"ProbeOperationsCenter: StartPinging: Already probing");
                 return;
             }
 
-            _currentLiason = _probeLiasonFactory(probeOperation, probeParams, target);
-            _logger.LogDebug($"ProbeOperationsCenter: Probing: new liason created");
-            _currentLiason.StartProbingAsync();
+            _currentLiaison = _probeLiaisonFactory(probeOperation, probeParams);
+            _logger.LogDebug($"ProbeOperationsCenter: Probing: new liaison created");
+            _currentLiaison.StartProbingAsync();
         }
     }
 
     /// <summary>
-    /// Directs the NetworkProbeLiason to stop probing by invoking its StopProbingAsync() function
+    /// Directs the NetworkProbeLiaison to stop probing by invoking its StopProbingAsync() function
     /// </summary>
     public async Task StopProbingAsync()
     {
@@ -143,17 +128,17 @@ public class ProbeOperationsCenter : BackgroundService
 
         if (safeToStop)
         {
-            await _currentLiason.StopProbingAsync();
-            ResetLiason();
+            await _currentLiaison.StopProbingAsync();
+            ResetLiaison();
         }
     }
 
     /// <summary>
-    /// Safely resets the current ProbeLiason to null and disposes of the old one,
+    /// Safely resets the current ProbeLiaison to null and disposes of the old one,
     /// used as a cleanup function when the probing is stopped by the user, halted for any reason, or
     /// cancelled using a cancellation token.
     /// </summary>
-    public void ResetLiason()
+    public void ResetLiaison()
     {
         lock (_lockingObject)
         {
@@ -162,10 +147,10 @@ public class ProbeOperationsCenter : BackgroundService
             if (IsProbingActive())
             {
                 _logger.LogDebug(
-                    "ProbeOperationsCenter: ResetJobRunner: Going to dispose of job runner"
+                    "ProbeOperationsCenter: ResetLiaison: Going to dispose of NetworkProbeLiaison"
                 );
-                var npl = _currentLiason;
-                _currentLiason = null; // defensive measure to prevent intermediate state of disposed job runner, but non-null currentJobRunner
+                var npl = _currentLiaison;
+                _currentLiaison = null; // defensive measure to prevent intermediate state of disposed Liaison, but non-null _currentLiaison
                 npl.Dispose();
             }
         }

@@ -24,9 +24,9 @@ public static class ServiceExtensions
         .SpecialFolder
         .LocalApplicationData;
 
-    private static string _path = Environment.GetFolderPath(_folder);
-    private static string _appDataPath = System.IO.Path.Join(_path, "PingBoard");
-    private static List<Type> _probeTypes = typeof(Program)
+    private static readonly string _path = Environment.GetFolderPath(_folder);
+    private static readonly string _appDataPath = System.IO.Path.Join(_path, "PingBoard");
+    private static readonly List<Type> _probeTypes = typeof(Program)
         .Assembly.GetTypes()
         .Where(T => T.IsAssignableTo(typeof(INetworkProbeBase)))
         .Where(T => T.IsClass)
@@ -43,7 +43,7 @@ public static class ServiceExtensions
         return probeType.GetProperty("Name").GetValue(null) as string;
     }
 
-    private static Dictionary<string, Type> _probes = _probeTypes.ToDictionary(
+    private static readonly Dictionary<string, Type> _probes = _probeTypes.ToDictionary(
         pt => pt.ProbeName(),
         pt => pt
     );
@@ -99,7 +99,7 @@ public static class ServiceExtensions
     }
 
     /*
-    public static void AssServerEventChannels(this WebApplicationBuilder builder)
+    public static void AddServerEventChannels(this WebApplicationBuilder builder)
     {
         builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAgentError>>();
         builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAnomaly>>();
@@ -264,36 +264,29 @@ public static class ServiceExtensions
         }
     }
 
-    public static void AddNetworkProbeLiasonFactory(this WebApplicationBuilder builder)
+    public static void AddNetworkProbeLiaisonFactory(this WebApplicationBuilder builder)
     {
-        builder.Services.AddTransient<
-            Func<string, IProbeInvocationParams, INetworkProbeTarget, NetworkProbeLiason>
-        >(
+        builder.Services.AddTransient<Func<string, IProbeInvocationParams, NetworkProbeLiaison>>(
             (svc) =>
             {
-                return (
-                    string probeName,
-                    IProbeInvocationParams invocParams,
-                    INetworkProbeTarget target
-                ) =>
+                return (string probeName, IProbeInvocationParams invocParams) =>
                 {
                     var crudOperations = svc.GetRequiredService<CrudOperations>();
                     var cancellationTokenSource = new CancellationTokenSource();
                     var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
                     var probeScheduler = svc.GetRequiredService<ProbeScheduler>();
-                    var logger = svc.GetRequiredService<Logger<NetworkProbeLiason>>();
+                    var logger = svc.GetRequiredService<Logger<NetworkProbeLiaison>>();
                     logger.LogDebug(
                         "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
                         cancellationTokenSource.GetHashCode()
                     );
 
-                    return new NetworkProbeLiason(
+                    return new NetworkProbeLiaison(
                         (svc.GetRequiredService(_probes[probeName]) as INetworkProbeBase)!,
                         crudOperations,
                         new CancellationTokenSource(),
                         serverEventEmitter,
                         invocParams,
-                        target,
                         probeScheduler,
                         logger
                     );
@@ -306,7 +299,7 @@ public static class ServiceExtensions
     {
         //builder.Services.AddSingleton<NetworkProbeManager>();
         builder.Services.AddSingleton<ProbeOperationsCenter>();
-        builder.AddNetworkProbeLiasonFactory();
+        builder.AddNetworkProbeLiaisonFactory();
     }
 
     public static void AddServices(this WebApplicationBuilder builder)

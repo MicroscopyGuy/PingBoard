@@ -8,11 +8,11 @@ using Microsoft.Extensions.Options;
 using PingBoard.Pinging;
 
 /// <summary>
-/// A class that assists (<see cref="NetworkProbeLiason"/> class) by helping it evenly spread out probes
+/// A class that assists (<see cref="NetworkProbeLiaison"/> class) by helping it evenly spread out probes
 /// across the interval specified in appsettings.json as "WaitTimeMs". The result, under normal networking conditions,
 /// should be that one probe is sent, received and processed in as close to "WaitTimeMs" milliseconds as possible.
 ///
-/// It does this by timing each iteration of the loop in NetworkProbeLiason and using this time to inform the wait
+/// It does this by timing each iteration of the loop in NetworkProbeLiaison and using this time to inform the wait
 /// before sending the next ping.
 ///
 /// An example is below:
@@ -61,7 +61,7 @@ public class ProbeScheduler : IProbeScheduler
 
     public void StartIntervalTracking()
     {
-        _timer.Restart(); // can be more flexibly invoked in the loop in NetworkProbeLiason this way
+        _timer.Restart(); // can be more flexibly invoked in the loop in NetworkProbeLiaison this way
     }
 
     public void EndIntervalTracking()
@@ -75,7 +75,7 @@ public class ProbeScheduler : IProbeScheduler
     /// <summary>
     /// Calculates
     /// </summary>
-    /// <returns>the amount of time the NetworkProbeLiason should wait before sending another probe</returns>
+    /// <returns>the amount of time the NetworkProbeLiaison should wait before sending another probe</returns>
     private TimeSpan CalculateProbingDelay()
     {
         TimeSpan adjustedWaitBeforeNextProbe =
