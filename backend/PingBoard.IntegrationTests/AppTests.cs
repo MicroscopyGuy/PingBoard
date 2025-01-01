@@ -17,7 +17,7 @@ public class AppTests
         builder.AddServices();
         var app = builder.Build();
         var networkProbeLiasonFactory = app.Services.GetRequiredService<
-            Func<string, IProbeInvocationParams, INetworkProbeTarget, NetworkProbeLiason>
+            Func<string, IProbeInvocationParams, INetworkProbeTarget, NetworkProbeLiaison>
         >();
 
         Assert.NotNull(networkProbeLiasonFactory);

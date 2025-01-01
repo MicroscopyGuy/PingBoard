@@ -19,6 +19,7 @@ import type {
 } from "./types";
 import createClient from "./createClient";
 import { resolve } from "path";
+import getPort from 'get-port';
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
@@ -54,25 +55,34 @@ const createWindow = () => {
 
 const serverPath = resolve("../backend/dist");
 
-const startBackend = async () => {
+const startBackend = async (): Promise<number> => {
+  //var port = await getPort();
+
+  const portNumber = await getPort();
   const p = spawn(join(serverPath, "PingBoard.exe"), [], {
     cwd: serverPath,
     env: {
       LOG_TO_FILE: "false",
+      SERVER_PORT: `${portNumber}`
     },
+    //stdio: 'inherit'
   });
   console.log(`StartBackend process ID: ${process.pid}`);
-  let backendResolver: () => void;
-  p.stdout.on("data", (info) => {
-    if (info.toString().includes("Now listening on:")) {
-      backendResolver();
-    }
-    console.log(info.toString());
-  });
-
+  
   await new Promise<void>((resolve, reject) => {
-    backendResolver = resolve;
+    p.stdout.on("data", (info) => {
+      if (info.toString().includes("Now listening on:")) {
+        resolve();
+      }
+      console.log(info.toString());
+    });
+
+    p.on("exit", (exitCode) => reject(`Process exited with code ${exitCode}`));
+    p.on("error", (error) => reject(`${error}`));
+    p.stderr.on("data", (info) => console.log(info));
   });
+ 
+  return portNumber;
 };
 
 let backendClient: BackendClient;
@@ -134,7 +144,7 @@ async function listenServerEvents(w: BrowserWindow) {
 }
 
 app.on("ready", async () => {
-  await startBackend();
+  const portNumber = await startBackend();
   ipcMain.handle("api:makeRequest", (e, args) =>
     tryMakeApiRequest(args[0], args[1])
   );
@@ -142,7 +152,7 @@ app.on("ready", async () => {
   ipcMain.handle("preloadLog", (logStr) => console.log(logStr));
 
   const mainWindow = createWindow();
-  backendClient = createClient("http://localhost:5245");
+  backendClient = createClient(`http://localhost:${portNumber}`);
   listenServerEvents(mainWindow);
 });
 

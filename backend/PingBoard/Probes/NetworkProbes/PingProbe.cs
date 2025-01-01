@@ -1,9 +1,9 @@
-﻿using System.Net;
+﻿namespace PingBoard.Probes.NetworkProbes;
+
+using System.Net;
+using System.Net.NetworkInformation;
 using PingBoard.Database.Models;
 using PingBoard.Pinging;
-using PingBoard.Probes.Services;
-
-namespace PingBoard.Probes.NetworkProbes;
 
 public class PingProbe
     : INetworkProbeBase<PingProbeInvocationParams, ProbeStatusChange, PingProbeResult>,
@@ -62,9 +62,26 @@ public class PingProbe
     )
     {
         var pResult = new PingProbeResult();
-        pResult.Id = Guid.CreateVersion7();
-
-        var result = await _pinger.SendPingIndividualAsync(probeConfiguration, cancellationToken);
+        pResult.Ttl = (short)probeConfiguration.Ttl;
+        pResult.Target = probeConfiguration.GetTarget();
+        try
+        {
+            pResult.Id = Guid.CreateVersion7();
+            pResult.Start = DateTime.UtcNow;
+            var result = await _pinger.SendPingIndividualAsync(
+                probeConfiguration,
+                cancellationToken
+            );
+            pResult.End = DateTime.UtcNow;
+            pResult.ReplyAddress = result.Address.ToString();
+            pResult.Success = result.Status == IPStatus.Success;
+            pResult.Rtt = result.RoundtripTime;
+        }
+        catch (Exception ex)
+        {
+            pResult.End = DateTime.UtcNow;
+            pResult.Error = ex;
+        }
 
         return pResult;
     }

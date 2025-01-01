@@ -31,17 +31,12 @@ public class PingProbeResult : ProbeResult
     /// <summary>
     /// The return time of the ping
     /// <summary>
-    public int Rtt { get; set; }
+    public long Rtt { get; set; }
 
     /// <summary>
     /// Wherever the user said to ping, could be either a domain or an IP address
     /// </summary>
     public string Target { get; set; }
-
-    /// <summary>
-    /// NEW: Whether the user-specified address is Ipv4 or Ipv6
-    /// </summary>
-    public string TargetType { get; set; }
 
     /// <summary>
     /// Indicates which IPStatus was returned
@@ -58,18 +53,16 @@ public class PingProbeResult : ProbeResult
     /// </summary>
     public string ReplyAddress { get; set; }
 
+    /*
     /// <summary>
     /// If the ping required a DNS lookup, the results will be stored here.
     /// </summary>
-    public DnsProbeResult dnsProbeResult { get; set; }
+    public DnsProbeResult dnsProbeResult { get; set; }*/
 
     /// <summary>
-    /// Safely initializes and returns a PingGroupSummmary object with five properties safely intialized to default values:
-    ///     Start, End, MinimumPing, MaximumPing and AveragePing
+    /// Safely initializes and returns a ProbeResult object with properties safely intialized to default values:
     /// </summary>
-    /// <returns>
-    ///     a PingGroupSummary object
-    /// </returns>
+    /// <returns>a PingProbeResult object </returns>
     public static PingProbeResult Empty()
     {
         return new PingProbeResult()
@@ -95,7 +88,6 @@ public class PingProbeResult : ProbeResult
             Start = Timestamp.FromDateTime(DateTime.SpecifyKind(result.Start, DateTimeKind.Utc)),
             End = Timestamp.FromDateTime(DateTime.SpecifyKind(result.End, DateTimeKind.Utc)),
             Target = result.Target,
-            TargetType = result.TargetType,
             IpStatus = result.IpStatus.ToString(),
             Ttl = result.Ttl,
             ReplyAddress = result.ReplyAddress,

@@ -13,7 +13,7 @@ namespace PingBoard.IntegrationTests;
 using PingBoard.Services;
 using Probes.Utilities;
 
-public class NetworkProbeLiasonTests
+public class NetworkProbeLiaisonTests
 {
     /*
     [Fact]
@@ -36,13 +36,13 @@ public class NetworkProbeLiasonTests
         var target = new IpAddressTarget("8.8.8.8");
 
         var probeParams = new PingProbeInvocationParams(target, 64, 500, "This is a test");
-        var networkProbeLiason = new NetworkProbeLiason(
+        var networkProbeLiason = new NetworkProbeLiaison(
             pingProbe,
             crudOperations,
             new CancellationTokenSource(),
             serviceProvider.GetRequiredService<ServerEventEmitter>(),
             probeParams,
-            new NullLogger<NetworkProbeLiason>()
+            new NullLogger<NetworkProbeLiaison>()
         );
 
         var testTime = DateTime.UtcNow;

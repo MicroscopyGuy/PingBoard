@@ -1,16 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PingBoard.Pinging;
+﻿namespace PingBoard.Services;
+
 using PingBoard.Probes.NetworkProbes;
 
-namespace PingBoard.Services;
-
-using System.Diagnostics;
-using Microsoft.EntityFrameworkCore.Query.Internal;
-using Serilog;
-
 /// <summary>
-/// Handles the logistics of probing by creating, destroying, and directing PingMonitoringJobRunners
-/// in response to requests passed from the front end. <see cref="GroupPingMonitoringJobRunner"/>
+/// Handles the logistics of probing by creating, destroying, and directing NetworkProbeLiasons
+/// in response to requests passed from the front end. <see cref="NetworkProbeLiaison"/>
 /// </summary>
 public class ProbeOperationsCenter : BackgroundService
 {

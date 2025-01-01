@@ -94,8 +94,6 @@ enum Statistic{
 }
 
 
-
-
 message ListPingsDatapoint{
   google.protobuf.Timestamp Timestamp = 1;
   double Value = 2;
