@@ -41,7 +41,7 @@ using PingBoard.Pinging;
 /// will wait the established minimum wait time, 10ms.
 ///
 /// Evenly spread out pings do a few things:
-///     1) The PingGroupSummary object contains a more accurate sample of the interval over which it was gathered
+///     1) The results are more evenly sampled over the interval during which they were gathered
 ///     2) Per the Microsoft Ping documentation, pings cannot be sent very frequently. And from my own testing, can result
 ///        in erroneous 0ms ping times if sent too often.
 /// </summary>

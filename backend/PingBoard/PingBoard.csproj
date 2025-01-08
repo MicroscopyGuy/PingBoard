@@ -31,7 +31,6 @@
   
   <ItemGroup>
     <None Remove="Pinging\ICMPStatusCodes.json" />
-    <EmbeddedResource Include="Pinging\ICMPStatusCodes.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,6 +43,10 @@
 
   <ItemGroup>
     <Protobuf Include="..\..\protos\service.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Probes\NetworkProbes\Ping\ICMPStatusCodes.json" />
   </ItemGroup>
 
 </Project>

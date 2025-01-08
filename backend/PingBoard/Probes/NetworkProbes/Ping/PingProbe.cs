@@ -1,9 +1,9 @@
-﻿namespace PingBoard.Probes.NetworkProbes;
+﻿namespace PingBoard.Probes.NetworkProbes.Ping;
 
 using System.Net;
 using System.Net.NetworkInformation;
 using PingBoard.Database.Models;
-using PingBoard.Pinging;
+using PingBoard.Probes.NetworkProbes;
 
 public class PingProbe
     : INetworkProbeBase<PingProbeInvocationParams, ProbeStatusChange, PingProbeResult>,
@@ -22,6 +22,11 @@ public class PingProbe
         return ShouldContinue((PingProbeResult)result);
     }
 
+    public bool IsAnomaly(PingProbeResult result, PingProbeInvocationThresholds thresholds)
+    {
+        return (result.IpStatus == IPStatus.Success && result.Rtt < thresholds.maxAllowedRtt);
+    }
+
     /// <summary>
     /// Takes in the previous PingProbeResult and indicates if continuation is possible
     /// </summary>
@@ -37,6 +42,18 @@ public class PingProbe
         var responseIp = IPAddress.Parse(pingProbeRes.ReplyAddress);
         return pingProbeRes.IpStatus.Value.GetInfo(responseIp).State
             != PingingStates.PingState.Halt;
+    }
+
+    bool INetworkProbeBase.IsAnomaly(
+        ProbeResult pingProbeRes,
+        IProbeInvocationThresholds thresholds
+    )
+    {
+        var res = (PingProbeResult)pingProbeRes;
+        return (
+            res.IpStatus == IPStatus.Success
+            && res.Rtt < ((PingProbeInvocationThresholds)thresholds).maxAllowedRtt
+        );
     }
 
     /// <summary>
@@ -66,7 +83,6 @@ public class PingProbe
         pResult.Target = probeConfiguration.GetTarget();
         try
         {
-            pResult.Id = Guid.CreateVersion7();
             pResult.Start = DateTime.UtcNow;
             var result = await _pinger.SendPingIndividualAsync(
                 probeConfiguration,

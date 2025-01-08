@@ -1,8 +1,8 @@
-﻿using System.Net;
-using PingBoard.Pinging;
-using PingBoard.Probes.Services;
+﻿namespace PingBoard.Probes.NetworkProbes.Traceroute;
 
-namespace PingBoard.Probes.NetworkProbes;
+using System.Net;
+
+
 
 
 

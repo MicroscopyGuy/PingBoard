@@ -14,9 +14,6 @@ public class ProbeOperationsCenter : BackgroundService
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
 
-    // private Func<INetworkTarget, INetworkProbe, NetworkProbeLiaison> _probeLiaisonFactory;
-
-
     public ProbeOperationsCenter(
         Func<string, IProbeInvocationParams, NetworkProbeLiaison> probeLiaisonFactory,
         ILogger<ProbeOperationsCenter> logger

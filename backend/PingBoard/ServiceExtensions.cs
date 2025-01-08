@@ -13,6 +13,7 @@ using PingBoard.Database.Utilities;
 using Pinging;
 using Probes;
 using Probes.NetworkProbes;
+using Probes.NetworkProbes.Ping;
 using Protos;
 using Serilog;
 using Services;

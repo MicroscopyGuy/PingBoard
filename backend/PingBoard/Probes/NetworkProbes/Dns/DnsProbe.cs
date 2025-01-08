@@ -1,8 +1,11 @@
-﻿using System.Net;
+﻿namespace PingBoard.Probes.NetworkProbes.Dns;
+
+using System.Net;
 using PingBoard.Database.Models;
 using PingBoard.Probes.Services;
 
-namespace PingBoard.Probes.NetworkProbes;
+
+
 
 
 

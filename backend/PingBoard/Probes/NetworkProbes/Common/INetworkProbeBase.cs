@@ -20,4 +20,6 @@ public interface INetworkProbeBase
         CancellationToken cancellationToken
     );
     bool ShouldContinue(ProbeResult result);
+
+    bool IsAnomaly(ProbeResult result, IProbeInvocationThresholds thresholds);
 }

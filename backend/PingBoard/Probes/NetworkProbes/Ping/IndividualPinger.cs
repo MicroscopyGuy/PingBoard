@@ -1,10 +1,7 @@
-namespace PingBoard.Pinging;
+namespace PingBoard.Probes.NetworkProbes.Ping;
 
-using System.Diagnostics.CodeAnalysis;
-using System.Net;
 using System.Net.NetworkInformation;
 using System.Text;
-using Microsoft.Extensions.Options;
 using Probes.NetworkProbes;
 
 /// <summary>

@@ -1,4 +1,4 @@
-﻿namespace PingBoard.Pinging;
+﻿namespace PingBoard.Probes.NetworkProbes.Ping;
 
 using System.Net;
 

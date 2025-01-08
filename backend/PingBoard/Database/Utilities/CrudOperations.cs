@@ -1,13 +1,12 @@
-using System.Text.Json;
-using Google.Rpc.Context;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using PingBoard.Probes.NetworkProbes;
-using PingBoard.Services;
-
 namespace PingBoard.Database.Utilities;
 
+using System.Text.Json;
+using Google.Rpc.Context;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PingBoard.Database.Models;
+using PingBoard.Probes.NetworkProbes;
+using PingBoard.Services;
 using Protos;
 
 /// <summary>
@@ -88,7 +87,7 @@ public class CrudOperations
         return summaries;
     }*/
 
-    /*
+
     /// <summary>
     /// Retrieves the next N number of records from the database from a certain point in time, returned
     /// as a list of PingGroupSummaryPublic objects
@@ -98,41 +97,36 @@ public class CrudOperations
     /// <param name="cancellationToken"> </param>
     /// <param name="target">An optional parameter for the retrieval of anomalies matching a given target </param>
     /// <returns></returns>
-    public async Task<List<PingGroupSummaryPublic>> ListAnomaliesAsync(
+    public async Task<List<PingResultPublic>> ListAnomaliesAsync(
         DateTime startingTime,
         uint numToGet,
         CancellationToken cancellationToken,
         string? target = ""
     )
     {
-        await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(
+        await using var probeInfoContext = await _probeResultsContextFactory.CreateDbContextAsync(
             cancellationToken
         );
 
-        var summaryQuery = pingInfoContext.Summaries.Where(s => s.Start <= startingTime);
+        var resultsQuery = probeInfoContext.ProbeResults.Where(s => s.Start <= startingTime);
+
+        var resultsQuery = probeInfoContext.Where(s => s.Start <= startingTime);
 
         if (target != null)
         {
-            summaryQuery = summaryQuery.Where((s) => s.Target == target);
+            resultsQuery = resultsQuery.Where((s) => s.Target == target);
         }
 
-        var summaries = summaryQuery
-            .Where(s =>
-                s.MinimumPing > _pingingThresholds.MinimumPingMs
-                || s.AveragePing > _pingingThresholds.AveragePingMs
-                || s.MaximumPing > _pingingThresholds.MaximumPingMs
-                || s.Jitter > _pingingThresholds.JitterMs
-                || s.PacketLoss > _pingingThresholds.PacketLossPercentage
-                || s.TerminatingIPStatus != null
-            )
+        var results = resultsQuery
+            .Where(s => s.Anomaly)
             .Take((int)numToGet)
             .OrderByDescending(s => s.Start)
             .ToList();
 
-        var convertedSummaries = summaries.Select(s => PingGroupSummary.ToApiModel(s)).ToList();
+        var convertedResults = results.Select(s => PingProbeResult.ToApiModel(s)).ToList();
 
-        return convertedSummaries;
-    }*/
+        return convertedResults;
+    }
 
     /*
     public async Task<ShowPingsResponse> ShowPingsAsync(

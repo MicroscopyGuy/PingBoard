@@ -5,7 +5,8 @@ using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using PingBoard.Database.Utilities;
 using PingBoard.Endpoints;
-using Probes.NetworkProbes;
+using PingBoard.Probes.NetworkProbes;
+using Probes.NetworkProbes.Ping;
 using Probes.Utilities;
 using Protos;
 
@@ -65,7 +66,14 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             //_probeOperationsCenter.StartPinging(request.Target.Target);
             var operation = "Ping";
             var target = new IpAddressTarget("8.8.8.8");
-            var probeParams = new PingProbeInvocationParams(target, 64, 500, "This is a test");
+            var thresholds = new PingProbeInvocationThresholds(50);
+            var probeParams = new PingProbeInvocationParams(
+                target,
+                thresholds,
+                64,
+                500,
+                "This is a test"
+            );
 
             _probeOperationsCenter.StartProbing(operation, probeParams);
             return new Empty();
@@ -216,7 +224,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
     }*/
 
 
-    /*
+
     public override async Task<ListAnomaliesResponse> ListAnomalies(
         ListAnomaliesRequest request,
         ServerCallContext context
@@ -260,7 +268,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         response.Anomalies.Add(anomalies);
 
         return response;
-    }*/
+    }
 
     /*
     public override async Task<ShowPingsResponse> ShowPings(

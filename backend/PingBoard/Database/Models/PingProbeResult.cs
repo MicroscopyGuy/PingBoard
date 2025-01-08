@@ -1,42 +1,22 @@
-﻿using System.Text.Json;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
-using PingBoard.Probes.NetworkProbes;
-using PingBoard.Services;
+﻿namespace PingBoard.Database.Models;
 
-namespace PingBoard.Database.Models;
-
-using System.ComponentModel.DataAnnotations;
 using System.Diagnostics.CodeAnalysis;
 using System.Net.NetworkInformation;
+using System.Text.Json;
 using Google.Protobuf.WellKnownTypes;
-using PingBoard.Pinging;
+using PingBoard.Probes.NetworkProbes;
 using Protos;
 
 /// <summary>
 /// Defines a class meant to encapsulate the values returned by the SendPingGroupAsync() function
-/// in the <see cref="GroupPinger"/> class.
+/// in the <see cref="PingProbe"/> class.
 /// </summary>
 public class PingProbeResult : ProbeResult
 {
     /// <summary>
-    /// The time the attempt to send the group of pings either started, or attempted to start
-    /// </summary>
-    public DateTime Start { get; set; }
-
-    /// <summary>
-    /// The time the attempt to receive the group of pings ended
-    /// </summary>
-    public DateTime End { get; set; }
-
-    /// <summary>
     /// The return time of the ping
     /// <summary>
     public long Rtt { get; set; }
-
-    /// <summary>
-    /// Wherever the user said to ping, could be either a domain or an IP address
-    /// </summary>
-    public string Target { get; set; }
 
     /// <summary>
     /// Indicates which IPStatus was returned

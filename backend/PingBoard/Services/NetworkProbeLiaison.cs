@@ -16,11 +16,9 @@ public class NetworkProbeLiaison : IDisposable
     private ServerEventEmitter _serverEventEmitter;
     private IProbeInvocationParams _probeInvocationParams;
     private ProbeScheduler _probeScheduler;
-
-    //_probeInvocationThresholds = probeInvocationThresholds;
-    // private ProbeStrategy _probeStrategy;
-
     private ILogger<NetworkProbeLiaison> _logger;
+
+    // private ProbeStrategy _probeStrategy;
     private Task _probeTask;
 
     public NetworkProbeLiaison(
@@ -51,8 +49,6 @@ public class NetworkProbeLiaison : IDisposable
         _cancellationTokenSource.Cancel();
         // emit server event: OnOffToggle
     }
-
-    // What ServerEvent to emit?
 
     public void StartProbingAsync()
     {
@@ -122,6 +118,7 @@ public class NetworkProbeLiaison : IDisposable
             );
 
             //_probeScheduler.DelayProbingAsync();
+            await _crudOperations.InsertProbeResult(result, token);
             await Task.Delay(100, token);
         }
     }
