@@ -50,18 +50,18 @@ public class IndividualPinger : IIndividualPinger
     }
 
     public async Task<PingReply> SendPingIndividualAsync(
-        PingProbeInvocationParams pingParams,
+        PingProbeBehavior behavior,
         CancellationToken cancellationToken
     )
     {
         _logger.LogTrace("IndividualPinger: Sending ping");
 
-        var options = new PingOptions() { Ttl = pingParams.Ttl, DontFragment = _DONT_FRAGMENT };
+        var options = new PingOptions() { Ttl = behavior.Ttl, DontFragment = _DONT_FRAGMENT };
 
         PingReply response = await _pinger.SendPingAsync(
-            pingParams.GetTarget(),
-            TimeSpan.FromMilliseconds(pingParams.TimeoutMs),
-            Encoding.ASCII.GetBytes(pingParams.PacketPayload),
+            behavior.GetTarget(),
+            TimeSpan.FromMilliseconds(behavior.TimeoutMs),
+            Encoding.ASCII.GetBytes(behavior.PacketPayload),
             options,
             cancellationToken
         );

@@ -1,3 +1,3 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
-public interface IProbeInvocationSchedule { }
+public interface IProbeSchedule { }

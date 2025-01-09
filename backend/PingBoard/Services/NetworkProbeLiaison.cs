@@ -1,6 +1,6 @@
 ﻿namespace PingBoard.Probes.NetworkProbes;
 
-using Microsoft.AspNetCore.Components.Infrastructure;
+using Common;
 using PingBoard.Database.Utilities;
 using PingBoard.Services;
 
@@ -10,44 +10,48 @@ using PingBoard.Services;
 /// of ongoing probes.
 public class NetworkProbeLiaison : IDisposable
 {
-    private INetworkProbeBase _baseNetworkProbe; // need an INetworkProbeBase factory
-    private CancellationTokenSource _cancellationTokenSource;
-    private CrudOperations _crudOperations;
-    private ServerEventEmitter _serverEventEmitter;
-    private IProbeInvocationParams _probeInvocationParams;
-    private ProbeScheduler _probeScheduler;
-    private ILogger<NetworkProbeLiaison> _logger;
+    public record Configuration
+    {
+        public INetworkProbeBase BaseNetworkProbe { get; init; }
+        public CancellationTokenSource CancellationTokenSource { get; init; }
+        public CrudOperations CrudOperations { get; init; }
+        public ServerEventEmitter ServerEventEmitter { get; init; }
+        public IProbeBehavior ProbeBehavior { get; init; }
+        public IProbeThresholds ProbeThresholds { get; init; }
+        public IProbeSchedule ProbeSchedule { get; init; }
+        public ProbeScheduler ProbeScheduler { get; init; }
+        public ILogger<NetworkProbeLiaison> Logger { get; init; }
+    }
+
+    private readonly INetworkProbeBase _baseNetworkProbe; // need an INetworkProbeBase factory
+    private readonly CancellationTokenSource _cancellationTokenSource;
+    private readonly CrudOperations _crudOperations;
+    private readonly ServerEventEmitter _serverEventEmitter;
+    private readonly IProbeBehavior _probeBehavior;
+    private readonly IProbeThresholds _probeThresholds;
+    private readonly IProbeSchedule _probeSchedule;
+    private readonly ProbeScheduler _probeScheduler;
+    private readonly ILogger<NetworkProbeLiaison> _logger;
 
     // private ProbeStrategy _probeStrategy;
     private Task _probeTask;
 
-    public NetworkProbeLiaison(
-        INetworkProbeBase baseNetworkProbe,
-        CrudOperations crudOperations,
-        CancellationTokenSource cancellationTokenSource,
-        ServerEventEmitter serverEventEmitter,
-        IProbeInvocationParams probeInvocationParams,
-        ProbeScheduler probeScheduler,
-        ILogger<NetworkProbeLiaison> logger
-    )
+    public NetworkProbeLiaison(Configuration configuration)
     {
-        _baseNetworkProbe = baseNetworkProbe;
-        _crudOperations = crudOperations;
-        _cancellationTokenSource = cancellationTokenSource;
-        _serverEventEmitter = serverEventEmitter;
-        _probeInvocationParams = probeInvocationParams;
-        _probeScheduler = probeScheduler;
-        _logger = logger;
-
-        //_probeInvocationSchedule = probeInvocationSchedule;
-        //_probeInvocationThresholds = probeInvocationThresholds;
-        //_probeStrategy = probeStrategy;
+        _baseNetworkProbe = configuration.BaseNetworkProbe;
+        _crudOperations = configuration.CrudOperations;
+        _cancellationTokenSource = configuration.CancellationTokenSource;
+        _serverEventEmitter = configuration.ServerEventEmitter;
+        _probeBehavior = configuration.ProbeBehavior;
+        _probeThresholds = configuration.ProbeThresholds;
+        _probeSchedule = configuration.ProbeSchedule;
+        _probeScheduler = configuration.ProbeScheduler;
+        _logger = configuration.Logger;
     }
 
     public async Task StopProbingAsync()
     {
         _cancellationTokenSource.Cancel();
-        // emit server event: OnOffToggle
     }
 
     public void StartProbingAsync()
@@ -68,22 +72,19 @@ public class NetworkProbeLiaison : IDisposable
         {
             _logger.LogCritical(
                 "An exception occured while probing {target} Exception: {exception}",
-                _probeInvocationParams.GetTarget(),
+                _probeBehavior.GetTarget(),
                 t.Exception
             );
             _serverEventEmitter.IndicatePingAgentError(
-                _probeInvocationParams.GetTarget(),
+                _probeBehavior.GetTarget(),
                 t.Exception.ToString()
             );
         }
         else
         {
-            _logger.LogDebug(
-                "Probing of {target} was canceled",
-                _probeInvocationParams.GetTarget()
-            );
+            _logger.LogDebug("Probing of {target} was canceled", _probeBehavior.GetTarget());
             _serverEventEmitter.IndicatePingOnOffToggle(
-                _probeInvocationParams.GetTarget(),
+                _probeBehavior.GetTarget(),
                 false,
                 "NetworkProbeLiaison: AfterProbingAsync"
             ); // hardcode for now
@@ -97,23 +98,23 @@ public class NetworkProbeLiaison : IDisposable
             $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync"
         );
         var token = _cancellationTokenSource.Token;
-        var result = ProbeResult.Default();
+        var result = new ProbeResult();
 
         //emit server event, OnOffToggle
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
             //_probeScheduler.StartIntervalTracking();
-            result = await _baseNetworkProbe.ProbeAsync(_probeInvocationParams, token);
+            result = await _baseNetworkProbe.ProbeAsync(_probeBehavior, token);
             //hardcode event type for now
             _serverEventEmitter.IndicatePingOnOffToggle(
-                _probeInvocationParams.GetTarget(),
+                _probeBehavior.GetTarget(),
                 false,
                 "NetworkProbeLiaison: DoProbingAsync"
             );
 
             await _crudOperations.InsertProbeResult(result, token);
             _serverEventEmitter.IndicatePingInfo(
-                _probeInvocationParams.GetTarget(),
+                _probeBehavior.GetTarget(),
                 "NetworkProbeLiaison: DoProbingAsync"
             );
 
@@ -131,7 +132,7 @@ public class NetworkProbeLiaison : IDisposable
 
     public INetworkProbeTarget GetTarget()
     {
-        return _probeInvocationParams.Target;
+        return _probeBehavior.Target;
     }
 
     public void Dispose()

@@ -1,6 +1,7 @@
 ﻿namespace PingBoard.Services;
 
 using PingBoard.Probes.NetworkProbes;
+using Probes.Common;
 
 /// <summary>
 /// Handles the logistics of probing by creating, destroying, and directing NetworkProbeLiasons
@@ -8,14 +9,26 @@ using PingBoard.Probes.NetworkProbes;
 /// </summary>
 public class ProbeOperationsCenter : BackgroundService
 {
-    private readonly Func<string, IProbeInvocationParams, NetworkProbeLiaison> _probeLiaisonFactory;
+    private readonly Func<
+        string,
+        IProbeBehavior,
+        IProbeThresholds,
+        IProbeSchedule,
+        NetworkProbeLiaison
+    > _probeLiaisonFactory;
     private readonly ILogger<ProbeOperationsCenter> _logger;
     private volatile NetworkProbeLiaison? _currentLiaison;
     private int _checkRunningJobsDelayMs = 100;
     private readonly object _lockingObject = new object();
 
     public ProbeOperationsCenter(
-        Func<string, IProbeInvocationParams, NetworkProbeLiaison> probeLiaisonFactory,
+        Func<
+            string,
+            IProbeBehavior,
+            IProbeThresholds,
+            IProbeSchedule,
+            NetworkProbeLiaison
+        > probeLiaisonFactory,
         ILogger<ProbeOperationsCenter> logger
     )
     {
@@ -82,12 +95,17 @@ public class ProbeOperationsCenter : BackgroundService
     /// Parametric values entered by the user which will govern the probing operation
     /// </param>
     /// <param name="target"> </param>
-    public void StartProbing(string probeOperation, IProbeInvocationParams probeParams)
+    public void StartProbing(
+        string probeOperation,
+        IProbeBehavior behavior,
+        IProbeThresholds thresholds,
+        IProbeSchedule schedule
+    )
     {
         lock (_lockingObject)
         {
             _logger.LogDebug(
-                $"ProbeOperationsCenter: StartPinging: Entered with target:{probeParams.Target}"
+                $"ProbeOperationsCenter: StartPinging: Entered with target:{behavior.Target}"
             );
             // simply do nothing if the target is already being probed
             if (IsProbingActive())
@@ -96,7 +114,7 @@ public class ProbeOperationsCenter : BackgroundService
                 return;
             }
 
-            _currentLiaison = _probeLiaisonFactory(probeOperation, probeParams);
+            _currentLiaison = _probeLiaisonFactory(probeOperation, behavior, thresholds, schedule);
             _logger.LogDebug($"ProbeOperationsCenter: Probing: new liaison created");
             _currentLiaison.StartProbingAsync();
         }

@@ -12,6 +12,7 @@ using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Utilities;
 using Pinging;
 using Probes;
+using Probes.Common;
 using Probes.NetworkProbes;
 using Probes.NetworkProbes.Ping;
 using Protos;
@@ -265,36 +266,33 @@ public static class ServiceExtensions
         }
     }
 
+    // csharpier-ignore-start
     public static void AddNetworkProbeLiaisonFactory(this WebApplicationBuilder builder)
     {
-        builder.Services.AddTransient<Func<string, IProbeInvocationParams, NetworkProbeLiaison>>(
-            (svc) =>
+        builder.Services.AddTransient<
+            Func<string, IProbeBehavior, IProbeThresholds, IProbeSchedule, NetworkProbeLiaison>>((svc) =>
             {
-                return (string probeName, IProbeInvocationParams invocParams) =>
+                return (string probeName, IProbeBehavior behavior, IProbeThresholds thresholds, IProbeSchedule schedule) =>
                 {
-                    var crudOperations = svc.GetRequiredService<CrudOperations>();
-                    var cancellationTokenSource = new CancellationTokenSource();
-                    var serverEventEmitter = svc.GetRequiredService<ServerEventEmitter>();
-                    var probeScheduler = svc.GetRequiredService<ProbeScheduler>();
-                    var logger = svc.GetRequiredService<Logger<NetworkProbeLiaison>>();
-                    logger.LogDebug(
-                        "Program.cs: Registering PingMonitoringJobRunner factory method: CancellationTokenSourceHash: {ctsHash}",
-                        cancellationTokenSource.GetHashCode()
-                    );
+                    var liaisonConfig = new NetworkProbeLiaison.Configuration() with
+                    {
+                        BaseNetworkProbe = (svc.GetRequiredService(_probes[probeName]) as INetworkProbeBase)!,
+                        CancellationTokenSource = new CancellationTokenSource(),
+                        CrudOperations = svc.GetRequiredService<CrudOperations>(),
+                        ServerEventEmitter = svc.GetRequiredService<ServerEventEmitter>(),
+                        ProbeBehavior = behavior,
+                        ProbeThresholds = thresholds,
+                        ProbeSchedule = schedule,
+                        ProbeScheduler = svc.GetRequiredService<ProbeScheduler>(),
+                        Logger = svc.GetRequiredService<Logger<NetworkProbeLiaison>>()
+                    };
 
-                    return new NetworkProbeLiaison(
-                        (svc.GetRequiredService(_probes[probeName]) as INetworkProbeBase)!,
-                        crudOperations,
-                        new CancellationTokenSource(),
-                        serverEventEmitter,
-                        invocParams,
-                        probeScheduler,
-                        logger
-                    );
+                    return new NetworkProbeLiaison(liaisonConfig);
                 };
             }
         );
     }
+    // csharpier-ignore-end
 
     public static void AddServiceLayerTypes(this WebApplicationBuilder builder)
     {

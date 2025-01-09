@@ -2,13 +2,12 @@
 
 using System.Text.Json.Serialization;
 
-public record PingProbeInvocationParams(
+public record PingProbeBehavior(
     INetworkProbeTarget Target,
-    IProbeInvocationThresholds Thresholds,
     int Ttl,
     int TimeoutMs,
     string PacketPayload
-) : IProbeInvocationParams
+) : IProbeBehavior
 {
     public string GetTarget()
     {

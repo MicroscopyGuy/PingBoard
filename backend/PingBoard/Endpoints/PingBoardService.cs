@@ -62,20 +62,17 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
 
             _logger.LogDebug($"PingBoardService StartPinging: {request.Target.Target}");
 
-            // fake the input for right now, while new NetworkProbeLiaison paradigm is being ironed out
+            // fake the input for right now, while new UI is still being sorted out
             //_probeOperationsCenter.StartPinging(request.Target.Target);
             var operation = "Ping";
             var target = new IpAddressTarget("8.8.8.8");
-            var thresholds = new PingProbeInvocationThresholds(50);
-            var probeParams = new PingProbeInvocationParams(
-                target,
-                thresholds,
-                64,
-                500,
-                "This is a test"
+            var thresholds = new PingProbeThresholds(50);
+            var behavior = new PingProbeBehavior(target, 64, 500, "This is a test");
+            var schedule = new _probeOperationsCenter.StartProbing(
+                operation,
+                probeParams,
+                thresholds
             );
-
-            _probeOperationsCenter.StartProbing(operation, probeParams);
             return new Empty();
         }
         catch (RpcException rpcException)
@@ -182,7 +179,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         // find which task completed, and then find the reader for that task
         var readyTask = await Task.WhenAny(channelReaderTasks);
 
-        // this would mean that all of the tasks are also canceled, so it's safe to simply return
+        // this would mean that all the tasks are also canceled, so it's safe to simply return
         if (readyTask.IsCanceled)
         {
             throw new TaskCanceledException("Cancellation was requested");

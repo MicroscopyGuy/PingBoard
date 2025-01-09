@@ -110,8 +110,6 @@ public class CrudOperations
 
         var resultsQuery = probeInfoContext.ProbeResults.Where(s => s.Start <= startingTime);
 
-        var resultsQuery = probeInfoContext.Where(s => s.Start <= startingTime);
-
         if (target != null)
         {
             resultsQuery = resultsQuery.Where((s) => s.Target == target);
@@ -123,7 +121,9 @@ public class CrudOperations
             .OrderByDescending(s => s.Start)
             .ToList();
 
-        var convertedResults = results.Select(s => PingProbeResult.ToApiModel(s)).ToList();
+        var convertedResults = results
+            .Select(s => PingProbeResult.ToApiModel((PingProbeResult)s))
+            .ToList();
 
         return convertedResults;
     }

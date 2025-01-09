@@ -2,11 +2,12 @@
 
 using System.Net;
 using System.Net.NetworkInformation;
+using Common;
 using PingBoard.Database.Models;
 using PingBoard.Probes.NetworkProbes;
 
 public class PingProbe
-    : INetworkProbeBase<PingProbeInvocationParams, ProbeStatusChange, PingProbeResult>,
+    : INetworkProbeBase<PingProbeBehavior, PingProbeThresholds, PingProbeResult>,
         INetworkProbeBase
 {
     public static string Name => "Ping";
@@ -22,7 +23,7 @@ public class PingProbe
         return ShouldContinue((PingProbeResult)result);
     }
 
-    public bool IsAnomaly(PingProbeResult result, PingProbeInvocationThresholds thresholds)
+    public bool IsAnomaly(PingProbeResult result, PingProbeThresholds thresholds)
     {
         return (result.IpStatus == IPStatus.Success && result.Rtt < thresholds.maxAllowedRtt);
     }
@@ -44,15 +45,12 @@ public class PingProbe
             != PingingStates.PingState.Halt;
     }
 
-    bool INetworkProbeBase.IsAnomaly(
-        ProbeResult pingProbeRes,
-        IProbeInvocationThresholds thresholds
-    )
+    bool INetworkProbeBase.IsAnomaly(ProbeResult pingProbeRes, IProbeThresholds thresholds)
     {
         var res = (PingProbeResult)pingProbeRes;
         return (
             res.IpStatus == IPStatus.Success
-            && res.Rtt < ((PingProbeInvocationThresholds)thresholds).maxAllowedRtt
+            && res.Rtt < ((PingProbeThresholds)thresholds).maxAllowedRtt
         );
     }
 
@@ -63,18 +61,15 @@ public class PingProbe
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     async Task<ProbeResult> INetworkProbeBase.ProbeAsync(
-        IProbeInvocationParams probeInvocationParams,
+        IProbeBehavior probeInvocationParams,
         CancellationToken cancellationToken
     )
     {
-        return await ProbeAsync(
-            (PingProbeInvocationParams)probeInvocationParams,
-            cancellationToken
-        );
+        return await ProbeAsync(probeInvocationParams! as PingProbeBehavior, cancellationToken);
     }
 
     public async Task<PingProbeResult> ProbeAsync(
-        PingProbeInvocationParams probeConfiguration,
+        PingProbeBehavior probeConfiguration,
         CancellationToken cancellationToken
     )
     {

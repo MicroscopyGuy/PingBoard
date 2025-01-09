@@ -7,7 +7,7 @@ using Probes.NetworkProbes;
 public interface IIndividualPinger
 {
     public Task<PingReply> SendPingIndividualAsync(
-        PingProbeInvocationParams pingParams,
+        PingProbeBehavior behavior,
         CancellationToken stoppingToken = default(CancellationToken)
     );
     // public int GetTtl();
