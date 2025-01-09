@@ -5,6 +5,7 @@ using System.Net.NetworkInformation;
 using Common;
 using PingBoard.Database.Models;
 using PingBoard.Probes.NetworkProbes;
+using Probes.Common;
 
 public class PingProbe
     : INetworkProbeBase<PingProbeBehavior, PingProbeThresholds, PingProbeResult>,

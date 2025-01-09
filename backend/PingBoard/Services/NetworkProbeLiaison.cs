@@ -3,6 +3,7 @@
 using Common;
 using PingBoard.Database.Utilities;
 using PingBoard.Services;
+using Probes.Common;
 
 /// A class that implements INetworkProbeBase (sic) can combine as many other low level probes (raw networking functionality)
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe

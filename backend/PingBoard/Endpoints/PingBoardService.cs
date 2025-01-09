@@ -6,6 +6,7 @@ using Grpc.Core;
 using PingBoard.Database.Utilities;
 using PingBoard.Endpoints;
 using PingBoard.Probes.NetworkProbes;
+using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
 using Probes.Utilities;
 using Protos;
@@ -68,11 +69,9 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             var target = new IpAddressTarget("8.8.8.8");
             var thresholds = new PingProbeThresholds(50);
             var behavior = new PingProbeBehavior(target, 64, 500, "This is a test");
-            var schedule = new _probeOperationsCenter.StartProbing(
-                operation,
-                probeParams,
-                thresholds
-            );
+            var schedule = new ProbeSchedule();
+
+            _probeOperationsCenter.StartProbing(operation, behavior, thresholds, schedule);
             return new Empty();
         }
         catch (RpcException rpcException)
