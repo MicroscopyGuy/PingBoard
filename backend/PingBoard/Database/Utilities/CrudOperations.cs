@@ -28,35 +28,6 @@ public class CrudOperations
 
     /*
     /// <summary>
-    /// Inserts a PingGroupSummary (private) into the database
-    /// </summary>
-    /// <param name="summary">The PingGroupSummary objects whose values should be stored in the DB</param>
-    /// <param name="cancellationToken"> </param>
-    public async Task InsertPingGroupSummaryAsync(
-        PingGroupSummary summary,
-        CancellationToken cancellationToken
-    )
-    {
-        try
-        {
-            await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(
-                cancellationToken
-            );
-            pingInfoContext.Add(summary);
-            pingInfoContext.SaveChanges();
-        }
-        catch (Exception e)
-        {
-            _logger.LogError(
-                "CrudOperations: InsertPingGroupSummaryAsync: Insertion of PingGroupSummary failed. {e}",
-                e
-            );
-            throw;
-        }
-    }*/
-
-    /*
-    /// <summary>
     /// Retrieves the next N number of records from the database from a certain point in time, returned
     /// as a list of PingGroupSummaryPublic objects
     /// </summary>
@@ -110,7 +81,7 @@ public class CrudOperations
 
         var resultsQuery = probeInfoContext.ProbeResults.Where(s => s.Start <= startingTime);
 
-        if (target != null)
+        if (target is not null)
         {
             resultsQuery = resultsQuery.Where((s) => s.Target == target);
         }
@@ -165,7 +136,7 @@ public class CrudOperations
         catch (Exception e)
         {
             _logger.LogError(
-                "CrudOperations: InsertPingGroupSummaryAsync: Insertion of PingGroupSummary failed. {e}",
+                "CrudOperations: InsertProbeResult: Insertion of ProbeResult failed. {e}",
                 e
             );
             throw;

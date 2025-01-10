@@ -19,7 +19,7 @@ public class NetworkProbeLiaison : IDisposable
         public ServerEventEmitter ServerEventEmitter { get; init; }
         public IProbeBehavior ProbeBehavior { get; init; }
         public IProbeThresholds ProbeThresholds { get; init; }
-        public IProbeSchedule ProbeSchedule { get; init; }
+        public ProbeSchedule ProbeSchedule { get; init; }
         public ProbeScheduler ProbeScheduler { get; init; }
         public ILogger<NetworkProbeLiaison> Logger { get; init; }
     }
@@ -30,7 +30,7 @@ public class NetworkProbeLiaison : IDisposable
     private readonly ServerEventEmitter _serverEventEmitter;
     private readonly IProbeBehavior _probeBehavior;
     private readonly IProbeThresholds _probeThresholds;
-    private readonly IProbeSchedule _probeSchedule;
+    private readonly ProbeSchedule _probeSchedule;
     private readonly ProbeScheduler _probeScheduler;
     private readonly ILogger<NetworkProbeLiaison> _logger;
 

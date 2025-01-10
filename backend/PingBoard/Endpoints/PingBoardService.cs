@@ -132,7 +132,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
     /// Streams ServerEvents to the FrontEnd, one at a time. See the ServerEvent definition in protos/service.proto
     /// for a comprehensive list of which ServerEvents are supported.
     /// </summary>
-    /// <param name="request">Empty, since no user paramaters are needed./param>
+    /// <param name="request">Empty, since no user parameters are needed./param>
     /// <param name="responseStream">The writer that writes ServerEvents to the stream.</param>
     /// <param name="context">Represents the context of a server-side call.</param>
     /// <exception cref="InvalidOperationException"></exception>

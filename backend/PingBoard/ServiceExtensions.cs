@@ -14,6 +14,7 @@ using Pinging;
 using Probes;
 using Probes.Common;
 using Probes.NetworkProbes;
+using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
 using Protos;
 using Serilog;
@@ -27,7 +28,11 @@ public static class ServiceExtensions
         .LocalApplicationData;
 
     private static readonly string _path = Environment.GetFolderPath(_folder);
-    private static readonly string _appDataPath = System.IO.Path.Join(_path, "PingBoard");
+    public static readonly string PingBoardFiles = System.IO.Path.Join(_path, "PingBoard");
+    public static readonly string DatabasePath = System.IO.Path.Join(
+        PingBoardFiles,
+        DatabaseConstants.DatabaseName
+    );
     private static readonly List<Type> _probeTypes = typeof(Program)
         .Assembly.GetTypes()
         .Where(T => T.IsAssignableTo(typeof(INetworkProbeBase)))
@@ -50,13 +55,16 @@ public static class ServiceExtensions
         pt => pt
     );
 
+    // csharpier-ignore-start
     public static void ConfigureWebServer(this WebApplicationBuilder builder)
     {
         builder.WebHost.ConfigureKestrel(
             (c) =>
             {
                 c.ListenLocalhost(
-                    Int32.Parse(Environment.GetEnvironmentVariable("SERVER_PORT")!),
+                    int.TryParse(Environment.GetEnvironmentVariable("SERVER_PORT"), out var servPort)
+                        ? servPort
+                        : 8000,
                     listenOptions =>
                     {
                         listenOptions.Protocols = HttpProtocols.Http2;
@@ -65,6 +73,7 @@ public static class ServiceExtensions
             }
         );
     }
+    // csharpier-ignore-end
 
     public static void AddGrpc(this WebApplicationBuilder builder)
     {
@@ -99,20 +108,6 @@ public static class ServiceExtensions
             );
         }
     }
-
-    /*
-    public static void AddServerEventChannels(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAgentError>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingAnomaly>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.PingInfo>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.DnsAgentError>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.DnsAnomaly>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.DnsInfo>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.TracerouteAgentError>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.TracerouteAnomaly>>();
-        builder.Services.AddSingleton<Channel<ServerEvent.Types.TracerouteInfo>>();
-    }(*/
 
     public static void AddServerEventChannelReaders(this WebApplicationBuilder builder)
     {
@@ -208,26 +203,24 @@ public static class ServiceExtensions
 
     public static void AddDatabase(this WebApplicationBuilder builder)
     {
-        var databaseName = "Summaries";
-
-        if (!Directory.Exists(_appDataPath))
+        if (!Directory.Exists(PingBoardFiles))
         {
-            Directory.CreateDirectory(_appDataPath);
+            Directory.CreateDirectory(PingBoardFiles);
         }
-        var dbPath = System.IO.Path.Join(_appDataPath, databaseName);
 
         var connectionString = new SqliteConnectionStringBuilder()
         {
             Mode = SqliteOpenMode.ReadWriteCreate,
-            DataSource = dbPath,
-        }.ToString();
+            DataSource = DatabasePath,
+        };
+
+        builder.Services.AddSingleton<SqliteConnectionStringBuilder>(connectionString);
 
         builder.Services.AddDbContextFactory<ProbeResultsContext>(options =>
-            options.UseSqlite(connectionString)
+            options.UseSqlite(connectionString.ConnectionString)
         );
 
         // Database-related classes
-        builder.Services.AddTransient<DatabaseConstants>();
         builder.Services.AddTransient<SqliteConnection>();
         builder.Services.AddTransient<CrudOperations>();
     }
@@ -242,6 +235,7 @@ public static class ServiceExtensions
     public static void AddProbes(this WebApplicationBuilder builder)
     {
         builder.Services.AddTransient<PingProbe>();
+        builder.Services.AddTransient<ProbeScheduler>();
         //builder.Services.AddTransient<DnsProbe>();
         //builder.Services.AddTransient<TracerouteProbe>();
     }
@@ -269,10 +263,12 @@ public static class ServiceExtensions
     // csharpier-ignore-start
     public static void AddNetworkProbeLiaisonFactory(this WebApplicationBuilder builder)
     {
+        builder.Services.AddTransient<Logger<NetworkProbeLiaison>>();
+
         builder.Services.AddTransient<
-            Func<string, IProbeBehavior, IProbeThresholds, IProbeSchedule, NetworkProbeLiaison>>((svc) =>
+            Func<string, IProbeBehavior, IProbeThresholds, ProbeSchedule, NetworkProbeLiaison>>((svc) =>
             {
-                return (string probeName, IProbeBehavior behavior, IProbeThresholds thresholds, IProbeSchedule schedule) =>
+                return (string probeName, IProbeBehavior behavior, IProbeThresholds thresholds, ProbeSchedule schedule) =>
                 {
                     var liaisonConfig = new NetworkProbeLiaison.Configuration() with
                     {

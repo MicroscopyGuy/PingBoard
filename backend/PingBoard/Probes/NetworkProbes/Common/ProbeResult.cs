@@ -47,16 +47,10 @@ public class ProbeResult
     public bool Anomaly { get; set; }
 
     /// <summary>
-    /// If an exception occured during a probe attempt, this property will store the exception.
-    /// </summary>
-    [JsonIgnore]
-    public Exception Error { get; set; }
-
-    /// <summary>
     /// The data retrieved from a particular probe operation which is not common to all probes. Ie, ping related
     /// information, or dns, or traceroute related info, etc.
     /// </summary>
-    public string ProbeSubtypeData;
+    public string ProbeSubtypeData { get; set; }
 
     public ProbeResult()
     {
@@ -68,7 +62,6 @@ public class ProbeResult
             Target = null,
             Success = false,
             Anomaly = false,
-            Error = null,
             ProbeSubtypeData = null,
         };
     }

@@ -2,6 +2,7 @@
 
 using PingBoard.Probes.NetworkProbes;
 using Probes.Common;
+using Probes.NetworkProbes.Common;
 
 /// <summary>
 /// Handles the logistics of probing by creating, destroying, and directing NetworkProbeLiasons
@@ -13,7 +14,7 @@ public class ProbeOperationsCenter : BackgroundService
         string,
         IProbeBehavior,
         IProbeThresholds,
-        IProbeSchedule,
+        ProbeSchedule,
         NetworkProbeLiaison
     > _probeLiaisonFactory;
     private readonly ILogger<ProbeOperationsCenter> _logger;
@@ -26,7 +27,7 @@ public class ProbeOperationsCenter : BackgroundService
             string,
             IProbeBehavior,
             IProbeThresholds,
-            IProbeSchedule,
+            ProbeSchedule,
             NetworkProbeLiaison
         > probeLiaisonFactory,
         ILogger<ProbeOperationsCenter> logger
@@ -88,18 +89,26 @@ public class ProbeOperationsCenter : BackgroundService
     /// <summary>
     /// When appropriate, it synchronously begins probing
     /// </summary>
-    /// <param name="target">
-    /// The INetworkProbeTarget object deserialized from the user, representing the subject of the probing operation.
+    /// <param name="probeOperation">
+    /// The type of probing operation selected by the user
     /// </param>
-    /// <param name="probeParams">
-    /// Parametric values entered by the user which will govern the probing operation
+    ///
+    /// <param name="behavior">
+    /// Parametric values entered by the user which will dictate the behavior and target of the probing operation.
     /// </param>
-    /// <param name="target"> </param>
+    ///
+    /// <param name="thresholds">
+    /// Parametric values entered by the user, used to qualify whether a probing operation is anomalous.
+    /// </param>
+    ///
+    /// <param name="schedule">
+    /// Parametric values entered by the user which are used to apply temporal behavior to the probing operation
+    /// </param>
     public void StartProbing(
         string probeOperation,
         IProbeBehavior behavior,
         IProbeThresholds thresholds,
-        IProbeSchedule schedule
+        ProbeSchedule schedule
     )
     {
         lock (_lockingObject)

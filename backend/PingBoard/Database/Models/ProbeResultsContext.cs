@@ -1,5 +1,7 @@
 ﻿namespace PingBoard.Database.Models;
 
+using System.Data.Common;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Utilities;
 using PingBoard.Probes.NetworkProbes;
@@ -7,22 +9,22 @@ using PingBoard.Probes.NetworkProbes;
 public class ProbeResultsContext : DbContext
 {
     public DbSet<ProbeResult> ProbeResults { get; set; }
-    public string DbPath;
-    private readonly DatabaseConstants _dbConstants;
+    private SqliteConnectionStringBuilder _connectionStringBuilder { get; set; }
 
-    public ProbeResultsContext(DatabaseConstants dbConstants)
+    /*
+    public ProbeResultsContext(SqliteConnectionStringBuilder connectionStringBuilder)
     {
-        _dbConstants = dbConstants;
-        var folder = Environment.SpecialFolder.LocalApplicationData;
-        var path = Environment.GetFolderPath(folder);
-        DbPath = System.IO.Path.Join(path, _dbConstants.ProbeResultsTableName);
-    }
+        _connectionStringBuilder = connectionStringBuilder;
+    }*/
 
     protected override void OnConfiguring(DbContextOptionsBuilder options) =>
-        options.UseSqlite($"Data Source={DbPath}");
+        options.UseSqlite($"Data Source={ServiceExtensions.DatabasePath}");
 
     protected override void OnModelCreating(ModelBuilder modelbuilder)
     {
-        modelbuilder.Entity<ProbeResult>().HasKey(probeResult => probeResult.Id);
+        modelbuilder
+            .Entity<ProbeResult>()
+            .ToTable(DatabaseConstants.ProbeResultsTableName)
+            .HasKey(probeResult => probeResult.Id);
     }
 }

@@ -92,7 +92,6 @@ public class PingProbe
         catch (Exception ex)
         {
             pResult.End = DateTime.UtcNow;
-            pResult.Error = ex;
         }
 
         return pResult;
