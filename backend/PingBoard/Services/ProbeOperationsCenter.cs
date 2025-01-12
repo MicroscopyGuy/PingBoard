@@ -38,8 +38,7 @@ public class ProbeOperationsCenter : BackgroundService
     }
 
     /// <summary>
-    /// The continuous loop that monitors the Pinging job to see if any administrative action is necessary,
-    /// such as getting rid of the PingMonitoringJobRunner, informing the front end that its no longer probing, etc.
+    /// The continuous loop that monitors the NetworkProbeLiaison to see if it is done.
     /// </summary>
     /// <param name="stoppingToken"></param>
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -111,21 +110,36 @@ public class ProbeOperationsCenter : BackgroundService
         ProbeSchedule schedule
     )
     {
+        _logger.LogInformation("(3) ProbeOperationsCenter: StartProbing hit");
+
         lock (_lockingObject)
         {
             _logger.LogDebug(
-                $"ProbeOperationsCenter: StartPinging: Entered with target:{behavior.Target}"
+                $"ProbeOperationsCenter: StartProbing: Entered with target:{behavior.Target}"
             );
             // simply do nothing if the target is already being probed
+            _logger.LogInformation("(4) ProbeOperationsCenter: StartProbing hit");
             if (IsProbingActive())
             {
                 _logger.LogDebug($"ProbeOperationsCenter: StartPinging: Already probing");
+                _logger.LogInformation(
+                    "(5) ProbeOperationsCenter: StartProbing: IsProbingActive check"
+                );
                 return;
             }
 
+            _logger.LogInformation(
+                "(6) ProbeOperationsCenter: StartProbing: About to get Liaison object"
+            );
             _currentLiaison = _probeLiaisonFactory(probeOperation, behavior, thresholds, schedule);
             _logger.LogDebug($"ProbeOperationsCenter: Probing: new liaison created");
+            _logger.LogInformation(
+                "(7) ProbeOperationsCenter: StartProbing: Liaison object created"
+            );
             _currentLiaison.StartProbingAsync();
+            _logger.LogInformation(
+                "(8) ProbeOperationsCenter: StartProbing: Liaison started probing"
+            );
         }
     }
 

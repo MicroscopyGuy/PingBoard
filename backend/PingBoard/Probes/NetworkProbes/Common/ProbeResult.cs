@@ -52,7 +52,7 @@ public class ProbeResult
     /// </summary>
     public string ProbeSubtypeData { get; set; }
 
-    public ProbeResult()
+    public static ProbeResult Default()
     {
         var result = new ProbeResult()
         {
@@ -64,5 +64,7 @@ public class ProbeResult
             Anomaly = false,
             ProbeSubtypeData = null,
         };
+
+        return result;
     }
 }

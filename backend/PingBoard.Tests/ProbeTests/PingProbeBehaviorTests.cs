@@ -2,8 +2,9 @@
 
 using System.Text.Json;
 using Probes.NetworkProbes;
+using Probes.NetworkProbes.Ping;
 
-public class PingInvocationParamsTests
+public class PingProbeBehaviorTests
 {
     [Fact]
     public void CanDeserializeJsonIntoPingInvocationParams_OnJsonWithIpTarget()
@@ -20,7 +21,7 @@ public class PingInvocationParamsTests
                 ""PacketPayload"": ""This is the string I want""
             }}";
 
-        var result = JsonSerializer.Deserialize<PingProbeInvocationParams>(
+        var result = JsonSerializer.Deserialize<PingProbeBehavior>(
             jsonParams,
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
         );

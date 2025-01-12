@@ -64,7 +64,7 @@ public static class ServiceExtensions
                 c.ListenLocalhost(
                     int.TryParse(Environment.GetEnvironmentVariable("SERVER_PORT"), out var servPort)
                         ? servPort
-                        : 8000,
+                        : 5245,
                     listenOptions =>
                     {
                         listenOptions.Protocols = HttpProtocols.Http2;

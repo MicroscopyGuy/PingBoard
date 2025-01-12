@@ -60,6 +60,7 @@ public class NetworkProbeLiaison : IDisposable
         _logger.LogTrace(
             $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync"
         );
+        _logger.LogInformation("(9) NetworkProbeLiaison: StartProbing: About to DoProbingAsync()");
         _probeTask = DoProbingAsync().ContinueWith(AfterProbingAsync);
     }
 
@@ -98,8 +99,11 @@ public class NetworkProbeLiaison : IDisposable
         _logger.LogTrace(
             $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync"
         );
+        _logger.LogInformation(
+            "(10) ProbeOperationsCenter: StartProbing: About to get Liaison object"
+        );
         var token = _cancellationTokenSource.Token;
-        var result = new ProbeResult();
+        ProbeResult result = ProbeResult.Default();
 
         //emit server event, OnOffToggle
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))

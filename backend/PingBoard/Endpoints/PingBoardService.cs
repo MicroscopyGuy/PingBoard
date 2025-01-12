@@ -49,6 +49,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         ServerCallContext context
     )
     {
+        _logger.LogInformation("(1) PingBoard Service: StartPinging hit");
         try
         {
             if (_probeOperationsCenter.IsProbingActive())
@@ -71,6 +72,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
             var behavior = new PingProbeBehavior(target, 64, 500, "This is a test");
             var schedule = new ProbeSchedule();
 
+            _logger.LogInformation("(2) PingBoard Service: About to StartPinging");
             _probeOperationsCenter.StartProbing(operation, behavior, thresholds, schedule);
             return new Empty();
         }
