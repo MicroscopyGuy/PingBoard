@@ -43,14 +43,9 @@ public class PingProbeResult : ProbeResult
     /// Safely initializes and returns a ProbeResult object with properties safely intialized to default values:
     /// </summary>
     /// <returns>a PingProbeResult object </returns>
-    public static PingProbeResult Empty()
+    public PingProbeResult()
     {
-        return new PingProbeResult()
-        {
-            Start = DateTime.MinValue,
-            End = DateTime.MaxValue,
-            IpStatus = null,
-        };
+        IpStatus = null;
     }
 
     [ExcludeFromCodeCoverage]
@@ -58,7 +53,7 @@ public class PingProbeResult : ProbeResult
     {
         return $"Rtt: {Rtt} IpStatus: {IpStatus.ToString()} "
             + $"EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}"
-            + $"Target: {Target} ReplyAddress: {ReplyAddress}";
+            + $"Target: {Target.ToString()} ReplyAddress: {ReplyAddress}";
     }
 
     public static PingResultPublic ToApiModel(PingProbeResult result)

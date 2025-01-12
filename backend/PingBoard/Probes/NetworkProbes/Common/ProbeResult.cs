@@ -52,19 +52,14 @@ public class ProbeResult
     /// </summary>
     public string ProbeSubtypeData { get; set; }
 
-    public static ProbeResult Default()
+    public ProbeResult()
     {
-        var result = new ProbeResult()
-        {
-            Id = Guid.CreateVersion7(),
-            Start = DateTime.MinValue,
-            End = DateTime.MaxValue,
-            Target = null,
-            Success = false,
-            Anomaly = false,
-            ProbeSubtypeData = null,
-        };
-
-        return result;
+        Id = Guid.CreateVersion7();
+        Start = DateTime.MinValue;
+        End = DateTime.MaxValue;
+        Target = null;
+        Success = false;
+        Anomaly = false;
+        ProbeSubtypeData = null;
     }
 }

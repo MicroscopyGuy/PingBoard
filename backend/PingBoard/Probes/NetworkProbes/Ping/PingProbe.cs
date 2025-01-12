@@ -19,14 +19,19 @@ public class PingProbe
         _pinger = pinger;
     }
 
+    ProbeResult INetworkProbeBase.NewResult()
+    {
+        return NewResult();
+    }
+
+    public PingProbeResult NewResult()
+    {
+        return new PingProbeResult();
+    }
+
     bool INetworkProbeBase.ShouldContinue(ProbeResult result)
     {
         return ShouldContinue((PingProbeResult)result);
-    }
-
-    public bool IsAnomaly(PingProbeResult result, PingProbeThresholds thresholds)
-    {
-        return (result.IpStatus == IPStatus.Success && result.Rtt < thresholds.maxAllowedRtt);
     }
 
     /// <summary>
@@ -46,6 +51,11 @@ public class PingProbe
             != PingingStates.PingState.Halt;
     }
 
+    public bool IsAnomaly(PingProbeResult result, PingProbeThresholds thresholds)
+    {
+        return (result.IpStatus == IPStatus.Success && result.Rtt < thresholds.maxAllowedRtt);
+    }
+
     bool INetworkProbeBase.IsAnomaly(ProbeResult pingProbeRes, IProbeThresholds thresholds)
     {
         var res = (PingProbeResult)pingProbeRes;
@@ -62,11 +72,11 @@ public class PingProbe
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
     async Task<ProbeResult> INetworkProbeBase.ProbeAsync(
-        IProbeBehavior probeInvocationParams,
+        IProbeBehavior probeBehavior,
         CancellationToken cancellationToken
     )
     {
-        return await ProbeAsync(probeInvocationParams! as PingProbeBehavior, cancellationToken);
+        return await ProbeAsync(probeBehavior! as PingProbeBehavior, cancellationToken);
     }
 
     public async Task<PingProbeResult> ProbeAsync(

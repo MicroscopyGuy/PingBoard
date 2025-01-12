@@ -10,6 +10,7 @@ public interface INetworkProbeBase<TProbeBehavior, TProbeThresholds, TProbeResul
 {
     Task<TProbeResult> ProbeAsync(TProbeBehavior behavior, CancellationToken cancellationToken);
     bool ShouldContinue(TProbeResult result);
+    TProbeResult NewResult();
 }
 
 public interface INetworkProbeBase
@@ -19,4 +20,6 @@ public interface INetworkProbeBase
     bool ShouldContinue(ProbeResult result);
 
     bool IsAnomaly(ProbeResult result, IProbeThresholds thresholds);
+
+    ProbeResult NewResult();
 }

@@ -73,7 +73,7 @@ public class NetworkProbeLiaison : IDisposable
         if (!t.IsCanceled)
         {
             _logger.LogCritical(
-                "An exception occured while probing {target} Exception: {exception}",
+                "An exception occured while probing {target.ToString()} Exception: {exception}",
                 _probeBehavior.GetTarget(),
                 t.Exception
             );
@@ -84,7 +84,10 @@ public class NetworkProbeLiaison : IDisposable
         }
         else
         {
-            _logger.LogDebug("Probing of {target} was canceled", _probeBehavior.GetTarget());
+            _logger.LogDebug(
+                "Probing of {target.ToString()} was canceled",
+                _probeBehavior.GetTarget()
+            );
             _serverEventEmitter.IndicatePingOnOffToggle(
                 _probeBehavior.GetTarget(),
                 false,
@@ -103,7 +106,7 @@ public class NetworkProbeLiaison : IDisposable
             "(10) ProbeOperationsCenter: StartProbing: About to get Liaison object"
         );
         var token = _cancellationTokenSource.Token;
-        ProbeResult result = ProbeResult.Default();
+        ProbeResult result = _baseNetworkProbe.NewResult();
 
         //emit server event, OnOffToggle
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
@@ -124,7 +127,6 @@ public class NetworkProbeLiaison : IDisposable
             );
 
             //_probeScheduler.DelayProbingAsync();
-            await _crudOperations.InsertProbeResult(result, token);
             await Task.Delay(100, token);
         }
     }
