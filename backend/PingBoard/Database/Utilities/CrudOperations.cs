@@ -130,6 +130,8 @@ public class CrudOperations
         {
             await using var _probeDbContext =
                 await _probeResultsContextFactory.CreateDbContextAsync(cancellationToken);
+
+            result.ProbeSubtypeData = JsonSerializer.Serialize(result);
             _probeDbContext.Add(result);
             _probeDbContext.SaveChanges();
         }

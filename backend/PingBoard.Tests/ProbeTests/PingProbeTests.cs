@@ -5,14 +5,20 @@ using System.Net.NetworkInformation;
 using Database.Models;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging.Abstractions;
-using Pinging;
 using Probes.NetworkProbes;
+using Probes.NetworkProbes.Ping;
 using Probes.Services;
 using static TestUtilities.PingingTestingUtilities.IndividualPingerStub;
 
 public class PingProbeTests
 {
     private static PingProbe _probe;
+    private PingProbeBehavior _behaviorParam = new PingProbeBehavior(
+        new HostnameTarget("127.0.0.1"),
+        64,
+        500,
+        "This is a test"
+    );
 
     public PingProbeTests()
     {
@@ -30,15 +36,8 @@ public class PingProbeTests
         var token = tokenSource.Token; // Renamed to 'token' to avoid conflicts
         var pinger = new IndividualPinger(new Ping(), new NullLogger<IndividualPinger>());
 
-        PingProbeInvocationParams pingParams = new PingProbeInvocationParams(
-            new HostnameTarget("127.0.0.1"),
-            64,
-            500,
-            "This is a test"
-        );
-
         var probe = new PingProbe(pinger);
-        var result = await probe.ProbeAsync(pingParams, token);
+        var result = await probe.ProbeAsync(_behaviorParam, token);
         Assert.NotNull(result);
     }
 
@@ -48,15 +47,8 @@ public class PingProbeTests
         var token = tokenSource.Token; // Renamed to 'token' to avoid conflicts
         var pinger = new IndividualPinger(new Ping(), new NullLogger<IndividualPinger>());
 
-        PingProbeInvocationParams pingParams = new PingProbeInvocationParams(
-            new HostnameTarget("localhost"),
-            64,
-            500,
-            "This is a test"
-        );
-
         var probe = new PingProbe(pinger);
-        var result = await probe.ProbeAsync(pingParams, token);
+        var result = await probe.ProbeAsync(_behaviorParam, token);
         Assert.NotNull(result);
     }
 

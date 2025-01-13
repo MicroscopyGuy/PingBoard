@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
-    <data-source source="LOCAL" name="Summaries" uuid="34ea0af3-30e6-4da1-8427-9485e4967289">
+    <data-source source="LOCAL" name="PingBoard" uuid="3d29ab84-b8f3-49ab-867a-348276ae1921">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
-      <jdbc-url>jdbc:sqlite:C:\Users\LeorGoldberg\AppData\Local\Summaries</jdbc-url>
+      <jdbc-url>jdbc:sqlite:$USER_HOME$/AppData/Local/PingBoard/PingBoard</jdbc-url>
+      <jdbc-additional-properties>
+        <property name="com.intellij.clouds.kubernetes.db.enabled" value="false" />
+      </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
   </component>

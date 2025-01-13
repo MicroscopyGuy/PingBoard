@@ -19,6 +19,11 @@ public class PingProbe
         _pinger = pinger;
     }
 
+    public string GetName()
+    {
+        return Name;
+    }
+
     ProbeResult INetworkProbeBase.NewResult()
     {
         return NewResult();
@@ -88,6 +93,7 @@ public class PingProbe
         var pResult = new PingProbeResult();
         pResult.Ttl = (short)probeConfiguration.Ttl;
         pResult.Target = probeConfiguration.GetTarget();
+        pResult.ProbeType = Name;
         pResult.Start = DateTime.UtcNow;
         try
         {

@@ -1,8 +1,7 @@
-﻿using System.Net.NetworkInformation;
-
-namespace PingBoard.Tests.PingingTests;
+﻿namespace PingBoard.Tests.PingingTests;
 
 using System.Net;
+using System.Net.NetworkInformation;
 
 public class ICMPStatusCodeLookupTestGenerator
 {

@@ -6,11 +6,12 @@ import "google/protobuf/empty.proto";
 service PingBoardService {
   rpc StartPinging (StartPingingRequest) returns (google.protobuf.Empty);
   rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
-  
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
-  rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
   rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
-  rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
+  
+  
+  //rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
+  //rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
   
 }
 
@@ -30,30 +31,31 @@ message PingTarget {
   string target = 1;
 }
 
-message PingGroupSummaryPublic {
-  google.protobuf.Timestamp start = 1;
-  google.protobuf.Timestamp end = 2;
-  string target = 3;
-  int32 minimumPing = 4;
-  float averagePing = 5;
-  int32 maximumPing = 6;
-  float jitter = 7;
-  float packetLoss = 8;
-  optional string terminatingIPStatusExplanation = 9;
-  optional string lastAbnormalStatusExplanation = 10;
-}
-
 message PingResultPublic{
   google.protobuf.Timestamp start = 1;
   google.protobuf.Timestamp end = 2;
   int32 rtt = 3;
   string target = 4;
-  string targetType = 5;
-  string ipStatus = 6;
-  int32 ttl = 7;
-  string replyAddress = 8;
+  string ipStatus = 5;
+  int32 ttl = 6;
+  string replyAddress = 7;
+  string ipStatusShortMeaning = 8;
+  string ipStatusOfficialMeaning = 9;
+  string id = 10;
 }
 
+message ListAnomaliesRequest{
+  uint32 numberRequested = 1;
+  string paginationToken = 2;
+  optional PingTarget pingTarget = 3;
+}
+
+message ListAnomaliesResponse{
+  repeated PingResultPublic anomalies = 1;
+  string paginationToken = 2;
+}
+
+/*
 message ShowPingsRequest{
   PingTarget target = 1;
   google.protobuf.Timestamp startingTime = 2;
@@ -62,7 +64,7 @@ message ShowPingsRequest{
 
 message ShowPingsResponse{
   repeated PingGroupSummaryPublic pings = 1;
-}
+}*/
 
 enum Quantum{
   Length = 0;
@@ -103,16 +105,7 @@ message ListPingsResponse{
   repeated ListPingsDatapoint datapoints = 1;
 }
 
-message ListAnomaliesRequest{
-  uint32 numberRequested = 1;
-  string paginationToken = 2;
-  optional PingTarget pingTarget = 3;
-}
 
-message ListAnomaliesResponse{
-  repeated PingGroupSummaryPublic anomalies = 1;
-  string paginationToken = 2;
-}
 
 message ServerEvent{
   message PingOnOffToggle{

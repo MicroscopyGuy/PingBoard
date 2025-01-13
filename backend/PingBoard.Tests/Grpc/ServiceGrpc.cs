@@ -52,17 +52,9 @@ namespace PingBoard.Protos {
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::PingBoard.Protos.ServerEvent> __Marshaller_ServerEvent = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ServerEvent.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::PingBoard.Protos.ListPingsRequest> __Marshaller_ListPingsRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ListPingsRequest.Parser));
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::PingBoard.Protos.ListPingsResponse> __Marshaller_ListPingsResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ListPingsResponse.Parser));
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::PingBoard.Protos.ListAnomaliesRequest> __Marshaller_ListAnomaliesRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ListAnomaliesRequest.Parser));
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Marshaller<global::PingBoard.Protos.ListAnomaliesResponse> __Marshaller_ListAnomaliesResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ListAnomaliesResponse.Parser));
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::PingBoard.Protos.ShowPingsRequest> __Marshaller_ShowPingsRequest = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ShowPingsRequest.Parser));
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Marshaller<global::PingBoard.Protos.ShowPingsResponse> __Marshaller_ShowPingsResponse = grpc::Marshallers.Create(__Helper_SerializeMessage, context => __Helper_DeserializeMessage(context, global::PingBoard.Protos.ShowPingsResponse.Parser));
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::PingBoard.Protos.StartPingingRequest, global::Google.Protobuf.WellKnownTypes.Empty> __Method_StartPinging = new grpc::Method<global::PingBoard.Protos.StartPingingRequest, global::Google.Protobuf.WellKnownTypes.Empty>(
@@ -89,28 +81,12 @@ namespace PingBoard.Protos {
         __Marshaller_ServerEvent);
 
     [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::PingBoard.Protos.ListPingsRequest, global::PingBoard.Protos.ListPingsResponse> __Method_ListPings = new grpc::Method<global::PingBoard.Protos.ListPingsRequest, global::PingBoard.Protos.ListPingsResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "ListPings",
-        __Marshaller_ListPingsRequest,
-        __Marshaller_ListPingsResponse);
-
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
     static readonly grpc::Method<global::PingBoard.Protos.ListAnomaliesRequest, global::PingBoard.Protos.ListAnomaliesResponse> __Method_ListAnomalies = new grpc::Method<global::PingBoard.Protos.ListAnomaliesRequest, global::PingBoard.Protos.ListAnomaliesResponse>(
         grpc::MethodType.Unary,
         __ServiceName,
         "ListAnomalies",
         __Marshaller_ListAnomaliesRequest,
         __Marshaller_ListAnomaliesResponse);
-
-    [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-    static readonly grpc::Method<global::PingBoard.Protos.ShowPingsRequest, global::PingBoard.Protos.ShowPingsResponse> __Method_ShowPings = new grpc::Method<global::PingBoard.Protos.ShowPingsRequest, global::PingBoard.Protos.ShowPingsResponse>(
-        grpc::MethodType.Unary,
-        __ServiceName,
-        "ShowPings",
-        __Marshaller_ShowPingsRequest,
-        __Marshaller_ShowPingsResponse);
 
     /// <summary>Service descriptor</summary>
     public static global::Google.Protobuf.Reflection.ServiceDescriptor Descriptor
@@ -196,26 +172,6 @@ namespace PingBoard.Protos {
         return CallInvoker.AsyncServerStreamingCall(__Method_GetLatestServerEvent, null, options, request);
       }
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::PingBoard.Protos.ListPingsResponse ListPings(global::PingBoard.Protos.ListPingsRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return ListPings(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::PingBoard.Protos.ListPingsResponse ListPings(global::PingBoard.Protos.ListPingsRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_ListPings, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::PingBoard.Protos.ListPingsResponse> ListPingsAsync(global::PingBoard.Protos.ListPingsRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return ListPingsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::PingBoard.Protos.ListPingsResponse> ListPingsAsync(global::PingBoard.Protos.ListPingsRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_ListPings, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
       public virtual global::PingBoard.Protos.ListAnomaliesResponse ListAnomalies(global::PingBoard.Protos.ListAnomaliesRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
       {
         return ListAnomalies(request, new grpc::CallOptions(headers, deadline, cancellationToken));
@@ -234,26 +190,6 @@ namespace PingBoard.Protos {
       public virtual grpc::AsyncUnaryCall<global::PingBoard.Protos.ListAnomaliesResponse> ListAnomaliesAsync(global::PingBoard.Protos.ListAnomaliesRequest request, grpc::CallOptions options)
       {
         return CallInvoker.AsyncUnaryCall(__Method_ListAnomalies, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::PingBoard.Protos.ShowPingsResponse ShowPings(global::PingBoard.Protos.ShowPingsRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return ShowPings(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual global::PingBoard.Protos.ShowPingsResponse ShowPings(global::PingBoard.Protos.ShowPingsRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.BlockingUnaryCall(__Method_ShowPings, null, options, request);
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::PingBoard.Protos.ShowPingsResponse> ShowPingsAsync(global::PingBoard.Protos.ShowPingsRequest request, grpc::Metadata headers = null, global::System.DateTime? deadline = null, global::System.Threading.CancellationToken cancellationToken = default(global::System.Threading.CancellationToken))
-      {
-        return ShowPingsAsync(request, new grpc::CallOptions(headers, deadline, cancellationToken));
-      }
-      [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]
-      public virtual grpc::AsyncUnaryCall<global::PingBoard.Protos.ShowPingsResponse> ShowPingsAsync(global::PingBoard.Protos.ShowPingsRequest request, grpc::CallOptions options)
-      {
-        return CallInvoker.AsyncUnaryCall(__Method_ShowPings, null, options, request);
       }
       /// <summary>Creates a new instance of client from given <c>ClientBaseConfiguration</c>.</summary>
       [global::System.CodeDom.Compiler.GeneratedCode("grpc_csharp_plugin", null)]

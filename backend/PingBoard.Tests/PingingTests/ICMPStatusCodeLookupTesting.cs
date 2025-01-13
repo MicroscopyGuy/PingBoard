@@ -1,10 +1,9 @@
-﻿using System.Net.NetworkInformation;
-using PingBoard.Pinging;
-
-namespace PingBoard.Tests.PingingTests;
+﻿namespace PingBoard.Tests.PingingTests;
 
 using System.Net;
+using System.Net.NetworkInformation;
 using Newtonsoft.Json;
+using Probes.NetworkProbes.Ping;
 
 public class ICMPStatusCodeLookupTesting
 {

@@ -47,6 +47,12 @@ public class ProbeResult
     public bool Anomaly { get; set; }
 
     /// <summary>
+    /// Indicates which probe type generated the result
+    /// </summary>
+    [JsonIgnore]
+    public string ProbeType { get; set; }
+
+    /// <summary>
     /// The data retrieved from a particular probe operation which is not common to all probes. Ie, ping related
     /// information, or dns, or traceroute related info, etc.
     /// </summary>

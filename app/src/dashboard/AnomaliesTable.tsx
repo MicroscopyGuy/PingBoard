@@ -101,7 +101,7 @@ function DisplayAnomalies(anomalies: Array<PingGroupSummaryPublic>){
                     <td>{a.maximumPing + "ms"}</td>
                     <td>{a.jitter.toFixed(3)+"ms"}</td>
                     <td>{a.packetLoss.toFixed(2) + "%"}</td>
-              </tr>
+               </tr>
     }) 
 }
 

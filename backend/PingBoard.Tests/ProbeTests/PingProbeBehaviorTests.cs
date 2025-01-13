@@ -7,7 +7,7 @@ using Probes.NetworkProbes.Ping;
 public class PingProbeBehaviorTests
 {
     [Fact]
-    public void CanDeserializeJsonIntoPingInvocationParams_OnJsonWithIpTarget()
+    public void CanDeserializeJsonIntoPingProbeBehavior_OnJsonWithIpTarget()
     {
         var jsonParams =
             $@"
@@ -29,7 +29,7 @@ public class PingProbeBehaviorTests
     }
 
     [Fact]
-    public void CanDeserializeJsonIntoPingInvocationParams_OnJsonWithHostnameTarget()
+    public void CanDeserializeJsonIntoPingProbeBehavior_OnJsonWithHostnameTarget()
     {
         var jsonParams =
             $@"
@@ -43,7 +43,7 @@ public class PingProbeBehaviorTests
                 ""PacketPayload"": ""This is the string I want""
             }}";
 
-        var result = JsonSerializer.Deserialize<PingProbeInvocationParams>(
+        var result = JsonSerializer.Deserialize<PingProbeBehavior>(
             jsonParams,
             new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }
         );

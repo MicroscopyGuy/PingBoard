@@ -4,8 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Runtime.CompilerServices;
-using PingBoard.Pinging;
-using Probes.NetworkProbes;
+using Probes.NetworkProbes.Ping;
 
 /// <summary>
 /// This class should not be used for production, it is only used for testing.
@@ -69,7 +68,7 @@ public class IndividualPingerStub : IIndividualPinger
     /// RoundtripTime, Status, and Buffer values set on a single new PingReply object.
     ///
     /// This stubbed SendPingAsync function can then return each of the PingReply stubs in order,
-    /// to make testing SendPingGroupAsync possible. <see cref="GroupPinger"/>
+    /// to make testing pinging-related functionality significantly easier. <see cref="PingProbe"/>
     ///
     /// </summary>
     /// <param name="rtts">A list of RoundtripTime property values for the PingReply objects to have set</param>
@@ -139,7 +138,7 @@ public class IndividualPingerStub : IIndividualPinger
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public async Task<PingReply> SendPingIndividualAsync(
-        PingProbeInvocationParams pingParams,
+        PingProbeBehavior pingParams,
         CancellationToken stoppingToken = default(CancellationToken)
     )
     {
