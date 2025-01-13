@@ -39,30 +39,31 @@ public class PingProbe
     /// </summary>
     /// <param name="pingProbeRes"></param>
     /// <returns></returns>
+    // csharpier-ignore-start
     public bool ShouldContinue(PingProbeResult pingProbeRes)
     {
-        if (pingProbeRes.IpStatus == null)
-        {
-            return false;
-        }
-
-        var responseIp = IPAddress.Parse(pingProbeRes.ReplyAddress);
-        return pingProbeRes.IpStatus.Value.GetInfo(responseIp).State
-            != PingingStates.PingState.Halt;
+        return pingProbeRes.IpStatus == null
+            || pingProbeRes
+                   .IpStatus
+                   .Value
+                   .GetInfo(IPAddress.Parse(pingProbeRes.ReplyAddress))
+                   .State
+                != PingingStates.PingState.Halt;
     }
+    // csharpier-ignore-end
 
-    public bool IsAnomaly(PingProbeResult result, PingProbeThresholds thresholds)
+    public bool IsAnomaly(ProbeResult result, IProbeThresholds thresholds)
     {
-        return (result.IpStatus == IPStatus.Success && result.Rtt < thresholds.maxAllowedRtt);
+        bool success = ((PingProbeResult)result).IpStatus == IPStatus.Success;
+        bool allowedRtt =
+            ((PingProbeResult)result).Rtt <= ((PingProbeThresholds)thresholds).MaxAllowedRtt;
+        return !success || !allowedRtt;
     }
 
     bool INetworkProbeBase.IsAnomaly(ProbeResult pingProbeRes, IProbeThresholds thresholds)
     {
         var res = (PingProbeResult)pingProbeRes;
-        return (
-            res.IpStatus == IPStatus.Success
-            && res.Rtt < ((PingProbeThresholds)thresholds).maxAllowedRtt
-        );
+        return IsAnomaly(pingProbeRes, thresholds);
     }
 
     /// <summary>

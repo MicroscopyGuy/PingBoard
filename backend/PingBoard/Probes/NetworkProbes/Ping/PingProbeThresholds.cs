@@ -5,11 +5,11 @@ using PingBoard.Probes.Common;
 
 public class PingProbeThresholds : IProbeThresholds
 {
-    public IPStatus acceptableStatus = IPStatus.Success;
-    public long maxAllowedRtt;
+    public IPStatus AcceptableStatus = IPStatus.Success;
+    public long MaxAllowedRtt;
 
     public PingProbeThresholds(long allowedRtt)
     {
-        maxAllowedRtt = allowedRtt;
+        MaxAllowedRtt = allowedRtt;
     }
 }

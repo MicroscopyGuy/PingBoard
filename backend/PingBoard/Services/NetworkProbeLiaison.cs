@@ -107,18 +107,24 @@ public class NetworkProbeLiaison : IDisposable
         );
         var token = _cancellationTokenSource.Token;
         ProbeResult result = _baseNetworkProbe.NewResult();
+        var onEventReported = false;
 
         //emit server event, OnOffToggle
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
             //_probeScheduler.StartIntervalTracking();
             result = await _baseNetworkProbe.ProbeAsync(_probeBehavior, token);
+            _logger.LogInformation(result.ToString());
             //hardcode event type for now
-            _serverEventEmitter.IndicatePingOnOffToggle(
-                _probeBehavior.GetTarget(),
-                false,
-                "NetworkProbeLiaison: DoProbingAsync"
-            );
+
+            if (!onEventReported)
+            {
+                _serverEventEmitter.IndicatePingOnOffToggle(
+                    _probeBehavior.GetTarget(),
+                    true,
+                    "NetworkProbeLiaison: DoProbingAsync"
+                );
+            }
 
             await _crudOperations.InsertProbeResult(result, token);
             _serverEventEmitter.IndicatePingInfo(
