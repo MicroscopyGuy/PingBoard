@@ -88,14 +88,16 @@ public class PingProbe
         var pResult = new PingProbeResult();
         pResult.Ttl = (short)probeConfiguration.Ttl;
         pResult.Target = probeConfiguration.GetTarget();
+        pResult.Start = DateTime.UtcNow;
         try
         {
-            pResult.Start = DateTime.UtcNow;
             var result = await _pinger.SendPingIndividualAsync(
                 probeConfiguration,
                 cancellationToken
             );
+
             pResult.End = DateTime.UtcNow;
+            pResult.IpStatus = result.Status;
             pResult.ReplyAddress = result.Address.ToString();
             pResult.Success = result.Status == IPStatus.Success;
             pResult.Rtt = result.RoundtripTime;
