@@ -2,8 +2,9 @@
 
 using System.Text.RegularExpressions;
 using NetworkProbes;
+using NetworkProbes.Common;
 
-public class HostnameTarget : INetworkProbeTarget
+public record HostnameTarget : INetworkProbeTarget
 {
     public string Hostname { get; private set; }
 

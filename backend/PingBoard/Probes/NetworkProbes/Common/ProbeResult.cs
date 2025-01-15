@@ -1,4 +1,4 @@
-﻿namespace PingBoard.Probes.NetworkProbes;
+﻿namespace PingBoard.Probes.NetworkProbes.Common;
 
 using System.Text.Json.Serialization;
 using Database.Models;
@@ -7,7 +7,7 @@ using Database.Models;
 [JsonDerivedType(typeof(PingProbeResult), typeDiscriminator: "PingProbeResult")]
 [JsonDerivedType(typeof(DnsProbeResult), typeDiscriminator: "DnsProbeResult")]
 //[JsonDerivedType(typeof(TracerouteProbeResult), typeDiscriminator: "PingProbeResult")]
-public class ProbeResult
+public record ProbeResult
 {
     /// <summary>
     /// Identifier, and primary key for ProbeResult records in the database.

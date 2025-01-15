@@ -5,17 +5,19 @@ using System.Net.NetworkInformation;
 using System.Text.Json;
 using Google.Protobuf.WellKnownTypes;
 using PingBoard.Probes.NetworkProbes;
+using Probes.NetworkProbes.Common;
+using Probes.NetworkProbes.Ping;
 using Protos;
 
 /// <summary>
 /// Defines a class meant to encapsulate the values returned by the SendPingGroupAsync() function
 /// in the <see cref="PingProbe"/> class.
 /// </summary>
-public class PingProbeResult : ProbeResult
+public record PingProbeResult : ProbeResult
 {
     /// <summary>
     /// The return time of the ping
-    /// <summary>
+    /// </summary>
     public long Rtt { get; set; }
 
     /// <summary>
@@ -40,7 +42,7 @@ public class PingProbeResult : ProbeResult
     public DnsProbeResult dnsProbeResult { get; set; }*/
 
     /// <summary>
-    /// Safely initializes and returns a ProbeResult object with properties safely intialized to default values:
+    /// Safely initializes and returns a ProbeResult object
     /// </summary>
     /// <returns>a PingProbeResult object </returns>
     public PingProbeResult()
@@ -52,8 +54,9 @@ public class PingProbeResult : ProbeResult
     public override string ToString()
     {
         return $"Rtt: {Rtt} IpStatus: {IpStatus.ToString()} "
-            + $"EndTime: {End.ToString("MM:dd:yyyy:hh:mm:ss.ffff")}"
-            + $"Target: {Target.ToString()} ReplyAddress: {ReplyAddress}";
+            + $"EndTime: {End:MM:dd:yyyy:hh:mm:ss.ffff}"
+            + $"Target: {Target.ToString()}"
+            + $"ReplyAddress: ${(ReplyAddress is null ? "No reply address" : ReplyAddress.ToString())}";
     }
 
     public static PingResultPublic ToApiModel(PingProbeResult result)

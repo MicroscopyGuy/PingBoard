@@ -1,4 +1,4 @@
-﻿namespace PingBoard.Probes.NetworkProbes;
+﻿namespace PingBoard.Probes.NetworkProbes.Common;
 
 using System.Text.Json.Serialization;
 using PingBoard.Probes.Utilities;

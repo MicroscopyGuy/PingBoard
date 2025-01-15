@@ -57,7 +57,6 @@ public class IndividualPinger : IIndividualPinger
         _logger.LogTrace("IndividualPinger: Sending ping");
 
         var options = new PingOptions() { Ttl = behavior.Ttl, DontFragment = _DONT_FRAGMENT };
-
         PingReply response = await _pinger.SendPingAsync(
             behavior.GetTarget(),
             TimeSpan.FromMilliseconds(behavior.TimeoutMs),

@@ -1,6 +1,6 @@
 ﻿namespace PingBoard.Probes.NetworkProbes.Ping;
 
-using System.Text.Json.Serialization;
+using PingBoard.Probes.NetworkProbes.Common;
 
 public record PingProbeBehavior(
     INetworkProbeTarget Target,

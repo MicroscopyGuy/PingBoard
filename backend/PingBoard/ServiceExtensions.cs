@@ -12,7 +12,6 @@ using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Utilities;
 using Pinging;
 using Probes;
-using Probes.Common;
 using Probes.NetworkProbes;
 using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
@@ -264,6 +263,7 @@ public static class ServiceExtensions
     public static void AddNetworkProbeLiaisonFactory(this WebApplicationBuilder builder)
     {
         builder.Services.AddTransient<Logger<NetworkProbeLiaison>>();
+        builder.Services.AddTransient<Logger<PingProbe>>();
 
         builder.Services.AddTransient<
             Func<string, IProbeBehavior, IProbeThresholds, ProbeSchedule, NetworkProbeLiaison>>((svc) =>

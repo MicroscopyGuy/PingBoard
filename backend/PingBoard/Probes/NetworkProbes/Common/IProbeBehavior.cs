@@ -1,4 +1,4 @@
-﻿namespace PingBoard.Probes.NetworkProbes;
+﻿namespace PingBoard.Probes.NetworkProbes.Common;
 
 public interface IProbeBehavior
 {

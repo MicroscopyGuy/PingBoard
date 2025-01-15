@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 using Probes.NetworkProbes;
 using Probes.NetworkProbes.Ping;
 using Probes.Services;
+using Probes.Utilities;
 using static TestUtilities.PingingTestingUtilities.IndividualPingerStub;
 
 public class PingProbeTests
@@ -25,7 +26,7 @@ public class PingProbeTests
         var tokenSource = new CancellationTokenSource();
         var token = tokenSource.Token; // Renamed to 'token' to avoid conflicts
         var pinger = new IndividualPinger(new Ping(), new NullLogger<IndividualPinger>());
-        var probe = new PingProbe(pinger);
+        var probe = new PingProbe(pinger, NullLogger<PingProbe>.Instance);
         _probe = probe;
     }
 
@@ -36,7 +37,7 @@ public class PingProbeTests
         var token = tokenSource.Token; // Renamed to 'token' to avoid conflicts
         var pinger = new IndividualPinger(new Ping(), new NullLogger<IndividualPinger>());
 
-        var probe = new PingProbe(pinger);
+        var probe = new PingProbe(pinger, NullLogger<PingProbe>.Instance);
         var result = await probe.ProbeAsync(_behaviorParam, token);
         Assert.NotNull(result);
     }
@@ -47,7 +48,7 @@ public class PingProbeTests
         var token = tokenSource.Token; // Renamed to 'token' to avoid conflicts
         var pinger = new IndividualPinger(new Ping(), new NullLogger<IndividualPinger>());
 
-        var probe = new PingProbe(pinger);
+        var probe = new PingProbe(pinger, NullLogger<PingProbe>.Instance);
         var result = await probe.ProbeAsync(_behaviorParam, token);
         Assert.NotNull(result);
     }
@@ -69,5 +70,33 @@ public class PingProbeTests
         pingProbeResult.ReplyAddress = "127.0.0.1";
         pingProbeResult.IpStatus = IPStatus.Success;
         Assert.True(_probe.ShouldContinue(pingProbeResult));
+    }
+
+    [Fact]
+    public async Task PingProbe_CanPingGoogle_AndRetrieveProperResult()
+    {
+        var tokenSource = new CancellationTokenSource();
+        var token = tokenSource.Token; // Renamed to 'token' to avoid conflicts
+        var pinger = new IndividualPinger(new Ping(), new NullLogger<IndividualPinger>());
+
+        var probe = new PingProbe(pinger, NullLogger<PingProbe>.Instance);
+        var behaviorParam = new PingProbeBehavior(
+            new HostnameTarget("google.com"),
+            64,
+            1000,
+            "https://github.com/MicroscopyGuy/PingBoard"
+        );
+        var result = await probe.ProbeAsync(_behaviorParam, token);
+        Assert.NotNull(result);
+        Assert.NotNull(result.ReplyAddress);
+        Assert.NotNull(result.IpStatus);
+        Assert.NotNull(result.Rtt);
+        Assert.NotNull(result.Id);
+        Assert.NotNull(result.Anomaly);
+        Assert.NotNull(result.End);
+        Assert.NotNull(result.Start);
+        Assert.NotNull(result.Success);
+        Assert.NotNull(result.Target);
+        Assert.NotNull(result.ProbeType);
     }
 }

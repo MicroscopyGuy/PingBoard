@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PingBoard.Database.Models;
 using PingBoard.Probes.NetworkProbes;
 using PingBoard.Services;
+using Probes.NetworkProbes.Common;
 using Protos;
 
 /// <summary>

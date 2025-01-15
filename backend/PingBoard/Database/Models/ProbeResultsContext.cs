@@ -5,6 +5,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Utilities;
 using PingBoard.Probes.NetworkProbes;
+using Probes.NetworkProbes.Common;
 
 public class ProbeResultsContext : DbContext
 {

@@ -1,7 +1,7 @@
 ﻿namespace PingBoard.Probes.NetworkProbes.Ping;
 
 using System.Net.NetworkInformation;
-using PingBoard.Probes.Common;
+using Common;
 
 public class PingProbeThresholds : IProbeThresholds
 {

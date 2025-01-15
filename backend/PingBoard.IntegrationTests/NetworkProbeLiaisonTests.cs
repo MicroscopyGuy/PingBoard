@@ -18,7 +18,7 @@ using TestUtilities;
 public class NetworkProbeLiaisonTests
 {
     [Fact]
-    public async Task NetworkProbeLiaison_CanProbe_WithPingProbe_WithoutThrowingException()
+    public async Task NetworkProbeLiaison_CanProbe_WithPingProbeStub_WithoutThrowingException()
     {
         var _appFixture = new AppFixture();
 
@@ -52,7 +52,7 @@ public class NetworkProbeLiaisonTests
         var liaisonConfig = new NetworkProbeLiaison.Configuration() with
         {
             //BaseNetworkProbe = _appFixture.App.Services.GetRequiredService<PingProbe>(),
-            BaseNetworkProbe = new PingProbe(pingerStub),
+            BaseNetworkProbe = new PingProbe(pingerStub, NullLogger<PingProbe>.Instance),
             CancellationTokenSource = new CancellationTokenSource(),
             CrudOperations = crudOperations,
             ServerEventEmitter = _appFixture.App.Services.GetRequiredService<ServerEventEmitter>(),
@@ -68,6 +68,24 @@ public class NetworkProbeLiaisonTests
         networkProbeLiaison.StartProbingAsync();
         await Task.Delay(30);
         await networkProbeLiaison.StopProbingAsync();
+        Assert.True(true);
+    }
+
+    [Fact]
+    public async Task NetworkProbeLiaison_CanProbe_WithPingProbe_WithoutThrowingException()
+    {
+        var _appFixture = new AppFixture();
+        var target = new IpAddressTarget("8.8.8.8");
+        var behavior = new PingProbeBehavior(target, 64, 500, "This is a test");
+        var thresholds = new PingProbeThresholds(50);
+        var schedule = new ProbeSchedule();
+
+        var liaisonFactory = _appFixture.App.Services.GetRequiredService<
+            Func<string, IProbeBehavior, IProbeThresholds, ProbeSchedule, NetworkProbeLiaison>
+        >();
+
+        var liaison = liaisonFactory("Ping", behavior, thresholds, schedule);
+        liaison.StartProbingAsync();
         Assert.True(true);
     }
 }

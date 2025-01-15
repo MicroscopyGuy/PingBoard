@@ -1,3 +1,3 @@
-﻿namespace PingBoard.Probes.Common;
+﻿namespace PingBoard.Probes.NetworkProbes.Common;
 
 public interface IProbeThresholds { }

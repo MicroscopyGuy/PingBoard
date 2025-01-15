@@ -1,7 +1,4 @@
-﻿namespace PingBoard.Probes.NetworkProbes;
-
-using Common;
-using Probes.Common;
+﻿namespace PingBoard.Probes.NetworkProbes.Common;
 
 public interface INetworkProbeBase<TProbeBehavior, TProbeThresholds, TProbeResult>
     where TProbeResult : ProbeResult

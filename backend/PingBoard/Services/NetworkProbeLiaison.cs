@@ -3,7 +3,6 @@
 using Common;
 using PingBoard.Database.Utilities;
 using PingBoard.Services;
-using Probes.Common;
 
 /// A class that implements INetworkProbeBase (sic) can combine as many other low level probes (raw networking functionality)
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe
@@ -103,18 +102,23 @@ public class NetworkProbeLiaison : IDisposable
             $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync"
         );
         _logger.LogInformation(
-            "(10) ProbeOperationsCenter: StartProbing: About to get Liaison object"
+            $"(10) NetworkProbeLiaison: Entered DoProbingAsync with probe type {_baseNetworkProbe.GetName()}"
         );
         var token = _cancellationTokenSource.Token;
-        ProbeResult result = _baseNetworkProbe.NewResult();
+        var result = _baseNetworkProbe.NewResult();
         var onEventReported = false;
 
         //emit server event, OnOffToggle
         while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
         {
             //_probeScheduler.StartIntervalTracking();
+            _logger.LogInformation(
+                "(11) NetworkProbeLiaison: DoProbingAsync, about to call the probe"
+            );
             result = await _baseNetworkProbe.ProbeAsync(_probeBehavior, token);
-            _logger.LogInformation(result.ToString());
+            _logger.LogInformation(
+                $"(12) NetworkProbeLiaison: DoProbingAsync: result: {(result is null ? "null" : result.ToString())}"
+            );
             //hardcode event type for now
 
             if (!onEventReported)
@@ -133,7 +137,7 @@ public class NetworkProbeLiaison : IDisposable
             );
 
             //_probeScheduler.DelayProbingAsync();
-            await Task.Delay(100, token);
+            await Task.Delay(1000, token);
         }
     }
 

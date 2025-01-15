@@ -5,7 +5,8 @@ using System.Net.NetworkInformation;
 using Common;
 using PingBoard.Database.Models;
 using PingBoard.Probes.NetworkProbes;
-using Probes.Common;
+using PingBoard.Probes.NetworkProbes.Common;
+using Probes.NetworkProbes.Common;
 
 public class PingProbe
     : INetworkProbeBase<PingProbeBehavior, PingProbeThresholds, PingProbeResult>,
@@ -13,10 +14,12 @@ public class PingProbe
 {
     public static string Name => "Ping";
     private IIndividualPinger _pinger;
+    private ILogger<PingProbe> _logger;
 
-    public PingProbe(IIndividualPinger pinger)
+    public PingProbe(IIndividualPinger pinger, ILogger<PingProbe> logger)
     {
         _pinger = pinger;
+        _logger = logger;
     }
 
     public string GetName()
@@ -111,6 +114,9 @@ public class PingProbe
         catch (Exception ex)
         {
             pResult.End = DateTime.UtcNow;
+            _logger.LogInformation(
+                $"PingProbe: ProbeAsync: Exception thrown: {ex}, {ex.Message}, {ex.StackTrace}"
+            );
         }
 
         return pResult;

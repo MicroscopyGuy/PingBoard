@@ -1,7 +1,6 @@
 ﻿namespace PingBoard.Services;
 
 using PingBoard.Probes.NetworkProbes;
-using Probes.Common;
 using Probes.NetworkProbes.Common;
 
 /// <summary>
