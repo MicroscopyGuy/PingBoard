@@ -3,7 +3,7 @@
 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
 **What does it do?**
-PingBoard is a dashboard application that sends out pings to a specified IPAddress or domain 
+PingBoard is a monitoring application that sends out pings to a specified IPAddress or domain 
 for real-time tracking of network conditions on an informative dashboard.  Later on, it will also support functionality 
 such as Traceroute and Dns resolution.
 
