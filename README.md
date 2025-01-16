@@ -2,26 +2,36 @@
  <div align="center"> <b>**PingBoard: Under Construction**</b> </div>
 🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧🚧
 
-PingBoard is a dashboard application that sends out groups of pings to a specified IPAddress or domain. It is
-written in C# using the ASP.NET Core framework and has a React-based user interface that I am currently 
-working on.
+**What does it do?**
+PingBoard is a monitoring application that sends out pings to a specified IPAddress or domain 
+for real-time tracking of network conditions on an informative dashboard.  Later on, it will also support functionality 
+such as Traceroute and Dns resolution.
 
-The plan is to incorporate a charting library and package this all up as a desktop application using Electron.
 
-One thing that is different about this pinging functionality vs other available utilities is that it sends 
-a configurable number of pings every specified amount of time, which results in an inherent summary defined 
-across the inverval of time specified by the user.
+**Tech Stack:**
+- Backend: C# / ASP.NET Core 
+- Database: Sqlite / EF Core
+- FrontEnd: Typescript / Javascript / ReactJS
+- Desktop Application Framework: Electron
 
-What this means is that these PingGroupSummary objects have statistics that more expressively summarize
-what happened in that interval of time, which will simultaneously reduce chart clutter and enable
-a more granular analysis of the data.
 
-The configurability of many aspects of pinging is already supported by the C# backend, including:
-    A) Behavior: Responsiveness to TimeOuts, how many pings to send per group, etc
-    B) Thresholds: When does the user consider the MaximumPing, Jitter, etc, over an interval to be too high?
+**Why make this?**
+This project is the third iteration of a project I created during the Covid Pandemic to quantify network issues
+I was having. Starting in March of 2024, I began to flesh it out into a full-fledged desktop application to
+get some exposure to some new technologies and crucially, create a product I was proud of and wanted to share for free.
 
-If a user wishes to change the source code, they can even change the string sent in each packet. 
-Currently every packet contains the open source license this project uses, as well as a link to this repo.
 
-I'm excited to share more as I make more progress!
+**What is the benefit of this vs other already available solutions that do the same thing?**
+The most ubiquitous programs that already do this are ones such as SmokePing and PingPlotter, and they are fantastic.
+While SmokePing is free, it is *extremely* configurable and has so many options, and I wanted to make a thinner and more focused
+tool. I have used PingPlotter for a while, but the free option is quite limited, offering only a 10 minute lookback time.
 
+PingBoard is free, open source, and allows storage of as much data as your local storage will allow.
+
+
+**When can I try it?**
+I am working hard and hope to have a beta version available to try in the next few weeks, once I have 
+done some more work on the Frontend to support what I have recently added to the Backend.
+
+
+I'm very excited about this project, and I look forward to sharing updates here when they are available!
