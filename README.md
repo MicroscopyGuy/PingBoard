@@ -9,10 +9,10 @@ such as Traceroute and Dns resolution.
 
 
 **Tech Stack:**
-Backend: C# / ASP.NET Core 
-Database: Sqlite / EF Core
-FrontEnd: Typescript / Javascript / ReactJS
-Desktop Application Framework: Electron
+- Backend: C# / ASP.NET Core 
+- Database: Sqlite / EF Core
+- FrontEnd: Typescript / Javascript / ReactJS
+- Desktop Application Framework: Electron
 
 
 **Why make this?**
