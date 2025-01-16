@@ -62,6 +62,9 @@ public class ProbeOperationsCenter : BackgroundService
                         _logger.LogTrace(
                             $"ProbeOperationsCenter: ExecuteAsync: status of probing of target {target}: {Enum.GetName(currentStatus)}"
                         );
+                        _logger.LogInformation(
+                            "ProbeOperationsCenter: ExecuteAsync: About to reset liaison"
+                        );
                         ResetLiaison();
                     }
                 }

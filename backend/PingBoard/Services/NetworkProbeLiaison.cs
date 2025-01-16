@@ -65,34 +65,47 @@ public class NetworkProbeLiaison : IDisposable
 
     private async Task AfterProbingAsync(Task t)
     {
-        if (!t.IsFaulted)
+        // The possible TaskStatus enums are Created (0), WaitingForActivation (1), WaitingToRun (2),
+        // Running (3), WaitingForChildrenToComplete (4), RanToCompletion (5), Canceled (6) or Faulted (6)
+        // Since this function is only invoked after probing is done (see StartProbingAsync()), the only three
+        // possible states to check are RanToCompletion, Canceled and Faulted.
+        _logger.LogInformation("(13) NetworkProbeLiaison: AfterProbingAsync() entered");
+        if (t.IsCanceled)
         {
-            return;
+            _logger.LogInformation(
+                "(14) NetworkProbeLiaison: AfterProbingAsync(): task state is canceled"
+            );
+            _logger.LogDebug(
+                "Probing of {target.ToString()} was canceled",
+                _probeBehavior.GetTarget()
+            );
         }
-        if (!t.IsCanceled)
+
+        if (t.IsFaulted)
         {
-            _logger.LogCritical(
-                "An exception occured while probing {target.ToString()} Exception: {exception}",
-                _probeBehavior.GetTarget(),
-                t.Exception
+            _logger.LogInformation(
+                "(14) NetworkProbeLiaison: AfterProbingAsync(): task state is faulted"
             );
             _serverEventEmitter.IndicatePingAgentError(
                 _probeBehavior.GetTarget(),
                 t.Exception.ToString()
             );
-        }
-        else
-        {
-            _logger.LogDebug(
-                "Probing of {target.ToString()} was canceled",
-                _probeBehavior.GetTarget()
-            );
-            _serverEventEmitter.IndicatePingOnOffToggle(
+            _logger.LogCritical(
+                "An exception occured while probing {target.ToString()} Exception: {exception}",
                 _probeBehavior.GetTarget(),
-                false,
-                "NetworkProbeLiaison: AfterProbingAsync"
-            ); // hardcode for now
+                t.Exception
+            );
         }
+        else // RanToCompletion
+        {
+            _logger.LogDebug("NetworkProbeLiaison ran to completion");
+        }
+
+        _serverEventEmitter.IndicatePingOnOffToggle(
+            _probeBehavior.GetTarget(),
+            false,
+            "NetworkProbeLiaison: AfterProbingAsync"
+        ); // hardcode for now
     }
 
     private async Task DoProbingAsync()
