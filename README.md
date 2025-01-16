@@ -17,7 +17,7 @@ such as Traceroute and Dns resolution.
 
 **Why make this?**
 This project is the third iteration of a project I created during the Covid Pandemic to quantify network issues
-I was having. Starting in March of 2024, I started to flesh it out into a full-fledged desktop application to
+I was having. Starting in March of 2024, I began to flesh it out into a full-fledged desktop application to
 get some exposure to some new technologies and crucially, create a product I was proud of and wanted to share for free.
 
 
@@ -30,7 +30,7 @@ PingBoard is free, open source, and allows storage of as much data as your local
 
 
 **When can I try it?**
-I am working hard and hoping to have a beta version available to try in the next few weeks, once I have 
+I am working hard and hope to have a beta version available to try in the next few weeks, once I have 
 done some more work on the Frontend to support what I have recently added to the Backend.
 
 
