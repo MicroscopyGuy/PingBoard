@@ -147,6 +147,51 @@ export declare class PingGroupSummaryPublic extends Message<PingGroupSummaryPubl
     static equals(a: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined, b: PingGroupSummaryPublic | PlainMessage<PingGroupSummaryPublic> | undefined): boolean;
 }
 /**
+ * @generated from message PingResultPublic
+ */
+export declare class PingResultPublic extends Message<PingResultPublic> {
+    /**
+     * @generated from field: google.protobuf.Timestamp start = 1;
+     */
+    start?: Timestamp;
+    /**
+     * @generated from field: google.protobuf.Timestamp end = 2;
+     */
+    end?: Timestamp;
+    /**
+     * @generated from field: int32 rtt = 3;
+     */
+    rtt: number;
+    /**
+     * @generated from field: string target = 4;
+     */
+    target: string;
+    /**
+     * @generated from field: string targetType = 5;
+     */
+    targetType: string;
+    /**
+     * @generated from field: string ipStatus = 6;
+     */
+    ipStatus: string;
+    /**
+     * @generated from field: int32 ttl = 7;
+     */
+    ttl: number;
+    /**
+     * @generated from field: string replyAddress = 8;
+     */
+    replyAddress: string;
+    constructor(data?: PartialMessage<PingResultPublic>);
+    static readonly runtime: typeof proto3;
+    static readonly typeName = "PingResultPublic";
+    static readonly fields: FieldList;
+    static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingResultPublic;
+    static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PingResultPublic;
+    static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingResultPublic;
+    static equals(a: PingResultPublic | PlainMessage<PingResultPublic> | undefined, b: PingResultPublic | PlainMessage<PingResultPublic> | undefined): boolean;
+}
+/**
  * @generated from message ShowPingsRequest
  */
 export declare class ShowPingsRequest extends Message<ShowPingsRequest> {

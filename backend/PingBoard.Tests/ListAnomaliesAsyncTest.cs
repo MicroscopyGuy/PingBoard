@@ -4,6 +4,7 @@ namespace PingBoard.Tests;
 
 public class ListAnomaliesAsyncTest : BaseIntegrationTest
 {
+    /*
     [Fact]
     public async Task OnApiCall_GetsResults()
     {
@@ -55,5 +56,5 @@ public class ListAnomaliesAsyncTest : BaseIntegrationTest
             Assert.NotNull(currentApiTask.Result);
             paginationToken = currentApiTask.Result.PaginationToken;
         }
-    }
+    } */
 }

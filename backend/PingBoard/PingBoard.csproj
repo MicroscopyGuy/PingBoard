@@ -3,19 +3,22 @@
   
   
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <TargetFramework>net9.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <EnableNETAnalyzers>true</EnableNETAnalyzers>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DnsClient" Version="1.8.0" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.7" />
+    <PackageReference Include="Scrutor" Version="5.0.2" />
     <PackageReference Include="Serilog" Version="4.1.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />
     <PackageReference Include="Serilog.Sinks.File" Version="6.0.0" />
@@ -28,7 +31,6 @@
   
   <ItemGroup>
     <None Remove="Pinging\ICMPStatusCodes.json" />
-    <EmbeddedResource Include="Pinging\ICMPStatusCodes.json" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +43,10 @@
 
   <ItemGroup>
     <Protobuf Include="..\..\protos\service.proto" GrpcServices="Server" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Probes\NetworkProbes\Ping\ICMPStatusCodes.json" />
   </ItemGroup>
 
 </Project>

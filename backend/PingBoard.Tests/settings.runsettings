@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Configuration>
+    <CodeCoverage>
+        <!-- Match assembly file paths: -->
+        <ModulePaths>
+            <Include>
+                <ModulePath>.*\.dll$</ModulePath>
+                <ModulePath>.*\.exe$</ModulePath>
+            </Include>
+        </ModulePaths>
+        
+        <Sources>
+            <Exclude>
+                <Source>.*\\bin\\.*</Source>
+                <Source>.*\\debug\\.*</Source>
+                <ModulePath>.*PingBoard.Tests.dll</ModulePath>
+            </Exclude>
+        </Sources>
+
+        <!-- Match attributes on any code element: -->
+        <Attributes>
+            <Exclude>
+                <Attribute>^System\.Diagnostics\.DebuggerHiddenAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.DebuggerNonUserCodeAttribute$</Attribute>
+                <Attribute>^System\.CodeDom\.Compiler\.GeneratedCodeAttribute$</Attribute>
+                <Attribute>^System\.Diagnostics\.CodeAnalysis\.ExcludeFromCodeCoverageAttribute$</Attribute>
+            </Exclude>
+        </Attributes>
+    </CodeCoverage>
+</Configuration>

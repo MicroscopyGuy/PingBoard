@@ -262,6 +262,85 @@ export class PingGroupSummaryPublic extends Message<PingGroupSummaryPublic> {
 }
 
 /**
+ * @generated from message PingResultPublic
+ */
+export class PingResultPublic extends Message<PingResultPublic> {
+  /**
+   * @generated from field: google.protobuf.Timestamp start = 1;
+   */
+  start?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp end = 2;
+   */
+  end?: Timestamp;
+
+  /**
+   * @generated from field: int32 rtt = 3;
+   */
+  rtt = 0;
+
+  /**
+   * @generated from field: string target = 4;
+   */
+  target = "";
+
+  /**
+   * @generated from field: string targetType = 5;
+   */
+  targetType = "";
+
+  /**
+   * @generated from field: string ipStatus = 6;
+   */
+  ipStatus = "";
+
+  /**
+   * @generated from field: int32 ttl = 7;
+   */
+  ttl = 0;
+
+  /**
+   * @generated from field: string replyAddress = 8;
+   */
+  replyAddress = "";
+
+  constructor(data?: PartialMessage<PingResultPublic>) {
+    super();
+    proto3.util.initPartial(data, this);
+  }
+
+  static readonly runtime: typeof proto3 = proto3;
+  static readonly typeName = "PingResultPublic";
+  static readonly fields: FieldList = proto3.util.newFieldList(() => [
+    { no: 1, name: "start", kind: "message", T: Timestamp },
+    { no: 2, name: "end", kind: "message", T: Timestamp },
+    { no: 3, name: "rtt", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 4, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "targetType", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "ipStatus", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 7, name: "ttl", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 8, name: "replyAddress", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+  ]);
+
+  static fromBinary(bytes: Uint8Array, options?: Partial<BinaryReadOptions>): PingResultPublic {
+    return new PingResultPublic().fromBinary(bytes, options);
+  }
+
+  static fromJson(jsonValue: JsonValue, options?: Partial<JsonReadOptions>): PingResultPublic {
+    return new PingResultPublic().fromJson(jsonValue, options);
+  }
+
+  static fromJsonString(jsonString: string, options?: Partial<JsonReadOptions>): PingResultPublic {
+    return new PingResultPublic().fromJsonString(jsonString, options);
+  }
+
+  static equals(a: PingResultPublic | PlainMessage<PingResultPublic> | undefined, b: PingResultPublic | PlainMessage<PingResultPublic> | undefined): boolean {
+    return proto3.util.equals(PingResultPublic, a, b);
+  }
+}
+
+/**
  * @generated from message ShowPingsRequest
  */
 export class ShowPingsRequest extends Message<ShowPingsRequest> {

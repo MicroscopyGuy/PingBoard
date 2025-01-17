@@ -3,11 +3,15 @@ import LineChart from "@cloudscape-design/components/line-chart";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
 import Link from "@cloudscape-design/components/link";
-import { PingGroupSummaryPublic, PingTarget, ServerEvent_PingInfo, ShowPingsRequest, ShowPingsResponse } from "client/dist/gen/service_pb";
+import { PingTarget, ServerEvent_PingInfo } from "client/dist/gen/service_pb";
 import {useState, useEffect, useCallback} from 'react';
 import { useBackendClient } from './PingBackendContext'
 import { useServerEventListener } from "./ServerEventListener";
 import { Timestamp } from "@bufbuild/protobuf";
+
+/* @DEPRECATED: The PingGroupSummary model type no longer exists in the backend,
+                the graph will instead show individual pings, to be done shortly.
+*/
 
 export const numberFormatter = (value: number): string => {
     if (Math.abs(value) >= 1_000_000_000) {
@@ -67,10 +71,12 @@ export default function SummariesGraph(){
 }
 
 function SummariesGraphManager(){
-  const [pingInfo, setPingInfo] = useState<Array<PingGroupSummaryPublic>>([]);
+  /*
+  //const [pingInfo, setPingInfo] = useState<Array<PingGroupSummaryPublic>>([]);
   const [apiError, setApiError] = useState<Error>(undefined);
   const [loading, setLoading] = useState<boolean>(false);
   const [pingTarget, setPingTarget] = useState<string>("8.8.8.8");
+  
   
   const client = useBackendClient();
 
@@ -102,12 +108,13 @@ function SummariesGraphManager(){
     });
     loadPingInfo(request);
   
-  }, [loadPingInfo, pingTarget]);
+  }, [loadPingInfo, pingTarget]); 
 
   useServerEventListener("pinginfo", eventHandler);
   console.log('render');
 
-  return <SummariesGraphDisplay pingTarget={pingTarget} data = {pingInfo} />
+  return <SummariesGraphDisplay pingTarget={pingTarget} data = {pingInfo} /> */
+  return <div></div>
 }
 
 type showPingData = ShowPingsResponse['pings'];

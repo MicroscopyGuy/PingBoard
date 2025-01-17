@@ -1,53 +1,33 @@
+namespace PingBoard.Database.Utilities;
+
 using System.Text.Json;
 using Google.Rpc.Context;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
-namespace PingBoard.Database.Utilities;
-using Microsoft.Extensions.Options;
-using PingBoard.Pinging.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PingBoard.Database.Models;
-    
+using PingBoard.Probes.NetworkProbes;
+using PingBoard.Services;
+using Probes.NetworkProbes.Common;
+using Protos;
+
 /// <summary>
 /// An extension class for PingInfoContext that defines some APIs for interacting with the PingBoard database
 /// </summary>
 public class CrudOperations
 {
-    private IDbContextFactory<PingInfoContext> _pingInfoContextFactory;
-    private PingingThresholdsConfig _pingingThresholds;
+    private IDbContextFactory<ProbeResultsContext> _probeResultsContextFactory;
     private ILogger<CrudOperations> _logger;
 
-    public CrudOperations(IDbContextFactory<PingInfoContext> pingInfoContextFactory,
-                          IOptions<PingingThresholdsConfig> pingingThresholds,
-                          ILogger<CrudOperations> logger)
+    public CrudOperations(
+        IDbContextFactory<ProbeResultsContext> probeResultsContextFactory,
+        ILogger<CrudOperations> logger
+    )
     {
-        _pingInfoContextFactory = pingInfoContextFactory;
-        _pingingThresholds = pingingThresholds.Value;
+        _probeResultsContextFactory = probeResultsContextFactory;
         _logger = logger;
     }
-    
-    /// <summary>
-    /// Inserts a PingGroupSummary (private) into the database
-    /// </summary>
-    /// <param name="summary">The PingGroupSummary objects whose values should be stored in the DB</param>
-    /// <param name="cancellationToken"> </param>
-    public async Task InsertPingGroupSummaryAsync(PingGroupSummary summary, CancellationToken cancellationToken)
-    {
-        try
-        {
-            await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(cancellationToken);
-            pingInfoContext.Add(summary);
-            pingInfoContext.SaveChanges();
-        }
 
-        catch (Exception e)
-        {
-            _logger.LogError("CrudOperations: InsertPingGroupSummaryAsync: Insertion of PingGroupSummary failed. {e}", e);
-            throw;
-        }
-        
-    }
-    
+    /*
     /// <summary>
     /// Retrieves the next N number of records from the database from a certain point in time, returned
     /// as a list of PingGroupSummaryPublic objects
@@ -57,23 +37,29 @@ public class CrudOperations
     /// <param name="numToGet">The number of records to retrieve from the initial (inclusive) time</param>
     /// <param name="cancellationToken"> </param>
     /// <returns></returns>
-    public async Task<List<PingGroupSummaryPublic>> ListPingsAsync( DateTime startingTime, 
-        uint numToGet, CancellationToken cancellationToken, string target = "")
+    public async Task<List<PingGroupSummaryPublic>> ListPingsAsync(
+        DateTime startingTime,
+        uint numToGet,
+        CancellationToken cancellationToken,
+        string target = ""
+    )
     {
-        await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(cancellationToken);
-        
+        await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(
+            cancellationToken
+        );
+
         var summaries = pingInfoContext
-            .Summaries
-            .Where(s => s.Start >= startingTime)
+            .Summaries.Where(s => s.Start >= startingTime)
             .Where(s => (target != "") ? s.Target == target : s.Target != null)
-            .Take((int) numToGet)
+            .Take((int)numToGet)
             .Select(s => PingGroupSummary.ToApiModel(s))
             .OrderByDescending(s => s.Start)
             .ToList();
-        
+
         return summaries;
-    }
-    
+    }*/
+
+
     /// <summary>
     /// Retrieves the next N number of records from the database from a certain point in time, returned
     /// as a list of PingGroupSummaryPublic objects
@@ -83,55 +69,83 @@ public class CrudOperations
     /// <param name="cancellationToken"> </param>
     /// <param name="target">An optional parameter for the retrieval of anomalies matching a given target </param>
     /// <returns></returns>
-    public async Task<List<PingGroupSummaryPublic>> ListAnomaliesAsync( DateTime startingTime, 
-        uint numToGet, CancellationToken cancellationToken, string? target = "")
+    public async Task<List<PingResultPublic>> ListAnomaliesAsync(
+        DateTime startingTime,
+        uint numToGet,
+        CancellationToken cancellationToken,
+        string? target = ""
+    )
     {
-        await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(cancellationToken);
+        await using var probeInfoContext = await _probeResultsContextFactory.CreateDbContextAsync(
+            cancellationToken
+        );
 
-        var summaryQuery = pingInfoContext
-            .Summaries
-            .Where(s => s.Start <= startingTime);
+        var resultsQuery = probeInfoContext.ProbeResults.Where(s => s.Start <= startingTime);
 
-        if (target != null)
+        if (target is not null)
         {
-            summaryQuery = summaryQuery.Where((s) => s.Target == target);
+            resultsQuery = resultsQuery.Where((s) => s.Target == target);
         }
-        
-        
-        var summaries = summaryQuery
-            .Where(s => s.MinimumPing > _pingingThresholds.MinimumPingMs ||
-                                        s.AveragePing > _pingingThresholds.AveragePingMs ||
-                                        s.MaximumPing > _pingingThresholds.MaximumPingMs ||
-                                        s.Jitter > _pingingThresholds.JitterMs ||
-                                        s.PacketLoss > _pingingThresholds.PacketLossPercentage ||
-                                        s.TerminatingIPStatus != null)
-            .Take((int) numToGet)
+
+        var results = resultsQuery
+            .Where(s => s.Anomaly)
+            .Take((int)numToGet)
             .OrderByDescending(s => s.Start)
             .ToList();
 
-        var convertedSummaries = summaries
-            .Select(s => PingGroupSummary.ToApiModel(s))
+        var convertedResults = results
+            .Select(s => PingProbeResult.ToApiModel((PingProbeResult)s))
             .ToList();
 
-        return convertedSummaries;
+        return convertedResults;
     }
 
-    public async Task<ShowPingsResponse> ShowPingsAsync(DateTime startingTime, DateTime endingTime,
-        string pingTarget, CancellationToken cancellationToken)
+    /*
+    public async Task<ShowPingsResponse> ShowPingsAsync(
+        DateTime startingTime,
+        DateTime endingTime,
+        string pingTarget,
+        CancellationToken cancellationToken
+    )
     {
-        await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(cancellationToken);
-        var results = pingInfoContext.Summaries
-            .Where(s => /*s.Start >= startingTime && s.End < endingTime && */s.Target == pingTarget)
+        await using var pingInfoContext = await _pingInfoContextFactory.CreateDbContextAsync(
+            cancellationToken
+        );
+        var results = pingInfoContext
+            .Summaries.Where(s => /*s.Start >= startingTime && s.End < endingTime &&
+                s.Target == pingTarget
+            )
             .Select(s => PingGroupSummary.ToApiModel(s))
             .ToList();
 
         Console.WriteLine($"ShowPingsAsync: number of results: {results.Count}");
         var response = new ShowPingsResponse();
         response.Pings.Add(results);
-        
+
         return response;
+    } */
+
+    public async Task InsertProbeResult(ProbeResult result, CancellationToken cancellationToken)
+    {
+        try
+        {
+            await using var _probeDbContext =
+                await _probeResultsContextFactory.CreateDbContextAsync(cancellationToken);
+
+            result.ProbeSubtypeData = JsonSerializer.Serialize(result);
+            _probeDbContext.Add(result);
+            _probeDbContext.SaveChanges();
+        }
+        catch (Exception e)
+        {
+            _logger.LogError(
+                "CrudOperations: InsertProbeResult: Insertion of ProbeResult failed. {e}",
+                e
+            );
+            throw;
+        }
     }
-    
+
     /*
     public async Task<List<ListPingsResponse>> ListPingsAsync(DateTime startingTime, DateTime endingTime,
         string pingTarget, string metric, string statistic, CancellationToken cancellationToken, TimeSpan? quantum)
@@ -166,6 +180,4 @@ public class CrudOperations
         }).Dump();
          
     } */
-    
-    
 }

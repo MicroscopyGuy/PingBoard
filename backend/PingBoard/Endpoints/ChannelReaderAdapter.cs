@@ -1,11 +1,13 @@
 ﻿namespace PingBoard.Endpoints;
+
 using System.Threading.Channels;
+using Protos;
 
 public class ChannelReaderAdapter<T> : IChannelReaderAdapter
 {
     private readonly ChannelReader<T> _channelReader;
 
-    public ChannelReaderAdapter (ChannelReader<T> channelReader)
+    public ChannelReaderAdapter(ChannelReader<T> channelReader)
     {
         _channelReader = channelReader;
     }
@@ -23,7 +25,7 @@ public class ChannelReaderAdapter<T> : IChannelReaderAdapter
         {
             return null;
         }
-        
+
         var serverEvent = new ServerEvent();
         foreach (var serverEventProperty in serverEvent.GetType().GetProperties())
         {
@@ -35,5 +37,4 @@ public class ChannelReaderAdapter<T> : IChannelReaderAdapter
         }
         return serverEvent;
     }
-    
 }

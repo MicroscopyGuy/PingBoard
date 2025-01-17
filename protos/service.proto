@@ -1,5 +1,5 @@
 ﻿syntax = "proto3";
-
+option csharp_namespace = "PingBoard.Protos";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
@@ -7,9 +7,20 @@ service PingBoardService {
   rpc StartPinging (StartPingingRequest) returns (google.protobuf.Empty);
   rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
-  rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
   rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
-  rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
+  
+  
+  //rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
+  //rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
+  
+}
+
+message TracerouteTarget{
+  string target = 1;
+}
+
+message DnsTarget {
+  string target = 1;
 }
 
 message StartPingingRequest{
@@ -20,19 +31,31 @@ message PingTarget {
   string target = 1;
 }
 
-message PingGroupSummaryPublic {
+message PingResultPublic{
   google.protobuf.Timestamp start = 1;
   google.protobuf.Timestamp end = 2;
-  string target = 3;
-  int32 minimumPing = 4;
-  float averagePing = 5;
-  int32 maximumPing = 6;
-  float jitter = 7;
-  float packetLoss = 8;
-  optional string terminatingIPStatusExplanation = 9;
-  optional string lastAbnormalStatusExplanation = 10;
+  int32 rtt = 3;
+  string target = 4;
+  string ipStatus = 5;
+  int32 ttl = 6;
+  string replyAddress = 7;
+  string ipStatusShortMeaning = 8;
+  string ipStatusOfficialMeaning = 9;
+  string id = 10;
 }
 
+message ListAnomaliesRequest{
+  uint32 numberRequested = 1;
+  string paginationToken = 2;
+  optional PingTarget pingTarget = 3;
+}
+
+message ListAnomaliesResponse{
+  repeated PingResultPublic anomalies = 1;
+  string paginationToken = 2;
+}
+
+/*
 message ShowPingsRequest{
   PingTarget target = 1;
   google.protobuf.Timestamp startingTime = 2;
@@ -41,7 +64,7 @@ message ShowPingsRequest{
 
 message ShowPingsResponse{
   repeated PingGroupSummaryPublic pings = 1;
-}
+}*/
 
 enum Quantum{
   Length = 0;
@@ -72,6 +95,7 @@ enum Statistic{
   COUNT = 6;
 }
 
+
 message ListPingsDatapoint{
   google.protobuf.Timestamp Timestamp = 1;
   double Value = 2;
@@ -81,16 +105,7 @@ message ListPingsResponse{
   repeated ListPingsDatapoint datapoints = 1;
 }
 
-message ListAnomaliesRequest{
-  uint32 numberRequested = 1;
-  string paginationToken = 2;
-  optional PingTarget pingTarget = 3;
-}
 
-message ListAnomaliesResponse{
-  repeated PingGroupSummaryPublic anomalies = 1;
-  string paginationToken = 2;
-}
 
 message ServerEvent{
   message PingOnOffToggle{
@@ -112,12 +127,61 @@ message ServerEvent{
     PingTarget pingTarget = 1;
   }
   
+  // **************** DNS related information *******************
+  message DnsOnOffToggle{
+    DnsTarget dnsTarget = 1;
+    bool active = 2;
+  }
+  
+  message DnsAnomaly{
+    DnsTarget pingTarget = 1;
+    string anomalyDescription = 2;
+  }
+
+  message DnsAgentError{
+    DnsTarget pingTarget = 1;
+    string errorDescription = 2;
+  }
+  
+  message DnsInfo{
+    DnsTarget pingTarget = 1;
+  }
+  
+  // ***************** Traceroute related information ****************
+
+  message TracerouteOnOffToggle{
+    TracerouteTarget tracerouteTarget = 1;
+    bool active = 2;
+  }
+
+  message TracerouteAnomaly{
+    TracerouteTarget tracerouteTarget = 1;
+    string anomalyDescription = 2;
+  }
+
+  message TracerouteAgentError{
+    TracerouteTarget TracerouteTarget = 1;
+    string errorDescription = 2;
+  }
+
+  message TracerouteInfo{
+    TracerouteTarget tracerouteTarget = 1;
+  }
+  
   google.protobuf.Timestamp eventTime = 1;
 
   oneof ServerEvent{
     PingOnOffToggle pingOnOffToggle = 100;
     PingAnomaly pingAnomaly = 101;
     PingInfo pingInfo = 102;
-    PingAgentError pingAgentError = 190;
+    PingAgentError pingAgentError = 109;
+    DnsOnOffToggle dnsOnOffToggle = 110;
+    DnsAnomaly dnsAnomaly = 111;
+    DnsInfo dnsInfo = 112;
+    DnsAgentError dnsAgentError = 119;
+    TracerouteOnOffToggle tracerouteOnOffToggle = 120;
+    TracerouteAnomaly tracerouteAnomaly = 121;
+    TracerouteInfo tracerouteInfo = 122;
+    TracerouteAgentError tracerouteAgentError = 129;
   }
 }

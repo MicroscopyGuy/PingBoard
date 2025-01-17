@@ -19,9 +19,16 @@ import type {
 } from "./types";
 import createClient from "./createClient";
 import { resolve } from "path";
+import getPort from 'get-port';
 
 declare const MAIN_WINDOW_VITE_DEV_SERVER_URL: string;
 declare const MAIN_WINDOW_VITE_NAME: string;
+
+/******USED WHEN STARTING BACKEND SEPARATELY FOR DEBUG SESSION*******/
+const DEBUG_MODE = false;
+const DEBUG_MODE_PORT = 5245; // located in ServiceExtensions.cs
+/********************************************************************/
+
 
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
 if (require("electron-squirrel-startup")) {
@@ -54,25 +61,39 @@ const createWindow = () => {
 
 const serverPath = resolve("../backend/dist");
 
-const startBackend = async () => {
-  const p = spawn(join(serverPath, "PingBoard.exe"), [], {
-    cwd: serverPath,
-    env: {
-      LOG_TO_FILE: "false",
-    },
-  });
-  console.log(`StartBackend process ID: ${process.pid}`);
-  let backendResolver: () => void;
-  p.stdout.on("data", (info) => {
-    if (info.toString().includes("Now listening on:")) {
-      backendResolver();
-    }
-    console.log(info.toString());
-  });
+const startBackend = async (): Promise<number> => {
+  let portNumber;
+  if (!DEBUG_MODE){
+    portNumber = await getPort();
+    const p = spawn(join(serverPath, "PingBoard.exe"), [], {
+      cwd: serverPath,
+      env: {
+        LOG_TO_FILE: "false",
+        SERVER_PORT: `${portNumber}`
+      },
+      //stdio: 'inherit'
+    });
+    console.log(`StartBackend process ID: ${process.pid}`);
+    
+    await new Promise<void>((resolve, reject) => {
+      p.stdout.on("data", (info) => {
+        if (info.toString().includes("Now listening on:")) {
+          resolve();
+        }
+        console.log(info.toString());
+      });
+  
+      p.on("exit", (exitCode) => reject(`Process exited with code ${exitCode}`));
+      p.on("error", (error) => reject(`${error}`));
+      p.stderr.on("data", (info) => console.log(info));
+    });
+    console.log(`StartBackend returns port#: ${portNumber}`)
+  }
+  else{
+    portNumber = DEBUG_MODE_PORT;
+  }
 
-  await new Promise<void>((resolve, reject) => {
-    backendResolver = resolve;
-  });
+  return portNumber;
 };
 
 let backendClient: BackendClient;
@@ -134,7 +155,8 @@ async function listenServerEvents(w: BrowserWindow) {
 }
 
 app.on("ready", async () => {
-  await startBackend();
+  const portNumber = await startBackend();
+  console.log(`app.on("ready") port#: ${portNumber}`)
   ipcMain.handle("api:makeRequest", (e, args) =>
     tryMakeApiRequest(args[0], args[1])
   );
@@ -142,7 +164,7 @@ app.on("ready", async () => {
   ipcMain.handle("preloadLog", (logStr) => console.log(logStr));
 
   const mainWindow = createWindow();
-  backendClient = createClient("http://localhost:5245");
+  backendClient = createClient(`http://localhost:${portNumber}`);
   listenServerEvents(mainWindow);
 });
 
