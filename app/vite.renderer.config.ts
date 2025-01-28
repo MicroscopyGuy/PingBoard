@@ -1,8 +1,13 @@
-import { defineConfig } from 'vite';
+import path from "path"
+import { defineConfig } from "vite"
 
-// https://vitejs.dev/config
+
+ 
 export default defineConfig({
-    resolve: {
-        dedupe: ['react', 'react-dom'],
-      },
-});
+  resolve: {
+    alias: {
+      "@": path.resolve(__dirname, "./src/dashboard/"),
+    },
+    dedupe: ['react', 'react-dom'],
+  },
+})

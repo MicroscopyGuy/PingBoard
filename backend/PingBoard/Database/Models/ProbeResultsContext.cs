@@ -10,13 +10,6 @@ using Probes.NetworkProbes.Common;
 public class ProbeResultsContext : DbContext
 {
     public DbSet<ProbeResult> ProbeResults { get; set; }
-    private SqliteConnectionStringBuilder _connectionStringBuilder { get; set; }
-
-    /*
-    public ProbeResultsContext(SqliteConnectionStringBuilder connectionStringBuilder)
-    {
-        _connectionStringBuilder = connectionStringBuilder;
-    }*/
 
     protected override void OnConfiguring(DbContextOptionsBuilder options) =>
         options.UseSqlite($"Data Source={ServiceExtensions.DatabasePath}");

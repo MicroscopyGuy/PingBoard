@@ -11,7 +11,7 @@ public static class IpStatusExtensions
     /// <summary>
     /// Both the DestinationProhibited and DestinationProtocolUnreachable IPStatus enums have the same ordinal value (11004).
     /// This causes a System.TypeInitializationException when deserializing this data into StatusCodes (IImmutableDictionary)
-    /// from the ICMPStatusCodes.json file since the each IPStatus' ordinal value is checked for uniqueness.
+    /// from the ICMPStatusCodes.json file since each IPStatus' ordinal value is checked for uniqueness.
     ///
     /// The DisambiguatedIpStatus enums below are a direct 1:1 translation of the IPStatus enums, with the only exception
     /// being that DestinationProtocolUnreachable and DestinationProhibited and have been remapped to ordinal values 4 and 6,

@@ -56,6 +56,7 @@ public record ProbeResult
     /// The data retrieved from a particular probe operation which is not common to all probes. Ie, ping related
     /// information, or dns, or traceroute related info, etc.
     /// </summary>
+    [JsonIgnore]
     public string ProbeSubtypeData { get; set; }
 
     public ProbeResult()

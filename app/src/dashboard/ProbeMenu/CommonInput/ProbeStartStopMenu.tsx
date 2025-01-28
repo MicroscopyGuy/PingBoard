@@ -1,12 +1,12 @@
 import { useState, useContext, useCallback } from 'react';
 import './App.css';
-import { DatabaseContext } from './PingBackendContext';
-import { useServerEventListener } from "./ServerEventListener";
+import { DatabaseContext } from '../../PingBackendContext';
+import { useServerEventListener } from "../../ServerEventListener";
 import { PingTarget, ServerEvent_PingOnOffToggle, StartPingingRequest } from "client/dist/gen/service_pb";
 import { Empty } from "@bufbuild/protobuf";
 
 
-interface PingStartButtonProps{
+interface ProbeStartButtonProps{
     pingTarget: string,
     pingingActive: boolean
 }
@@ -15,7 +15,7 @@ interface PingStartButtonProps{
 * @param param0 {pingTarget} : PingStartButtonProps
 * @description A button to start pinging after a target is entered in the target box
 */
-function PingStartButton({pingTarget, pingingActive}: PingStartButtonProps){
+function ProbeStartButton({pingTarget, pingingActive}: PingStartButtonProps){
     const databaseContext = useContext(DatabaseContext);
   
     function startPinging(){
@@ -92,7 +92,7 @@ function PingTargetInputManager(props: PingTargetInputManagerProps){
 * @description A component which represents the entirety of the pinging controls, and is responsible
 *              for tracking whether pinging is on or off via the ServerEvent stream.
 */
-export default function PingStartStopMenu(){
+export default function ProbeStartStopMenu(){
     const [pingTarget, setPingTarget] = useState<string>("");
     const [pingingActive, setPingingActive ] = useState<boolean>(false);
   
