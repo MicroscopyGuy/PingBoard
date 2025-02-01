@@ -27,19 +27,19 @@ export function ProbeManagementTable(props: ProbeManagementTableProps){
     <Table className="w-[800px]">
       <TableHeader>
         <TableRow>
-            {props.columns.map((columnObj: ColumnDef<ProbeStatus>)=>{
-              return <TableHead className="text-right"> {columnObj.header as string} </TableHead>
-            })}
+          {props.columns.map((columnObj: ColumnDef<ProbeStatus>)=>{
+            return <TableHead className="text-right"> {columnObj.header as string} </TableHead>
+          })}
         </TableRow>
       </TableHeader>
       <TableBody>
         <TableRow >
           {props.data.map((dataObj: ProbeStatus)=>{
-                return (<>
-                          <TableCell className="text-right"> {dataObj.target as string} </TableCell>
-                          <TableCell className="text-right"> {dataObj.probetype as string} </TableCell>
-                          <TableCell className="text-right"> {dataObj.status as string} </TableCell>
-                        </>)
+            return (<>
+              <TableCell className="text-right"> {dataObj.target as string} </TableCell>
+              <TableCell className="text-right"> {dataObj.probetype as string} </TableCell>
+              <TableCell className="text-right"> {dataObj.status as string} </TableCell>
+            </>)
           })}
         </TableRow>
       </TableBody>

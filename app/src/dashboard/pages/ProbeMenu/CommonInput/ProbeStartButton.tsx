@@ -1,8 +1,9 @@
 import {useState, useEffect, useContext} from 'react';
 import { Button } from '@/components/ui/button';
+import {SquarePlus} from 'lucide-react';
 
 
-export function StartProbeButton(){
+export function AddProbeButton(){
     const [probeActive, setProbeActive] = useState<boolean>(false);
 
     const onProbeSubmitted = (): void => {
@@ -12,7 +13,7 @@ export function StartProbeButton(){
     return (
         <div>
             <Button>
-                Did it work
+                Add Probe <SquarePlus    />
             </Button>
         </div>
     )
