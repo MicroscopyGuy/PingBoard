@@ -72,6 +72,23 @@
     --sidebar-border: 240 3.7% 15.9%;
     --sidebar-ring: 217.2 91.2% 59.8%}
 }
+
+.app-layout{
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(5, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.sidebar{
+  grid-area: 1 / 1 / 6 / 2; 
+}
+
+.content{
+  grid-area: 1 / 2 / 6 / 6;
+}
+
 @layer base {
   * {
     @apply border-border;

@@ -1,4 +1,4 @@
-import { Home, Settings } from "lucide-react"
+import { Router, Settings, ChartLine , Github, TestTube} from "lucide-react"
  
 import {
   Sidebar,
@@ -14,14 +14,25 @@ import {
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
-    icon: Home,
+    title: "Start/Stop Monitoring",
+    url: "#/home",
+    icon: Router,
+  },
+  {
+    title: "View Graph",
+    url: "#/probe-graph",
+    icon: ChartLine,
   },
   {
     title: "Settings",
-    url: "#",
+    url: "#/settings",
     icon: Settings,
+  },
+
+  {
+    title: "View Project on Github",
+    url: "#/github",
+    icon: Github,
   },
 ]
  

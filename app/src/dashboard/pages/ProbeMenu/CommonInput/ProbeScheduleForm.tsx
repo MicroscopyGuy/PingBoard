@@ -5,7 +5,6 @@ export type ProbeScheduleJson = {
 }
 
 export function ProbeScheduleForm(probeFormProps: ProbeFormProps, probeScheduleJson: ProbeScheduleJson ){
-
     return (
         <div>
             <text> Spread </text>

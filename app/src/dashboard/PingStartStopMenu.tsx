@@ -5,7 +5,6 @@ import { useServerEventListener } from "./ServerEventListener";
 import { PingTarget, ServerEvent_PingOnOffToggle, StartPingingRequest } from "client/dist/gen/service_pb";
 import { Empty } from "@bufbuild/protobuf";
 
-
 interface PingStartButtonProps{
     pingTarget: string,
     pingingActive: boolean
