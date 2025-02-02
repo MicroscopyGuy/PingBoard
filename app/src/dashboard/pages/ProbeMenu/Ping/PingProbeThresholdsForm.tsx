@@ -11,7 +11,7 @@ function PingProbeThresholdsForm(props: PingProbeFormProps){
                 placeholder = "IPAddress or website here"
                 value = {props["maxAllowedRtt"]}
                 onChange = {(e) => {props.onInputChange('maxAllowedRtt', e.target.value)}}
-                disabled = {props.probingActive}/>
+                />
         </div>
     );
 }

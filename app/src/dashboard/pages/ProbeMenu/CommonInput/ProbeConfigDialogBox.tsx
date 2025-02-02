@@ -1,41 +1,18 @@
-import {useState} from 'react';
-import {Card} from '@/components/ui/card';
-import {Button} from '@/components/ui/button'
-import { SquarePlay } from 'lucide-react';
-import { ProbeSelectionDropDown } from './ProbeSelectionDropDown';
-import { probes, Probe } from './ProbeFormTypes';
-import { ProbeFormTypeDecider} from './ProbeFormTypeDecider';
-import { Dialog } from '@/components/ui/dialog';
+import {Dialog, 
+    DialogTrigger, 
+    DialogTitle, 
+    DialogContent, 
+    DialogHeader, 
+    DialogDescription, 
+    Label,
+    Input}
+ from '@/components/ui/dialog';
+
+function ProbeConfigDialogBox(){
 
 
-export function ProbeFormCard(){
-    const [probeType, setProbeType] = useState<Probe>(null);
-    const [viewAdvanced, setViewAdvanced] = useState<boolean>(false); // not implemented yet
-
-    return (
+    return(
         <Dialog>
-            <div>
-                <ProbeSelectionDropDown
-                    probes={probes}
-                    onSelection={setProbeType}
-                    probeSelection={probeType    
-                }/>
-            </div>
-            <div>
-                <Button>
-                    Send Probe 
-                    <SquarePlay/>
-                </Button>
-            </div>
-            <div>  
-                <ProbeFormTypeDecider probe={probeType} /> 
-            </div>
-        </Dialog>
-    )
-}
-
-/*
-<Dialog>
       <DialogTrigger asChild>
         <Button variant="outline">Edit Profile</Button>
       </DialogTrigger>
@@ -66,4 +43,5 @@ export function ProbeFormCard(){
       </DialogContent>
     </Dialog>
   )
-} */
+}
+

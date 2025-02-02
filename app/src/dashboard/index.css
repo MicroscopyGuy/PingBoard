@@ -89,6 +89,20 @@
   grid-area: 1 / 2 / 6 / 6;
 }
 
+/*
+.probe-management-page {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+  width:fit-content
+}*/
+  
+  .probe-management{ grid-area: 2 / 1 / 11 / 11; }
+  .add-probe { grid-area: 1 / 1 / 2 / 3; }
+
+
 @layer base {
   * {
     @apply border-border;

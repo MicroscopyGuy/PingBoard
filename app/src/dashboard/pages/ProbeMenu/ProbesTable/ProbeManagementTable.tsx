@@ -24,7 +24,7 @@ import { ProbeStatus } from './ProbeManagementTableColumns'
 export function ProbeManagementTable(props: ProbeManagementTableProps){
 
   return (
-    <Table className="w-[800px]">
+    <Table className="w-[800px] m-auto" >
       <TableHeader>
         <TableRow>
           {props.columns.map((columnObj: ColumnDef<ProbeStatus>)=>{
