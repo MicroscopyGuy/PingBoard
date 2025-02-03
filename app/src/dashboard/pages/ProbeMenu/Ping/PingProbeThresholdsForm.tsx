@@ -4,11 +4,11 @@ import {PingProbeFormProps} from './PingProbeFormTypes';
 function PingProbeThresholdsForm(props: PingProbeFormProps){
 
     return (
-        <div>
-            <text> Target </text>
-            <input className = "probeOptions-pingProbe behavior"
+        <div className='grid grid-cols-1'>
+            <text className='probeOptions-title'>Maximum Rtt</text>
+            <input className = "probeOptions pingProbe thresholds"
                 type = "text"
-                placeholder = "IPAddress or website here"
+                placeholder = "Time before packet is considered lost"
                 value = {props["maxAllowedRtt"]}
                 onChange = {(e) => {props.onInputChange('maxAllowedRtt', e.target.value)}}
                 />

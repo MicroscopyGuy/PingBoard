@@ -13,7 +13,7 @@ export default function ProbeManagementPage(){
     }]);
 
     return (
-        <div className='probe-management-page flex justify-center items-center'>
+        <div className='probe-management-page grid grid-columns-1 flex justify-center items-center'>
             <div className= "btn add-probe">
                 <ProbeFormCard />
             </div>

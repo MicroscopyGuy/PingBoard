@@ -18,7 +18,7 @@ export function PingProbeConfigForm(){
     }
 
     return (
-        <div>
+        <div className="grid grid-cols-1">
             <PingProbeBehaviorForm 
                 {...probeDataJson}
                 showAdvancedOptions={viewAdvOptions}

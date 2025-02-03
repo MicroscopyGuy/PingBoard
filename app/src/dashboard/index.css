@@ -99,9 +99,24 @@
   width:fit-content
 }*/
   
-  .probe-management{ grid-area: 2 / 1 / 11 / 11; }
-  .add-probe { grid-area: 1 / 1 / 2 / 3; }
+.probe-management{ grid-area: 2 / 1 / 11 / 11; }
+.add-probe { grid-area: 1 / 1 / 2 / 3; }
 
+.probeOptions{
+  /*padding: bottom 20px; */
+  margin-bottom: 32px;
+  border-radius: 0.5ex;
+  line-height: 140%;  
+}
+
+.probeOptions-title{
+  font-size:16px;
+  margin-bottom:2px;
+}
+
+.btn{
+  border-radius: 0.5ex;
+}
 
 @layer base {
   * {
