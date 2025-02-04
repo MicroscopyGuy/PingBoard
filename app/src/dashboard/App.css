@@ -36,3 +36,43 @@
 }
 
 
+.probe-management{ grid-area: 2 / 1 / 11 / 11; }
+.add-probe { grid-area: 1 / 1 / 2 / 3; }
+
+.probeOptions{
+  /*padding: bottom 20px; */
+  margin-bottom: 32px;
+  border-radius: 0.5ex;
+  line-height: 140%;  
+}
+
+.probeOptions-title{
+  font-size:16px;
+  margin-bottom:2px;
+}
+
+.btn{
+  border-radius: 0.5ex;
+}
+
+.btn.send-probe{
+  background-color: rgb(29, 201, 29);
+  background-color: linear-gradient(0,(29, 150, 29), rgb(29, 201, 29))
+}
+
+.btn.add-probe{
+  forced-color-adjust: rgba(18, 249, 252, 0.876);
+  background-color: rgba(18, 249, 252, 0.876);
+  background-color: linear-gradient(0,(29, 150, 29), rgb(8, 251, 255))
+}
+
+.app-page {
+  display: grid;
+  margin-inline: 10px;
+  margin-left:10rem;
+  margin-right:10rem;
+  align-content: center;
+  width: fit-content;
+}
+
+

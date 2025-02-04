@@ -2,7 +2,7 @@ import { ProbeManagementTable } from './ProbesTable/ProbeManagementTable';
 import {useState, useEffect } from 'react';
 import { ProbeStatus, columns } from './ProbesTable/ProbeManagementTableColumns';
 import { AddProbeButton } from './CommonInput/AddProbeButton';
-import { ProbeFormCard } from './CommonInput/ProbeFormCard';
+import { ProbeFormDialog } from './CommonInput/ProbeFormDialog';
 
 export default function ProbeManagementPage(){
     const [probeStatuses, setProbeStatuses] = useState<ProbeStatus[]>([{
@@ -13,9 +13,9 @@ export default function ProbeManagementPage(){
     }]);
 
     return (
-        <div className='probe-management-page grid grid-columns-1 flex justify-center items-center'>
+        <div className='app-page'>
             <div className= "btn add-probe">
-                <ProbeFormCard />
+                <ProbeFormDialog />
             </div>
             <div className="tbl probe-management">
                 <ProbeManagementTable columns={columns} data={probeStatuses}/>

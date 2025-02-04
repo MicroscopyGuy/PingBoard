@@ -1,7 +1,7 @@
 import { useState, useEffect, useContext} from 'react';
 import { Button } from '@/components/ui/button';
 import { SquarePlus } from 'lucide-react';
-import { ProbeFormCard } from './ProbeFormCard';
+import { ProbeFormDialog } from './ProbeFormDialog';
 
 
 // will need callback to submit form info later
@@ -18,7 +18,7 @@ export function AddProbeButton(){
             <Button className="btn add-probe" onClick={() => setAddingProbe(!addingProbe)}>
                 <SquarePlus/>
                 Add Probe
-                {!addingProbe && <ProbeFormCard />}
+                {!addingProbe && <ProbeFormDialog />}
             </Button>
         </div>
     )

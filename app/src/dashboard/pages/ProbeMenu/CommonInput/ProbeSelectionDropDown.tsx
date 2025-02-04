@@ -27,9 +27,14 @@ export function ProbeSelectionDropDown(props: ProbeSelectionDropDownProps) {
   const [open, setOpen] = React.useState(false)
   const [value, setValue] = React.useState("")
  
+  /*
+  const whenMenuItemSelected = (probe: Probe) => {
+
+  }*/
+
   return (
     <DropdownMenu>
-        <DropdownMenuTrigger>Select Probe</DropdownMenuTrigger>
+        <DropdownMenuTrigger>{props.probeSelection ? props.probeSelection.label : "Select Probe"}</DropdownMenuTrigger>
         <DropdownMenuContent>
             {props.probes.map((probe: Probe) => {
                 return(
