@@ -39,7 +39,7 @@ export function ProbeFormCard(){
                 }/>
             <ProbeFormTypeDecider probe={probeType} /> 
         <DialogFooter>
-            <Button type="submit">Send Probe<SquarePlay/></Button>
+            <Button type="submit" className="btn send-probe">Send Probe<SquarePlay/></Button>
         </DialogFooter>
         </DialogContent>
         </Dialog>

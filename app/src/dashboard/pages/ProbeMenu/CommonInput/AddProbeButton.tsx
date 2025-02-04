@@ -15,7 +15,7 @@ export function AddProbeButton(){
 
     return (
         <div>
-            <Button className = "btn probe-add" onClick={() => setAddingProbe(!addingProbe)}>
+            <Button className="btn add-probe" onClick={() => setAddingProbe(!addingProbe)}>
                 <SquarePlus/>
                 Add Probe
                 {!addingProbe && <ProbeFormCard />}

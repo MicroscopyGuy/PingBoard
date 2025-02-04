@@ -118,6 +118,27 @@
   border-radius: 0.5ex;
 }
 
+.btn.send-probe{
+  background-color: rgb(29, 201, 29);
+  background-color: linear-gradient(0,(29, 150, 29), rgb(29, 201, 29))
+}
+
+.btn.add-probe{
+  forced-color-adjust: rgba(18, 249, 252, 0.876);
+  background-color: rgba(18, 249, 252, 0.876);
+  background-color: linear-gradient(0,(29, 150, 29), rgb(8, 251, 255))
+}
+
+.probe-button .stop-all{
+
+}
+
+.probe-button .stop{
+
+}
+
+
+
 @layer base {
   * {
     @apply border-border;
