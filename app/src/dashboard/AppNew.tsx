@@ -25,7 +25,6 @@ function App() {
                         <Route path='/probe-graph' element={<AnomaliesTable />} />
                         <Route path='/settings'/>
                         <Route path='/github'/>
-                        <Route path='/test' element = {<TestElement/>} />
                     </Route>
                 </Routes>
             </HashRouter>

@@ -17,8 +17,10 @@ export function PingProbeConfigForm(){
         setProbeDataJson(updatedFormJson);
     }
 
+    console.log(probeDataJson);
+    
     return (
-        <div className="grid grid-cols-1">
+        <div className="probeConfigForm">
             <PingProbeBehaviorForm 
                 {...probeDataJson}
                 showAdvancedOptions={viewAdvOptions}

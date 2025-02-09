@@ -90,34 +90,23 @@ public class ProbeOperationsCenter : BackgroundService
     /// <summary>
     /// When appropriate, it synchronously begins probing
     /// </summary>
+    ///
     /// <param name="probeOperation">
     /// The type of probing operation selected by the user
     /// </param>
     ///
-    /// <param name="behavior">
-    /// Parametric values entered by the user which will dictate the behavior and target of the probing operation.
+    /// <param name="probeConfig">
+    /// An object which wraps one of each of the following: IProbeBehavior, IProbeThresholds, and ProbeSchedule.
+    /// Used for more convenient handling of these types in several areas where all three are required.
     /// </param>
-    ///
-    /// <param name="thresholds">
-    /// Parametric values entered by the user, used to qualify whether a probing operation is anomalous.
-    /// </param>
-    ///
-    /// <param name="schedule">
-    /// Parametric values entered by the user which are used to apply temporal behavior to the probing operation
-    /// </param>
-    public void StartProbing(
-        string probeOperation,
-        IProbeBehavior behavior,
-        IProbeThresholds thresholds,
-        ProbeSchedule schedule
-    )
+    public void StartProbing(string probeOperation, ProbeConfigAggregate probeConfig)
     {
         _logger.LogInformation("(3) ProbeOperationsCenter: StartProbing hit");
 
         lock (_lockingObject)
         {
             _logger.LogDebug(
-                $"ProbeOperationsCenter: StartProbing: Entered with target:{behavior.Target}"
+                $"ProbeOperationsCenter: StartProbing: Entered with target:{probeConfig.Behavior.Target}"
             );
             // simply do nothing if the target is already being probed
             _logger.LogInformation("(4) ProbeOperationsCenter: StartProbing hit");
@@ -133,7 +122,12 @@ public class ProbeOperationsCenter : BackgroundService
             _logger.LogInformation(
                 "(6) ProbeOperationsCenter: StartProbing: About to get Liaison object"
             );
-            _currentLiaison = _probeLiaisonFactory(probeOperation, behavior, thresholds, schedule);
+            _currentLiaison = _probeLiaisonFactory(
+                probeOperation,
+                probeConfig.Behavior,
+                probeConfig.Thresholds,
+                probeConfig.Schedule
+            );
             _logger.LogDebug($"ProbeOperationsCenter: Probing: new liaison created");
             _logger.LogInformation(
                 "(7) ProbeOperationsCenter: StartProbing: Liaison object created"

@@ -35,15 +35,19 @@
   border-color:black;
 }
 
-
 .probe-management{ grid-area: 2 / 1 / 11 / 11; }
 .add-probe { grid-area: 1 / 1 / 2 / 3; }
 
+.probeConfigForm{
+  display: grid;
+}
+
 .probeOptions{
   /*padding: bottom 20px; */
-  margin-bottom: 32px;
+  margin-bottom: 18px;
   border-radius: 0.5ex;
-  line-height: 140%;  
+  line-height: 140%;
+  color:black;  
 }
 
 .probeOptions-title{
@@ -69,10 +73,8 @@
 .app-page {
   display: grid;
   margin-inline: 10px;
-  margin-left:10rem;
-  margin-right:10rem;
+  margin-left: 10rem;
+  margin-right: 10rem;
   align-content: center;
   width: fit-content;
 }
-
-

@@ -37,8 +37,8 @@ export function ProbeFormDialog(){
         <ProbeSelectionDropDown
                     probes={probes}
                     onSelection={setProbeType}
-                    probeSelection={probeType    
-                }/>
+                    probeSelection={probeType}/>
+                    
             <ProbeFormTypeDecider probe={probeType} /> 
         <DialogFooter>
             <Button type="submit" className="btn send-probe">Send Probe<SquarePlay/></Button>

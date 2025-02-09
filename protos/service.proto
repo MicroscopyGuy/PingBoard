@@ -5,14 +5,29 @@ import "google/protobuf/empty.proto";
 
 service PingBoardService {
   rpc StartPinging (StartPingingRequest) returns (google.protobuf.Empty);
-  rpc StopPinging  (google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc StopPinging (google.protobuf.Empty) returns (google.protobuf.Empty);
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
   rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
   
+  rpc StartProbing (StartProbingRequest) returns (StartProbingResponse);
+  rpc StopProbing (StopProbingRequest) returns (google.protobuf.Empty);
+  rpc StopAllProbing (google.protobuf.Empty) returns (google.protobuf.Empty);
   
   //rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
   //rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
   
+}
+
+message StartProbingRequest{
+  string requestJson = 1;
+}
+
+message StartProbingResponse{
+  string probeId = 1;
+}
+
+message StopProbingRequest{
+  string probeId = 1;
 }
 
 message TracerouteTarget{
@@ -55,17 +70,6 @@ message ListAnomaliesResponse{
   string paginationToken = 2;
 }
 
-/*
-message ShowPingsRequest{
-  PingTarget target = 1;
-  google.protobuf.Timestamp startingTime = 2;
-  google.protobuf.Timestamp endingTime = 3;
-}
-
-message ShowPingsResponse{
-  repeated PingGroupSummaryPublic pings = 1;
-}*/
-
 enum Quantum{
   Length = 0;
 }
@@ -95,7 +99,6 @@ enum Statistic{
   COUNT = 6;
 }
 
-
 message ListPingsDatapoint{
   google.protobuf.Timestamp Timestamp = 1;
   double Value = 2;
@@ -104,8 +107,6 @@ message ListPingsDatapoint{
 message ListPingsResponse{
   repeated ListPingsDatapoint datapoints = 1;
 }
-
-
 
 message ServerEvent{
   message PingOnOffToggle{

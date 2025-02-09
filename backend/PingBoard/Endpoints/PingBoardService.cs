@@ -3,6 +3,7 @@
 using System.Collections.Immutable;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
+using JsonSchemaGeneratedTypes;
 using PingBoard.Database.Utilities;
 using PingBoard.Endpoints;
 using PingBoard.Probes.NetworkProbes;
@@ -57,6 +58,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
                 _logger.LogDebug(
                     $"PingBoardService: StartPinging: Was already pinging {request.Target.Target}"
                 );
+
                 throw new RpcException(
                     new Status(StatusCode.FailedPrecondition, "Was already pinging!")
                 );
@@ -268,28 +270,46 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         return response;
     }
 
-    /*
-    public override async Task<ShowPingsResponse> ShowPings(
-        ShowPingsRequest request,
+    public override async Task<StartProbingResponse> StartProbing(
+        StartProbingRequest request,
         ServerCallContext context
     )
     {
-        _logger.LogDebug("ShowPings: Starting API call");
+        _logger.LogInformation("(1) PingBoard Service: StartProbing hit");
+        var probeSchema = ProbeSchema.Parse(request.RequestJson);
+        var probeType = probeSchema["ProbeType"].AsString.GetString()!;
+        var configAggregate = ProbeInteropLayer.ProbeRequestJsonToConfigObjects(
+            probeSchema,
+            probeType
+        );
+
         try
         {
-            var response = await _crudOperations.ShowPingsAsync(
-                request.StartingTime.ToDateTime(),
-                request.EndingTime.ToDateTime(),
-                request.Target.ToString(),
-                context.CancellationToken
-            );
-            _logger.LogDebug($"ShowPing: number of results: {response.Pings.Count}");
-            return response;
+            if (_probeOperationsCenter.IsProbingActive())
+            {
+                _logger.LogDebug(
+                    $"PingBoardService: StartPinging: Was already probing{configAggregate.Behavior.Target}"
+                );
+
+                throw new RpcException(
+                    new Status(StatusCode.FailedPrecondition, "Was already probing!")
+                );
+            }
+
+            _probeOperationsCenter.StartProbing(probeType, configAggregate);
+            return new Empty();
+        }
+        catch (RpcException rpcException)
+        {
+            _logger.LogError($"PingBoardService: StartProbing: {rpcException}");
+            Console.WriteLine($"{rpcException}");
         }
         catch (Exception e)
         {
-            _logger.LogError(e.ToString());
-            throw;
+            _logger.LogError($"PingBoardService: StartProbing: {e}");
+            Console.WriteLine($"{e}");
         }
-    }*/
+
+        return new Empty();
+    }
 }

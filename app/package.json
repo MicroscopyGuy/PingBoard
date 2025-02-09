@@ -9,7 +9,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "generate-schema": "tsx bin/buildZodSchemas.ts"
   },
   "devDependencies": {
     "@electron-forge/cli": "^7.5.0",
@@ -34,6 +35,7 @@
     "prettier": "^3.3.3",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
+    "tsx": "^4.19.2",
     "typescript": "~4.5.4",
     "vite": "^5.4.2"
   },
@@ -44,6 +46,7 @@
   },
   "license": "MIT",
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^7.3.0",
     "@blueprintjs/core": "^5.11.0",
     "@blueprintjs/icons": "^5.11.0",
     "@bufbuild/protobuf": "^1.10.0",
@@ -73,6 +76,9 @@
     "react-router": "^7.1.3",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
-    "undici": "^6.20.1"
+    "undici": "^6.20.1",
+    "zod": "^3.24.1",
+    "zod-openapi": "^4.2.3",
+    "zod-to-json-schema": "^3.24.1"
   }
 }
