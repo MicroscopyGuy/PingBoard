@@ -9,26 +9,14 @@ using Probes.NetworkProbes.Common;
 /// </summary>
 public class ProbeOperationsCenter : BackgroundService
 {
-    private readonly Func<
-        string,
-        IProbeBehavior,
-        IProbeThresholds,
-        ProbeSchedule,
-        NetworkProbeLiaison
-    > _probeLiaisonFactory;
+    private readonly Func<string, ProbeConfigAggregate, NetworkProbeLiaison> _probeLiaisonFactory;
     private readonly ILogger<ProbeOperationsCenter> _logger;
     private volatile NetworkProbeLiaison? _currentLiaison;
-    private int _checkRunningJobsDelayMs = 100;
+    private int _checkRunningJobsDelayMs = 10;
     private readonly object _lockingObject = new object();
 
     public ProbeOperationsCenter(
-        Func<
-            string,
-            IProbeBehavior,
-            IProbeThresholds,
-            ProbeSchedule,
-            NetworkProbeLiaison
-        > probeLiaisonFactory,
+        Func<string, ProbeConfigAggregate, NetworkProbeLiaison> probeLiaisonFactory,
         ILogger<ProbeOperationsCenter> logger
     )
     {
@@ -57,6 +45,7 @@ public class ProbeOperationsCenter : BackgroundService
                         TaskStatus.Canceled,
                         TaskStatus.Faulted,
                     };
+
                     if (resetStatuses.Contains(currentStatus))
                     {
                         _logger.LogTrace(
@@ -122,12 +111,7 @@ public class ProbeOperationsCenter : BackgroundService
             _logger.LogInformation(
                 "(6) ProbeOperationsCenter: StartProbing: About to get Liaison object"
             );
-            _currentLiaison = _probeLiaisonFactory(
-                probeOperation,
-                probeConfig.Behavior,
-                probeConfig.Thresholds,
-                probeConfig.Schedule
-            );
+            _currentLiaison = _probeLiaisonFactory(probeOperation, probeConfig);
             _logger.LogDebug($"ProbeOperationsCenter: Probing: new liaison created");
             _logger.LogInformation(
                 "(7) ProbeOperationsCenter: StartProbing: Liaison object created"

@@ -9,7 +9,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "cd PingBoard && dotnet publish -o ../dist",
-    "generate-schemas": "generatejsonschematypes --rootNamespace PingBoard.JsonSchemaGeneratedTypes --outputPath PingBoard/JsonSchemaGeneratedTypes ../app/probe.schema.json"
+    "generate-schemas": "rm -rf PingBoard/JsonSchemaGeneratedTypes && generatejsonschematypes config corvusGenerationSettings.json"
   },
   "keywords": [],
   "author": "",

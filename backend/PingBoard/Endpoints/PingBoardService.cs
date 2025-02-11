@@ -11,6 +11,8 @@ using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
 using Probes.Utilities;
 using Protos;
+using StartProbe = JsonSchemaGeneratedTypes.StartProbeRequest;
+using StopProbe = JsonSchemaGeneratedTypes.StopProbeRequest;
 
 /// <summary>
 /// A class which represents the service offerings of the PingBoard backend, and defines
@@ -37,6 +39,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         _logger = logger;
     }
 
+    /*
     /// <summary>
     /// This function directly handles each request from the frontend to begin pinging a target,
     /// by directing the ProbeOperationsCenter to StartPinging, if it isn't already.
@@ -86,6 +89,41 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         catch (Exception e)
         {
             _logger.LogError($"PingBoardService: StartProbing: {e}");
+            Console.WriteLine($"{e}");
+        }
+
+        return new Empty();
+    }*/
+
+
+    public override async Task<Empty> StopProbing(
+        StopProbingRequest request,
+        ServerCallContext context
+    )
+    {
+        try
+        {
+            if (!_probeOperationsCenter.IsProbingActive())
+            {
+                _logger.LogDebug("PingBoardService: StopProbing: Was not probing");
+                // case covered, gRPC will cover this and return to user as friendly
+                throw new RpcException(
+                    new Status(StatusCode.FailedPrecondition, "Wasn't probing!")
+                );
+            }
+
+            _logger.LogDebug($"PingBoardService: StopProbing");
+            await _probeOperationsCenter.StopProbingAsync();
+            return new Empty();
+        }
+        catch (RpcException rpcException)
+        {
+            _logger.LogError($"PingBoardService: StopProbing: {rpcException}");
+            Console.WriteLine($"{rpcException}");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError($"PingBoardService: StopProbing: {e}");
             Console.WriteLine($"{e}");
         }
 
@@ -270,16 +308,18 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         return response;
     }
 
-    public override async Task<StartProbingResponse> StartProbing(
+    public override async Task<Google.Protobuf.WellKnownTypes.Empty> StartProbing(
         StartProbingRequest request,
         ServerCallContext context
     )
     {
         _logger.LogInformation("(1) PingBoard Service: StartProbing hit");
-        var probeSchema = ProbeSchema.Parse(request.RequestJson);
-        var probeType = probeSchema["ProbeType"].AsString.GetString()!;
+        //var probeSchema = request.RequestJson.Parse(request.RequestJson);
+        var startProbeConfig = StartProbe.Parse(request.RequestJson);
+        var probeType = startProbeConfig.;
+        //var probeType = probeSchema["ProbeType"].AsString.GetString()!;
         var configAggregate = ProbeInteropLayer.ProbeRequestJsonToConfigObjects(
-            probeSchema,
+            startProbeConfig,
             probeType
         );
 

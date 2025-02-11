@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using JsonSchemaGeneratedTypes;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using PingBoard.Database.Utilities;
 using PingBoard.Endpoints;
 using PingBoard.Probes.NetworkProbes;
@@ -12,50 +13,53 @@ using Probes.NetworkProbes.Ping;
 using Probes.Services;
 using Probes.Utilities;
 using Protos;
+using StartProbe = JsonSchemaGeneratedTypes.StartProbeRequest;
+using StopProbe = JsonSchemaGeneratedTypes.StopProbeRequest;
 
 public static class ProbeInteropLayer
 {
     // csharpier-ignore
-    private static ProbeConfigAggregate PingProbeConfigFromProbeRequest(ProbeSchema probeConfigInfo)
+    private static ProbeConfigAggregate PingProbeConfigFromProbeRequest(in PingProbeConfig pingProbeRequest)
     {
-        if (!probeConfigInfo.TryGetAsPingProbeConfigSchema(out var jsonRequest))
-        {
-            throw new ArgumentException("Invalid probe operation");
-        }
 
-        var ipTarget = jsonRequest.Target.IsIpAddressTargetSchema;
-        var configuredTarget = ipTarget
-            ? jsonRequest.Target.AsIpAddressTargetSchema.AsString.GetString()!
-            : jsonRequest.Target.AsHostnameTargetSchema.AsString.GetString()!;
+        var targetObj = pingProbeRequest.Target.AsRequiredTargetAndTargetType;
+        var isIpTarget = targetObj.TargetType.AsString.GetString() == "IpAddress";
+        var configuredTarget = targetObj.Target.AsString.GetString();
 
         var pingBehavior = new PingProbeBehavior(
-            ipTarget ? new IpAddressTarget(configuredTarget) : new HostnameTarget(configuredTarget),
-            (int)jsonRequest.Ttl.AsNumber.AsDouble(),
-            (int)jsonRequest.Timeout.AsNumber.AsDouble(),
-            jsonRequest.PacketPayload.AsString.GetString()!
+            isIpTarget ? new IpAddressTarget(configuredTarget) : new HostnameTarget(configuredTarget),
+            (int) pingProbeRequest.Ttl.AsNumber.AsDouble(),
+            (int) pingProbeRequest.Timeout.AsNumber.AsDouble(), //AsNumber.AsDouble(),
+            pingProbeRequest.PacketPayload.AsString.GetString()!
         );
 
-        var pingThresholds = new PingProbeThresholds((long)jsonRequest.Timeout.AsNumber.AsDouble());
+        var pingThresholds = new PingProbeThresholds((long)pingProbeRequest.Timeout.AsNumber.AsDouble());
 
         var probeSchedule = new ProbeSchedule(
-            TimeSpan.FromMilliseconds((long)jsonRequest.ProbeInterval.AsNumber.AsDouble())
+            TimeSpan.FromMilliseconds((long)pingProbeRequest.ProbeInterval.AsNumber.AsDouble())
         );
 
         return new ProbeConfigAggregate(pingBehavior, pingThresholds, probeSchedule);
     }
 
+    private static ProbeConfigAggregate TracerouteProbeConfigFromProbeRequest(
+        in TracerouteProbeConfig tracerouteProbeRequest
+    )
+    {
+        throw new NotImplementedException();
+    }
+
     public static ProbeConfigAggregate ProbeRequestJsonToConfigObjects(
-        ProbeSchema probeConfigInfo,
+        StartProbe probeConfigInfo,
         string probeOperation
     )
     {
-        switch (probeOperation)
-        {
-            case "ping":
-                return PingProbeConfigFromProbeRequest(probeConfigInfo);
+        var thing = probeConfigInfo.AsPingProbeConfig;
 
-            default:
-                throw new ArgumentException("Invalid probe operation");
-        }
+        return probeConfigInfo.Match(
+            PingProbeConfigFromProbeRequest,
+            TracerouteProbeConfigFromProbeRequest,
+            (in StartProbe p) => throw new NotImplementedException()
+        );
     }
 }

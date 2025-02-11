@@ -9,9 +9,8 @@ service PingBoardService {
   rpc GetLatestServerEvent(google.protobuf.Empty) returns (stream ServerEvent);
   rpc ListAnomalies(ListAnomaliesRequest) returns (ListAnomaliesResponse);
   
-  rpc StartProbing (StartProbingRequest) returns (StartProbingResponse);
+  rpc StartProbing (StartProbingRequest) returns (google.protobuf.Empty);
   rpc StopProbing (StopProbingRequest) returns (google.protobuf.Empty);
-  rpc StopAllProbing (google.protobuf.Empty) returns (google.protobuf.Empty);
   
   //rpc ListPings(ListPingsRequest) returns (ListPingsResponse);
   //rpc ShowPings(ShowPingsRequest) returns (ShowPingsResponse);
@@ -22,12 +21,8 @@ message StartProbingRequest{
   string requestJson = 1;
 }
 
-message StartProbingResponse{
-  string probeId = 1;
-}
-
 message StopProbingRequest{
-  string probeId = 1;
+  string requestJson = 1;
 }
 
 message TracerouteTarget{
