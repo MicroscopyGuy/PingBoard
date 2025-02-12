@@ -266,13 +266,13 @@ public static class ServiceExtensions
         builder.Services.AddTransient<Logger<PingProbe>>();
 
         builder.Services.AddTransient<
-            Func<string, ProbeConfigAggregate, NetworkProbeLiaison>>((svc) =>
+            Func<ProbeConfigAggregate, NetworkProbeLiaison>>((svc) =>
             {
-                return (string probeName, ProbeConfigAggregate probeConfig) =>
+                return (ProbeConfigAggregate probeConfig) =>
                 {
                     var liaisonConfig = new NetworkProbeLiaison.Configuration() with
                     {
-                        BaseNetworkProbe = (svc.GetRequiredService(_probes[probeName]) as INetworkProbeBase)!,
+                        BaseNetworkProbe = (svc.GetRequiredService(_probes[probeConfig.ProbeType]) as INetworkProbeBase)!,
                         CancellationTokenSource = new CancellationTokenSource(),
                         CrudOperations = svc.GetRequiredService<CrudOperations>(),
                         ServerEventEmitter = svc.GetRequiredService<ServerEventEmitter>(),

@@ -10,7 +10,7 @@
     "sourceMap": true,
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./src/dashboard/*"]
+      "@/*": ["./src/dashboard/*"],
     },
     "outDir": "dist",
     "moduleResolution": "node",

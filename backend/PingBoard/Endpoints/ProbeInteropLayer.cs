@@ -21,7 +21,6 @@ public static class ProbeInteropLayer
     // csharpier-ignore
     private static ProbeConfigAggregate PingProbeConfigFromProbeRequest(in PingProbeConfig pingProbeRequest)
     {
-
         var targetObj = pingProbeRequest.Target.AsRequiredTargetAndTargetType;
         var isIpTarget = targetObj.TargetType.AsString.GetString() == "IpAddress";
         var configuredTarget = targetObj.Target.AsString.GetString();
@@ -39,7 +38,8 @@ public static class ProbeInteropLayer
             TimeSpan.FromMilliseconds((long)pingProbeRequest.ProbeInterval.AsNumber.AsDouble())
         );
 
-        return new ProbeConfigAggregate(pingBehavior, pingThresholds, probeSchedule);
+        var probeType = pingProbeRequest.ProbeType.AsString.GetString()!;
+        return new ProbeConfigAggregate(probeType, pingBehavior, pingThresholds, probeSchedule);
     }
 
     private static ProbeConfigAggregate TracerouteProbeConfigFromProbeRequest(
@@ -49,10 +49,7 @@ public static class ProbeInteropLayer
         throw new NotImplementedException();
     }
 
-    public static ProbeConfigAggregate ProbeRequestJsonToConfigObjects(
-        StartProbe probeConfigInfo,
-        string probeOperation
-    )
+    public static ProbeConfigAggregate ProbeRequestJsonToConfigObjects(StartProbe probeConfigInfo)
     {
         var thing = probeConfigInfo.AsPingProbeConfig;
 

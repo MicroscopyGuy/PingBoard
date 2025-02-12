@@ -1,8 +1,9 @@
 import { ProbeManagementTable } from './ProbesTable/ProbeManagementTable';
-import {useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { ProbeStatus, columns } from './ProbesTable/ProbeManagementTableColumns';
-import { AddProbeButton } from './CommonInput/AddProbeButton';
 import { ProbeFormDialog } from './CommonInput/ProbeFormDialog';
+import {ProbeConfigFormManager} from './ProbeConfigFormManager'
+
 
 export default function ProbeManagementPage(){
     const [probeStatuses, setProbeStatuses] = useState<ProbeStatus[]>([{
@@ -14,13 +15,12 @@ export default function ProbeManagementPage(){
 
     return (
         <div className='app-page'>
-            <div className= "btn add-probe">
-                <ProbeFormDialog />
-            </div>
+            <ProbeConfigFormManager />
             <div className="tbl probe-management">
                 <ProbeManagementTable columns={columns} data={probeStatuses}/>
             </div>
-            
         </div> 
     );
 }
+
+

@@ -316,12 +316,8 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         _logger.LogInformation("(1) PingBoard Service: StartProbing hit");
         //var probeSchema = request.RequestJson.Parse(request.RequestJson);
         var startProbeConfig = StartProbe.Parse(request.RequestJson);
-        var probeType = startProbeConfig.;
         //var probeType = probeSchema["ProbeType"].AsString.GetString()!;
-        var configAggregate = ProbeInteropLayer.ProbeRequestJsonToConfigObjects(
-            startProbeConfig,
-            probeType
-        );
+        var configAggregate = ProbeInteropLayer.ProbeRequestJsonToConfigObjects(startProbeConfig);
 
         try
         {
@@ -336,7 +332,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
                 );
             }
 
-            _probeOperationsCenter.StartProbing(probeType, configAggregate);
+            _probeOperationsCenter.StartProbing(configAggregate);
             return new Empty();
         }
         catch (RpcException rpcException)

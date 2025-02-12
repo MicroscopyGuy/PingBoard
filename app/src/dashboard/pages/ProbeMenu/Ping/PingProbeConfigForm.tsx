@@ -1,40 +1,33 @@
 import {useState, useEffect, useContext} from 'react'
-import {emptyPingProbeForm, PingProbeFormJson} from './PingProbeFormTypes';
+//import {emptyPingProbeForm, PingProbeFormJson} from './PingProbeFormTypes';
 import PingProbeBehaviorForm from './PingProbeBehaviorForm';
 import PingProbeThresholdsForm from './PingProbeThresholdsForm';
 import {ProbeScheduleForm} from '../CommonInput/ProbeScheduleForm';
+import { ProbeConfigChange, OnProbeFormChangeContext } from '../ProbeConfigFormManager';
+
 
 
 export function PingProbeConfigForm(){
-    const [probeDataJson, setProbeDataJson] = useState<PingProbeFormJson>(emptyPingProbeForm);
     const [viewAdvOptions, setViewAdvOptions] = useState<boolean>(false);
+    const onFormDataChange = useContext<ProbeConfigChange>(OnProbeFormChangeContext);
 
-    const onFormDataChange = (jsonPropName: string, jsonPropValue: any) => {
-        let updatedFormJson = {
-            ...probeDataJson,
-            [jsonPropName]: jsonPropValue,
-        };
-        setProbeDataJson(updatedFormJson);
-    }
 
-    console.log(probeDataJson);
-    
     return (
         <div className="probeConfigForm">
             <PingProbeBehaviorForm 
-                {...probeDataJson}
+                /*{...probeDataJson}*/
                 showAdvancedOptions={viewAdvOptions}
                 onInputChange={onFormDataChange}
             />
 
             <PingProbeThresholdsForm
-                {...probeDataJson}
+                /*{...probeDataJson}*/
                 showAdvancedOptions={viewAdvOptions}
                 onInputChange={onFormDataChange}
             />
 
             <ProbeScheduleForm
-                {...probeDataJson}
+                /*{...probeDataJson}*/
                 showAdvancedOptions={viewAdvOptions}
                 onInputChange={onFormDataChange}
             />

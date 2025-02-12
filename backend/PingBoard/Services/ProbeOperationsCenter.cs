@@ -9,14 +9,14 @@ using Probes.NetworkProbes.Common;
 /// </summary>
 public class ProbeOperationsCenter : BackgroundService
 {
-    private readonly Func<string, ProbeConfigAggregate, NetworkProbeLiaison> _probeLiaisonFactory;
+    private readonly Func<ProbeConfigAggregate, NetworkProbeLiaison> _probeLiaisonFactory;
     private readonly ILogger<ProbeOperationsCenter> _logger;
     private volatile NetworkProbeLiaison? _currentLiaison;
     private int _checkRunningJobsDelayMs = 10;
     private readonly object _lockingObject = new object();
 
     public ProbeOperationsCenter(
-        Func<string, ProbeConfigAggregate, NetworkProbeLiaison> probeLiaisonFactory,
+        Func<ProbeConfigAggregate, NetworkProbeLiaison> probeLiaisonFactory,
         ILogger<ProbeOperationsCenter> logger
     )
     {
@@ -88,7 +88,7 @@ public class ProbeOperationsCenter : BackgroundService
     /// An object which wraps one of each of the following: IProbeBehavior, IProbeThresholds, and ProbeSchedule.
     /// Used for more convenient handling of these types in several areas where all three are required.
     /// </param>
-    public void StartProbing(string probeOperation, ProbeConfigAggregate probeConfig)
+    public void StartProbing(ProbeConfigAggregate probeConfig)
     {
         _logger.LogInformation("(3) ProbeOperationsCenter: StartProbing hit");
 
@@ -111,7 +111,7 @@ public class ProbeOperationsCenter : BackgroundService
             _logger.LogInformation(
                 "(6) ProbeOperationsCenter: StartProbing: About to get Liaison object"
             );
-            _currentLiaison = _probeLiaisonFactory(probeOperation, probeConfig);
+            _currentLiaison = _probeLiaisonFactory(probeConfig);
             _logger.LogDebug($"ProbeOperationsCenter: Probing: new liaison created");
             _logger.LogInformation(
                 "(7) ProbeOperationsCenter: StartProbing: Liaison object created"
