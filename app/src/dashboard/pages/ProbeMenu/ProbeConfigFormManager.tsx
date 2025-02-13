@@ -1,13 +1,13 @@
 import {useState, useEffect, createContext, useContext } from 'react';
-import { StartProbe } from '../../../apiSchemas/startProbeType'
+import { PingConfig, StartProbe } from '../../../apiSchemas/startProbeTypes'
 import { string } from 'zod';
 import { ProbeFormDialog } from './CommonInput/ProbeFormDialog';
 
 
 
 
-export type ProbeConfigChange = (jsonPropName: string, jsonPropOValue: any) => void;
-export const OnProbeFormChangeContext = createContext<ProbeConfigChange>(null);
+export type ProbeConfigChange = (jsonPropName: string, jsonPropValue: any) => void;
+export const OnProbeFormChangeContext = createContext<ProbeConfigChange >(null);
 export const StartProbeFormDataContext = createContext<StartProbe>({})
 
 
@@ -22,6 +22,7 @@ export function ProbeConfigFormManager(){
         setProbeData(updatedFormJson);
     }
 
+    console.log(probeData);
 
 return (
     <>

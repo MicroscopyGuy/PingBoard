@@ -1,13 +1,12 @@
-import {ProbeFormProps} from '../CommonInput/ProbeFormTypes';
-import { PingProbeFormProps } from './PingProbeFormTypes';
 import {useContext} from 'react';
 import {OnProbeFormChangeContext, 
         ProbeConfigChange, 
         StartProbeFormDataContext
        } from '../ProbeConfigFormManager';
-import { StartProbe } from 'src/apiSchemas/startProbeType';
+import { StartProbe, PingConfig } from 'src/apiSchemas/startProbeTypes';
 
-function PingProbeBehaviorForm(props : PingProbeFormProps){
+
+function PingProbeBehaviorForm(){
 
     const onInputChange = useContext<ProbeConfigChange>(OnProbeFormChangeContext);
     const updatedProbeConfig = useContext<StartProbe>(StartProbeFormDataContext);
@@ -18,7 +17,7 @@ function PingProbeBehaviorForm(props : PingProbeFormProps){
             <input className = "probeOptions pingProbe behavior"
                 type = "text"
                 placeholder = "IPAddress or website here"
-                value = {updatedProbeConfig.target.target}
+                value = {(updatedProbeConfig as PingConfig).target.target}
                 onChange = {(e) => {onInputChange('target', e.target.value)}}
                 />
 
@@ -26,7 +25,7 @@ function PingProbeBehaviorForm(props : PingProbeFormProps){
             <input className = "probeOptions pingProbe behavior"
                 type = "text"
                 placeholder = "Ttl here"
-                value = {updatedProbeConfig.ttl}
+                value = {(updatedProbeConfig as PingConfig).ttl}
                 onChange = {(e) => {onInputChange('maxTtl', e.target.value)}}
                 />
             
@@ -34,7 +33,7 @@ function PingProbeBehaviorForm(props : PingProbeFormProps){
             <input className = "probeOptions pingProbe behavior"
                 type = "text"
                 placeholder = "Timeout in milliseconds, here"
-                value = {updatedProbeConfig.}
+                value = {(updatedProbeConfig as PingConfig).timeout}
                 onChange = {(e) => {onInputChange('timeoutMs', e.target.value)}}
                 />
 
@@ -42,7 +41,7 @@ function PingProbeBehaviorForm(props : PingProbeFormProps){
             <input className = "probeOptions pingProbe behavior"
                 type = "text"
                 placeholder = "Optional: indicate what you'd like each packet to contain"
-                value = {updatedProbeConfig.packetPayload}
+                value = {(updatedProbeConfig as PingConfig).packetPayload}
                 onChange = {(e) => {onInputChange('packetPayload', e.target.value)}}
                 />
         </div>

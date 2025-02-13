@@ -69,7 +69,7 @@ const tracerouteProbeReverseDnsSchema = z
     .default(true)
     .optional()
 
-const tracerouteProbeConfigSchema = z.object({
+export const tracerouteProbeConfigSchema = z.object({
     probeType: z.literal('traceroute'),
     target: hostnameTargetSchema,
     ttl: ttlSchema,
@@ -98,3 +98,6 @@ export const pingProbeConfigSchema = z.object({
 
 // will have more supported probes later
 export const startProbe = z.discriminatedUnion('probeType', [pingProbeConfigSchema, tracerouteProbeConfigSchema],);
+
+
+type probeReq = z.infer<typeof startProbe>;
