@@ -3,7 +3,7 @@
 /* eslint-disable */
 // @ts-nocheck
 
-import { ListAnomaliesRequest, ListAnomaliesResponse, ListPingsRequest, ListPingsResponse, ServerEvent, ShowPingsRequest, ShowPingsResponse, StartPingingRequest } from "./service_pb.js";
+import { ListAnomaliesRequest, ListAnomaliesResponse, ServerEvent, StartPingingRequest, StartProbingRequest, StopProbingRequest } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 
 /**
@@ -40,15 +40,6 @@ export const PingBoardService = {
       kind: MethodKind.ServerStreaming,
     },
     /**
-     * @generated from rpc PingBoardService.ListPings
-     */
-    listPings: {
-      name: "ListPings",
-      I: ListPingsRequest,
-      O: ListPingsResponse,
-      kind: MethodKind.Unary,
-    },
-    /**
      * @generated from rpc PingBoardService.ListAnomalies
      */
     listAnomalies: {
@@ -58,12 +49,21 @@ export const PingBoardService = {
       kind: MethodKind.Unary,
     },
     /**
-     * @generated from rpc PingBoardService.ShowPings
+     * @generated from rpc PingBoardService.StartProbing
      */
-    showPings: {
-      name: "ShowPings",
-      I: ShowPingsRequest,
-      O: ShowPingsResponse,
+    startProbing: {
+      name: "StartProbing",
+      I: StartProbingRequest,
+      O: Empty,
+      kind: MethodKind.Unary,
+    },
+    /**
+     * @generated from rpc PingBoardService.StopProbing
+     */
+    stopProbing: {
+      name: "StopProbing",
+      I: StopProbingRequest,
+      O: Empty,
       kind: MethodKind.Unary,
     },
   }

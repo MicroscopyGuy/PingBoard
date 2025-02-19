@@ -86,6 +86,126 @@ proto3.util.setEnumType(Statistic, "Statistic", [
     { no: 6, name: "COUNT" },
 ]);
 /**
+ * @generated from message StartProbingRequest
+ */
+export class StartProbingRequest extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string requestJson = 1;
+         */
+        this.requestJson = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new StartProbingRequest().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new StartProbingRequest().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new StartProbingRequest().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(StartProbingRequest, a, b);
+    }
+}
+StartProbingRequest.runtime = proto3;
+StartProbingRequest.typeName = "StartProbingRequest";
+StartProbingRequest.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "requestJson", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message StopProbingRequest
+ */
+export class StopProbingRequest extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string requestJson = 1;
+         */
+        this.requestJson = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new StopProbingRequest().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new StopProbingRequest().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new StopProbingRequest().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(StopProbingRequest, a, b);
+    }
+}
+StopProbingRequest.runtime = proto3;
+StopProbingRequest.typeName = "StopProbingRequest";
+StopProbingRequest.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "requestJson", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message TracerouteTarget
+ */
+export class TracerouteTarget extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string target = 1;
+         */
+        this.target = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new TracerouteTarget().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new TracerouteTarget().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new TracerouteTarget().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(TracerouteTarget, a, b);
+    }
+}
+TracerouteTarget.runtime = proto3;
+TracerouteTarget.typeName = "TracerouteTarget";
+TracerouteTarget.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message DnsTarget
+ */
+export class DnsTarget extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string target = 1;
+         */
+        this.target = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new DnsTarget().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new DnsTarget().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new DnsTarget().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(DnsTarget, a, b);
+    }
+}
+DnsTarget.runtime = proto3;
+DnsTarget.typeName = "DnsTarget";
+DnsTarget.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
  * @generated from message StartPingingRequest
  */
 export class StartPingingRequest extends Message {
@@ -142,65 +262,6 @@ PingTarget.fields = proto3.util.newFieldList(() => [
     { no: 1, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
 ]);
 /**
- * @generated from message PingGroupSummaryPublic
- */
-export class PingGroupSummaryPublic extends Message {
-    constructor(data) {
-        super();
-        /**
-         * @generated from field: string target = 3;
-         */
-        this.target = "";
-        /**
-         * @generated from field: int32 minimumPing = 4;
-         */
-        this.minimumPing = 0;
-        /**
-         * @generated from field: float averagePing = 5;
-         */
-        this.averagePing = 0;
-        /**
-         * @generated from field: int32 maximumPing = 6;
-         */
-        this.maximumPing = 0;
-        /**
-         * @generated from field: float jitter = 7;
-         */
-        this.jitter = 0;
-        /**
-         * @generated from field: float packetLoss = 8;
-         */
-        this.packetLoss = 0;
-        proto3.util.initPartial(data, this);
-    }
-    static fromBinary(bytes, options) {
-        return new PingGroupSummaryPublic().fromBinary(bytes, options);
-    }
-    static fromJson(jsonValue, options) {
-        return new PingGroupSummaryPublic().fromJson(jsonValue, options);
-    }
-    static fromJsonString(jsonString, options) {
-        return new PingGroupSummaryPublic().fromJsonString(jsonString, options);
-    }
-    static equals(a, b) {
-        return proto3.util.equals(PingGroupSummaryPublic, a, b);
-    }
-}
-PingGroupSummaryPublic.runtime = proto3;
-PingGroupSummaryPublic.typeName = "PingGroupSummaryPublic";
-PingGroupSummaryPublic.fields = proto3.util.newFieldList(() => [
-    { no: 1, name: "start", kind: "message", T: Timestamp },
-    { no: 2, name: "end", kind: "message", T: Timestamp },
-    { no: 3, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 4, name: "minimumPing", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 5, name: "averagePing", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 6, name: "maximumPing", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 7, name: "jitter", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 8, name: "packetLoss", kind: "scalar", T: 2 /* ScalarType.FLOAT */ },
-    { no: 9, name: "terminatingIPStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-    { no: 10, name: "lastAbnormalStatusExplanation", kind: "scalar", T: 9 /* ScalarType.STRING */, opt: true },
-]);
-/**
  * @generated from message PingResultPublic
  */
 export class PingResultPublic extends Message {
@@ -215,21 +276,29 @@ export class PingResultPublic extends Message {
          */
         this.target = "";
         /**
-         * @generated from field: string targetType = 5;
-         */
-        this.targetType = "";
-        /**
-         * @generated from field: string ipStatus = 6;
+         * @generated from field: string ipStatus = 5;
          */
         this.ipStatus = "";
         /**
-         * @generated from field: int32 ttl = 7;
+         * @generated from field: int32 ttl = 6;
          */
         this.ttl = 0;
         /**
-         * @generated from field: string replyAddress = 8;
+         * @generated from field: string replyAddress = 7;
          */
         this.replyAddress = "";
+        /**
+         * @generated from field: string ipStatusShortMeaning = 8;
+         */
+        this.ipStatusShortMeaning = "";
+        /**
+         * @generated from field: string ipStatusOfficialMeaning = 9;
+         */
+        this.ipStatusOfficialMeaning = "";
+        /**
+         * @generated from field: string id = 10;
+         */
+        this.id = "";
         proto3.util.initPartial(data, this);
     }
     static fromBinary(bytes, options) {
@@ -252,68 +321,83 @@ PingResultPublic.fields = proto3.util.newFieldList(() => [
     { no: 2, name: "end", kind: "message", T: Timestamp },
     { no: 3, name: "rtt", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
     { no: 4, name: "target", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 5, name: "targetType", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 6, name: "ipStatus", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 7, name: "ttl", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
-    { no: 8, name: "replyAddress", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 5, name: "ipStatus", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 6, name: "ttl", kind: "scalar", T: 5 /* ScalarType.INT32 */ },
+    { no: 7, name: "replyAddress", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 8, name: "ipStatusShortMeaning", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 9, name: "ipStatusOfficialMeaning", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 10, name: "id", kind: "scalar", T: 9 /* ScalarType.STRING */ },
 ]);
 /**
- * @generated from message ShowPingsRequest
+ * @generated from message ListAnomaliesRequest
  */
-export class ShowPingsRequest extends Message {
-    constructor(data) {
-        super();
-        proto3.util.initPartial(data, this);
-    }
-    static fromBinary(bytes, options) {
-        return new ShowPingsRequest().fromBinary(bytes, options);
-    }
-    static fromJson(jsonValue, options) {
-        return new ShowPingsRequest().fromJson(jsonValue, options);
-    }
-    static fromJsonString(jsonString, options) {
-        return new ShowPingsRequest().fromJsonString(jsonString, options);
-    }
-    static equals(a, b) {
-        return proto3.util.equals(ShowPingsRequest, a, b);
-    }
-}
-ShowPingsRequest.runtime = proto3;
-ShowPingsRequest.typeName = "ShowPingsRequest";
-ShowPingsRequest.fields = proto3.util.newFieldList(() => [
-    { no: 1, name: "target", kind: "message", T: PingTarget },
-    { no: 2, name: "startingTime", kind: "message", T: Timestamp },
-    { no: 3, name: "endingTime", kind: "message", T: Timestamp },
-]);
-/**
- * @generated from message ShowPingsResponse
- */
-export class ShowPingsResponse extends Message {
+export class ListAnomaliesRequest extends Message {
     constructor(data) {
         super();
         /**
-         * @generated from field: repeated PingGroupSummaryPublic pings = 1;
+         * @generated from field: uint32 numberRequested = 1;
          */
-        this.pings = [];
+        this.numberRequested = 0;
+        /**
+         * @generated from field: string paginationToken = 2;
+         */
+        this.paginationToken = "";
         proto3.util.initPartial(data, this);
     }
     static fromBinary(bytes, options) {
-        return new ShowPingsResponse().fromBinary(bytes, options);
+        return new ListAnomaliesRequest().fromBinary(bytes, options);
     }
     static fromJson(jsonValue, options) {
-        return new ShowPingsResponse().fromJson(jsonValue, options);
+        return new ListAnomaliesRequest().fromJson(jsonValue, options);
     }
     static fromJsonString(jsonString, options) {
-        return new ShowPingsResponse().fromJsonString(jsonString, options);
+        return new ListAnomaliesRequest().fromJsonString(jsonString, options);
     }
     static equals(a, b) {
-        return proto3.util.equals(ShowPingsResponse, a, b);
+        return proto3.util.equals(ListAnomaliesRequest, a, b);
     }
 }
-ShowPingsResponse.runtime = proto3;
-ShowPingsResponse.typeName = "ShowPingsResponse";
-ShowPingsResponse.fields = proto3.util.newFieldList(() => [
-    { no: 1, name: "pings", kind: "message", T: PingGroupSummaryPublic, repeated: true },
+ListAnomaliesRequest.runtime = proto3;
+ListAnomaliesRequest.typeName = "ListAnomaliesRequest";
+ListAnomaliesRequest.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+    { no: 3, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
+]);
+/**
+ * @generated from message ListAnomaliesResponse
+ */
+export class ListAnomaliesResponse extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: repeated PingResultPublic anomalies = 1;
+         */
+        this.anomalies = [];
+        /**
+         * @generated from field: string paginationToken = 2;
+         */
+        this.paginationToken = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ListAnomaliesResponse().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ListAnomaliesResponse().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ListAnomaliesResponse().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ListAnomaliesResponse, a, b);
+    }
+}
+ListAnomaliesResponse.runtime = proto3;
+ListAnomaliesResponse.typeName = "ListAnomaliesResponse";
+ListAnomaliesResponse.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "anomalies", kind: "message", T: PingResultPublic, repeated: true },
+    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
 ]);
 /**
  * @generated from message ListPingsRequest
@@ -416,77 +500,6 @@ ListPingsResponse.fields = proto3.util.newFieldList(() => [
     { no: 1, name: "datapoints", kind: "message", T: ListPingsDatapoint, repeated: true },
 ]);
 /**
- * @generated from message ListAnomaliesRequest
- */
-export class ListAnomaliesRequest extends Message {
-    constructor(data) {
-        super();
-        /**
-         * @generated from field: uint32 numberRequested = 1;
-         */
-        this.numberRequested = 0;
-        /**
-         * @generated from field: string paginationToken = 2;
-         */
-        this.paginationToken = "";
-        proto3.util.initPartial(data, this);
-    }
-    static fromBinary(bytes, options) {
-        return new ListAnomaliesRequest().fromBinary(bytes, options);
-    }
-    static fromJson(jsonValue, options) {
-        return new ListAnomaliesRequest().fromJson(jsonValue, options);
-    }
-    static fromJsonString(jsonString, options) {
-        return new ListAnomaliesRequest().fromJsonString(jsonString, options);
-    }
-    static equals(a, b) {
-        return proto3.util.equals(ListAnomaliesRequest, a, b);
-    }
-}
-ListAnomaliesRequest.runtime = proto3;
-ListAnomaliesRequest.typeName = "ListAnomaliesRequest";
-ListAnomaliesRequest.fields = proto3.util.newFieldList(() => [
-    { no: 1, name: "numberRequested", kind: "scalar", T: 13 /* ScalarType.UINT32 */ },
-    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-    { no: 3, name: "pingTarget", kind: "message", T: PingTarget, opt: true },
-]);
-/**
- * @generated from message ListAnomaliesResponse
- */
-export class ListAnomaliesResponse extends Message {
-    constructor(data) {
-        super();
-        /**
-         * @generated from field: repeated PingGroupSummaryPublic anomalies = 1;
-         */
-        this.anomalies = [];
-        /**
-         * @generated from field: string paginationToken = 2;
-         */
-        this.paginationToken = "";
-        proto3.util.initPartial(data, this);
-    }
-    static fromBinary(bytes, options) {
-        return new ListAnomaliesResponse().fromBinary(bytes, options);
-    }
-    static fromJson(jsonValue, options) {
-        return new ListAnomaliesResponse().fromJson(jsonValue, options);
-    }
-    static fromJsonString(jsonString, options) {
-        return new ListAnomaliesResponse().fromJsonString(jsonString, options);
-    }
-    static equals(a, b) {
-        return proto3.util.equals(ListAnomaliesResponse, a, b);
-    }
-}
-ListAnomaliesResponse.runtime = proto3;
-ListAnomaliesResponse.typeName = "ListAnomaliesResponse";
-ListAnomaliesResponse.fields = proto3.util.newFieldList(() => [
-    { no: 1, name: "anomalies", kind: "message", T: PingGroupSummaryPublic, repeated: true },
-    { no: 2, name: "paginationToken", kind: "scalar", T: 9 /* ScalarType.STRING */ },
-]);
-/**
  * @generated from message ServerEvent
  */
 export class ServerEvent extends Message {
@@ -518,7 +531,15 @@ ServerEvent.fields = proto3.util.newFieldList(() => [
     { no: 100, name: "pingOnOffToggle", kind: "message", T: ServerEvent_PingOnOffToggle, oneof: "ServerEvent" },
     { no: 101, name: "pingAnomaly", kind: "message", T: ServerEvent_PingAnomaly, oneof: "ServerEvent" },
     { no: 102, name: "pingInfo", kind: "message", T: ServerEvent_PingInfo, oneof: "ServerEvent" },
-    { no: 190, name: "pingAgentError", kind: "message", T: ServerEvent_PingAgentError, oneof: "ServerEvent" },
+    { no: 109, name: "pingAgentError", kind: "message", T: ServerEvent_PingAgentError, oneof: "ServerEvent" },
+    { no: 110, name: "dnsOnOffToggle", kind: "message", T: ServerEvent_DnsOnOffToggle, oneof: "ServerEvent" },
+    { no: 111, name: "dnsAnomaly", kind: "message", T: ServerEvent_DnsAnomaly, oneof: "ServerEvent" },
+    { no: 112, name: "dnsInfo", kind: "message", T: ServerEvent_DnsInfo, oneof: "ServerEvent" },
+    { no: 119, name: "dnsAgentError", kind: "message", T: ServerEvent_DnsAgentError, oneof: "ServerEvent" },
+    { no: 120, name: "tracerouteOnOffToggle", kind: "message", T: ServerEvent_TracerouteOnOffToggle, oneof: "ServerEvent" },
+    { no: 121, name: "tracerouteAnomaly", kind: "message", T: ServerEvent_TracerouteAnomaly, oneof: "ServerEvent" },
+    { no: 122, name: "tracerouteInfo", kind: "message", T: ServerEvent_TracerouteInfo, oneof: "ServerEvent" },
+    { no: 129, name: "tracerouteAgentError", kind: "message", T: ServerEvent_TracerouteAgentError, oneof: "ServerEvent" },
 ]);
 /**
  * @generated from message ServerEvent.PingOnOffToggle
@@ -638,4 +659,244 @@ ServerEvent_PingInfo.runtime = proto3;
 ServerEvent_PingInfo.typeName = "ServerEvent.PingInfo";
 ServerEvent_PingInfo.fields = proto3.util.newFieldList(() => [
     { no: 1, name: "pingTarget", kind: "message", T: PingTarget },
+]);
+/**
+ * **************** DNS related information *******************
+ *
+ * @generated from message ServerEvent.DnsOnOffToggle
+ */
+export class ServerEvent_DnsOnOffToggle extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: bool active = 2;
+         */
+        this.active = false;
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_DnsOnOffToggle().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_DnsOnOffToggle().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_DnsOnOffToggle().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_DnsOnOffToggle, a, b);
+    }
+}
+ServerEvent_DnsOnOffToggle.runtime = proto3;
+ServerEvent_DnsOnOffToggle.typeName = "ServerEvent.DnsOnOffToggle";
+ServerEvent_DnsOnOffToggle.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "dnsTarget", kind: "message", T: DnsTarget },
+    { no: 2, name: "active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+]);
+/**
+ * @generated from message ServerEvent.DnsAnomaly
+ */
+export class ServerEvent_DnsAnomaly extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string anomalyDescription = 2;
+         */
+        this.anomalyDescription = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_DnsAnomaly().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_DnsAnomaly().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_DnsAnomaly().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_DnsAnomaly, a, b);
+    }
+}
+ServerEvent_DnsAnomaly.runtime = proto3;
+ServerEvent_DnsAnomaly.typeName = "ServerEvent.DnsAnomaly";
+ServerEvent_DnsAnomaly.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: DnsTarget },
+    { no: 2, name: "anomalyDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message ServerEvent.DnsAgentError
+ */
+export class ServerEvent_DnsAgentError extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string errorDescription = 2;
+         */
+        this.errorDescription = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_DnsAgentError().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_DnsAgentError().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_DnsAgentError().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_DnsAgentError, a, b);
+    }
+}
+ServerEvent_DnsAgentError.runtime = proto3;
+ServerEvent_DnsAgentError.typeName = "ServerEvent.DnsAgentError";
+ServerEvent_DnsAgentError.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: DnsTarget },
+    { no: 2, name: "errorDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message ServerEvent.DnsInfo
+ */
+export class ServerEvent_DnsInfo extends Message {
+    constructor(data) {
+        super();
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_DnsInfo().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_DnsInfo().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_DnsInfo().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_DnsInfo, a, b);
+    }
+}
+ServerEvent_DnsInfo.runtime = proto3;
+ServerEvent_DnsInfo.typeName = "ServerEvent.DnsInfo";
+ServerEvent_DnsInfo.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "pingTarget", kind: "message", T: DnsTarget },
+]);
+/**
+ * @generated from message ServerEvent.TracerouteOnOffToggle
+ */
+export class ServerEvent_TracerouteOnOffToggle extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: bool active = 2;
+         */
+        this.active = false;
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_TracerouteOnOffToggle().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_TracerouteOnOffToggle().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_TracerouteOnOffToggle().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_TracerouteOnOffToggle, a, b);
+    }
+}
+ServerEvent_TracerouteOnOffToggle.runtime = proto3;
+ServerEvent_TracerouteOnOffToggle.typeName = "ServerEvent.TracerouteOnOffToggle";
+ServerEvent_TracerouteOnOffToggle.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "tracerouteTarget", kind: "message", T: TracerouteTarget },
+    { no: 2, name: "active", kind: "scalar", T: 8 /* ScalarType.BOOL */ },
+]);
+/**
+ * @generated from message ServerEvent.TracerouteAnomaly
+ */
+export class ServerEvent_TracerouteAnomaly extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string anomalyDescription = 2;
+         */
+        this.anomalyDescription = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_TracerouteAnomaly().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_TracerouteAnomaly().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_TracerouteAnomaly().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_TracerouteAnomaly, a, b);
+    }
+}
+ServerEvent_TracerouteAnomaly.runtime = proto3;
+ServerEvent_TracerouteAnomaly.typeName = "ServerEvent.TracerouteAnomaly";
+ServerEvent_TracerouteAnomaly.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "tracerouteTarget", kind: "message", T: TracerouteTarget },
+    { no: 2, name: "anomalyDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message ServerEvent.TracerouteAgentError
+ */
+export class ServerEvent_TracerouteAgentError extends Message {
+    constructor(data) {
+        super();
+        /**
+         * @generated from field: string errorDescription = 2;
+         */
+        this.errorDescription = "";
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_TracerouteAgentError().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_TracerouteAgentError().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_TracerouteAgentError().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_TracerouteAgentError, a, b);
+    }
+}
+ServerEvent_TracerouteAgentError.runtime = proto3;
+ServerEvent_TracerouteAgentError.typeName = "ServerEvent.TracerouteAgentError";
+ServerEvent_TracerouteAgentError.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "TracerouteTarget", kind: "message", T: TracerouteTarget },
+    { no: 2, name: "errorDescription", kind: "scalar", T: 9 /* ScalarType.STRING */ },
+]);
+/**
+ * @generated from message ServerEvent.TracerouteInfo
+ */
+export class ServerEvent_TracerouteInfo extends Message {
+    constructor(data) {
+        super();
+        proto3.util.initPartial(data, this);
+    }
+    static fromBinary(bytes, options) {
+        return new ServerEvent_TracerouteInfo().fromBinary(bytes, options);
+    }
+    static fromJson(jsonValue, options) {
+        return new ServerEvent_TracerouteInfo().fromJson(jsonValue, options);
+    }
+    static fromJsonString(jsonString, options) {
+        return new ServerEvent_TracerouteInfo().fromJsonString(jsonString, options);
+    }
+    static equals(a, b) {
+        return proto3.util.equals(ServerEvent_TracerouteInfo, a, b);
+    }
+}
+ServerEvent_TracerouteInfo.runtime = proto3;
+ServerEvent_TracerouteInfo.typeName = "ServerEvent.TracerouteInfo";
+ServerEvent_TracerouteInfo.fields = proto3.util.newFieldList(() => [
+    { no: 1, name: "tracerouteTarget", kind: "message", T: TracerouteTarget },
 ]);

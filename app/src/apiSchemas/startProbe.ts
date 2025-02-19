@@ -58,6 +58,18 @@ const probeIntervalSchema = z
         ref: "probeInterval"
     });*/
 
+const maxPingRttSchema = z
+  .number()
+  .min(1)
+  .max(3000)
+  .default(50)
+  .optional()
+
+export const pingTargetSchema = z
+    .discriminatedUnion('targetType', [ipAddressTargetSchema, hostnameTargetSchema])
+
+
+
 const tracerouteProbeTraceDelay = z.number()
     .min(5)
     .max(15)
@@ -82,11 +94,12 @@ export const tracerouteProbeConfigSchema = z.object({
 
 export const pingProbeConfigSchema = z.object({
     probeType: z.literal('ping'), 
-    target: z.discriminatedUnion('targetType', [ipAddressTargetSchema, hostnameTargetSchema]),
+    target: pingTargetSchema,
     ttl: ttlSchema,
     timeout: timeoutSchema,
     packetPayload: packetPayloadSchema,
     probeInterval: probeIntervalSchema,
+    maxRtt: maxPingRttSchema
 }).openapi(
     "pingProbeConfig"
 )
@@ -100,4 +113,5 @@ export const pingProbeConfigSchema = z.object({
 export const startProbe = z.discriminatedUnion('probeType', [pingProbeConfigSchema, tracerouteProbeConfigSchema],);
 
 
-type probeReq = z.infer<typeof startProbe>;
+export type probeReq = z.infer<typeof startProbe>;
+//type probeConfigProperties = 

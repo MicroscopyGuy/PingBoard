@@ -3,7 +3,7 @@ import {Card} from '@/components/ui/card';
 import {Button} from '@/components/ui/button'
 import { SquarePlay, SquarePlus } from 'lucide-react';
 import { ProbeSelectionDropDown } from './ProbeSelectionDropDown';
-import { probes, Probe } from './ProbeFormTypes';
+import { Probe } from './ProbeFormTypes';
 import { ProbeFormTypeDecider} from './ProbeFormTypeDecider';
 import {
     Dialog,
@@ -17,10 +17,14 @@ import {
 import '../../../App.css'
 
 
+interface ProbeFormDialogProps{
+    onSelection: (probe: Probe) => void;
+    selectedProbe: Probe;
+    probes: Probe[]
+}
 
-export function ProbeFormDialog(){
-    const [probeType, setProbeType] = useState<Probe>(null);
-    const [viewAdvanced, setViewAdvanced] = useState<boolean>(false); // not implemented yet
+
+export function ProbeFormDialog(props: ProbeFormDialogProps){
 
     return (
         <Dialog>
@@ -35,11 +39,11 @@ export function ProbeFormDialog(){
             </DialogDescription>
         </DialogHeader>
         <ProbeSelectionDropDown
-                    probes={probes}
-                    onSelection={setProbeType}
-                    probeSelection={probeType}/>
+            probes={props.probes}
+            onSelection={props.onSelection}
+            probeSelection={props.selectedProbe}/>
                     
-            <ProbeFormTypeDecider probe={probeType} /> 
+            <ProbeFormTypeDecider probe={props.selectedProbe} /> 
         <DialogFooter>
             <Button type="submit" /*onClick={}*/ className="btn send-probe">Send Probe<SquarePlay/></Button>
         </DialogFooter>

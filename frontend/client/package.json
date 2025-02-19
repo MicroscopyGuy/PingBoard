@@ -14,7 +14,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@bufbuild/buf": "^1.10.0",
+    "@bufbuild/buf": "^1.50.0",
     "@connectrpc/protoc-gen-connect-es": "^1.6.1",
     "typescript": "^5.2.2"
   },

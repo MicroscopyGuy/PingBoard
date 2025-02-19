@@ -1,7 +1,16 @@
-import {ProbeFormProps} from '../CommonInput/ProbeFormTypes';
-import {PingProbeFormProps} from './PingProbeFormTypes';
+import {useContext}from 'react';
+import {OnProbeFormChangeContext, 
+        ProbeConfigChange, 
+        StartProbeFormDataContext
+       } from '../ProbeConfigFormManager';
+import { StartProbe, PingConfig } from 'src/apiSchemas/startProbeTypes';
+import { useDisplayFormValue } from '../ProbeConfigFormManager'
 
-function PingProbeThresholdsForm(props: PingProbeFormProps){
+
+function PingProbeThresholdsForm(){
+    const onInputChange = useContext<ProbeConfigChange>(OnProbeFormChangeContext);
+    const updatedProbeConfig = useContext<Partial<StartProbe>>(StartProbeFormDataContext);
+
 
     return (
         <div className='grid grid-cols-1'>
@@ -9,8 +18,8 @@ function PingProbeThresholdsForm(props: PingProbeFormProps){
             <input className = "probeOptions pingProbe thresholds"
                 type = "text"
                 placeholder = "Time before packet is considered lost"
-                value = {props["maxAllowedRtt"]}
-                onChange = {(e) => {props.onInputChange('maxAllowedRtt', e.target.value)}}
+                value = {useDisplayFormValue(updatedProbeConfig, "maxRtt")}
+                onChange = {(e) => {onInputChange('maxRtt', e.target.value)}}
                 />
         </div>
     );

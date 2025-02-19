@@ -1,4 +1,4 @@
-import { ListAnomaliesRequest, ListAnomaliesResponse, ListPingsRequest, ListPingsResponse, ServerEvent, ShowPingsRequest, ShowPingsResponse, StartPingingRequest } from "./service_pb.js";
+import { ListAnomaliesRequest, ListAnomaliesResponse, ServerEvent, StartPingingRequest, StartProbingRequest, StopProbingRequest } from "./service_pb.js";
 import { Empty, MethodKind } from "@bufbuild/protobuf";
 /**
  * @generated from service PingBoardService
@@ -34,15 +34,6 @@ export declare const PingBoardService: {
             readonly kind: MethodKind.ServerStreaming;
         };
         /**
-         * @generated from rpc PingBoardService.ListPings
-         */
-        readonly listPings: {
-            readonly name: "ListPings";
-            readonly I: typeof ListPingsRequest;
-            readonly O: typeof ListPingsResponse;
-            readonly kind: MethodKind.Unary;
-        };
-        /**
          * @generated from rpc PingBoardService.ListAnomalies
          */
         readonly listAnomalies: {
@@ -52,12 +43,21 @@ export declare const PingBoardService: {
             readonly kind: MethodKind.Unary;
         };
         /**
-         * @generated from rpc PingBoardService.ShowPings
+         * @generated from rpc PingBoardService.StartProbing
          */
-        readonly showPings: {
-            readonly name: "ShowPings";
-            readonly I: typeof ShowPingsRequest;
-            readonly O: typeof ShowPingsResponse;
+        readonly startProbing: {
+            readonly name: "StartProbing";
+            readonly I: typeof StartProbingRequest;
+            readonly O: typeof Empty;
+            readonly kind: MethodKind.Unary;
+        };
+        /**
+         * @generated from rpc PingBoardService.StopProbing
+         */
+        readonly stopProbing: {
+            readonly name: "StopProbing";
+            readonly I: typeof StopProbingRequest;
+            readonly O: typeof Empty;
             readonly kind: MethodKind.Unary;
         };
     };
