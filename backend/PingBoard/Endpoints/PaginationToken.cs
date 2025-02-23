@@ -9,7 +9,7 @@ public class PaginationToken<T>
     /// <summary>
     /// Returns a combined, stringified representation of the token and API name
     /// </summary>
-    /// <param name="token">Whatever the API's page leaves off on, it is implementation dependent</param>
+    /// <param name="token">Results from the API's last page, it is implementation dependent</param>
     /// <param name="apiName">The name of the API using the token</param>
     /// <returns></returns>
     public static string ToApiFormat(T token, string apiName)
@@ -22,7 +22,7 @@ public class PaginationToken<T>
 
     /// <summary>
     /// Returns a PaginationToken from the stringified PaginationToken, and compares the actual and expected
-    /// calling API names for validation. 
+    /// calling API names for validation.
     /// </summary>
     /// <param name="apiToken">
     ///     The combined, stringified representation of the token and API name that ToApiFormat returns.
@@ -38,7 +38,8 @@ public class PaginationToken<T>
 
         if (paginationToken.Api != expectedApiName)
         {
-            string msg = "The provided token doesn't match the expected API. Check you're calling the correct API.";
+            string msg =
+                "The provided token doesn't match the expected API. Check you're calling the correct API.";
             throw new ArgumentException(msg);
         }
 

@@ -1,4 +1,4 @@
-namespace PingBoard.Probes.NetworkProbes.Ping;
+namespace PingBoard.Probes.NetworkProbes.Ping.IpStatusCode;
 
 using System.Collections.Immutable;
 using System.Net;

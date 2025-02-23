@@ -3,6 +3,7 @@
 using System.Net;
 using System.Net.NetworkInformation;
 using Common;
+using IpStatusCode;
 using PingBoard.Database.Models;
 using PingBoard.Probes.NetworkProbes;
 using PingBoard.Probes.NetworkProbes.Common;

@@ -1,14 +1,10 @@
 namespace PingBoard.Database.Utilities;
 
 using System.Text.Json;
-using Google.Rpc.Context;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PingBoard.Database.Models;
-using PingBoard.Probes.NetworkProbes;
-using PingBoard.Services;
 using Probes.NetworkProbes.Common;
-using Protos;
+using Probes.NetworkProbes.Ping;
 
 /// <summary>
 /// An extension class for PingInfoContext that defines some APIs for interacting with the PingBoard database

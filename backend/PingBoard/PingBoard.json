@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "PingBoard | v1",
+    "version": "1.0.0"
+  },
+  "paths": {
+    "/Probes": {
+      "post": {
+        "tags": [
+          "Probing"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProbeConfigAggregate"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "409": {
+            "description": "Conflict",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Probing"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content"
+          },
+          "422": {
+            "description": "Unprocessable Entity",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "content": {
+              "application/problem+json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProblemDetails"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "IProbeBehavior": {
+        "type": "object",
+        "anyOf": [
+          {
+            "$ref": "#/components/schemas/IProbeBehaviorPingProbeBehavior"
+          }
+        ],
+        "discriminator": {
+          "propertyName": "$type"
+        }
+      },
+      "IProbeBehaviorPingProbeBehavior": {
+        "required": [
+          "target",
+          "ttl",
+          "timeoutMs",
+          "packetPayload"
+        ],
+        "properties": {
+          "target": {
+            "required": [
+              "targetType"
+            ],
+            "type": "object",
+            "anyOf": [
+              {
+                "required": [
+                  "ipAddress"
+                ],
+                "properties": {
+                  "targetType": {
+                    "enum": [
+                      "ipAddress"
+                    ],
+                    "type": "string"
+                  },
+                  "ipAddress": {
+                    "type": "string"
+                  }
+                }
+              },
+              {
+                "required": [
+                  "hostname"
+                ],
+                "properties": {
+                  "targetType": {
+                    "enum": [
+                      "hostname"
+                    ],
+                    "type": "string"
+                  },
+                  "hostname": {
+                    "type": "string"
+                  }
+                }
+              }
+            ],
+            "discriminator": {
+              "propertyName": "targetType",
+              "mapping": {
+                "ipAddress": "#/components/schemas/INetworkProbeTargetIpAddressTarget",
+                "hostname": "#/components/schemas/INetworkProbeTargetHostnameTarget"
+              }
+            }
+          },
+          "ttl": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "timeoutMs": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "packetPayload": {
+            "type": "string"
+          }
+        }
+      },
+      "IProbeThresholds": {
+        "type": "object",
+        "discriminator": {
+          "propertyName": "$type"
+        }
+      },
+      "ProbeConfigAggregate": {
+        "type": "object",
+        "properties": {
+          "probeType": {
+            "type": "string"
+          },
+          "behavior": {
+            "$ref": "#/components/schemas/IProbeBehavior"
+          },
+          "thresholds": {
+            "$ref": "#/components/schemas/IProbeThresholds"
+          },
+          "schedule": {
+            "$ref": "#/components/schemas/ProbeSchedule"
+          }
+        }
+      },
+      "ProbeSchedule": {
+        "required": [
+          "spread"
+        ],
+        "type": "object",
+        "properties": {
+          "spread": {
+            "pattern": "^-?(\\d+\\.)?\\d{2}:\\d{2}:\\d{2}(\\.\\d{1,7})?$",
+            "type": "string"
+          }
+        }
+      },
+      "ProblemDetails": {
+        "type": "object",
+        "properties": {
+          "type": {
+            "type": "string",
+            "nullable": true
+          },
+          "title": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "detail": {
+            "type": "string",
+            "nullable": true
+          },
+          "instance": {
+            "type": "string",
+            "nullable": true
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Probing"
+    }
+  ]
+}

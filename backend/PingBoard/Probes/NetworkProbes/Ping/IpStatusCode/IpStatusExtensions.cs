@@ -1,4 +1,4 @@
-﻿namespace PingBoard.Probes.NetworkProbes.Ping;
+﻿namespace PingBoard.Probes.NetworkProbes.Ping.IpStatusCode;
 
 using System.Net;
 using System.Net.NetworkInformation;

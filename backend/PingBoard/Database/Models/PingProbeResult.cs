@@ -1,13 +1,16 @@
 ﻿namespace PingBoard.Database.Models;
 
 using System.Diagnostics.CodeAnalysis;
+using System.Net;
 using System.Net.NetworkInformation;
 using System.Text.Json;
 using Google.Protobuf.WellKnownTypes;
 using PingBoard.Probes.NetworkProbes;
+using PingBoard.Probes.NetworkProbes.Ping.IpStatusCode;
 using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
 using Protos;
+using PingResultPublic = Probes.NetworkProbes.Ping.PingResultPublic;
 
 /// <summary>
 /// Defines a class meant to encapsulate the values returned by the SendPingGroupAsync() function
@@ -63,12 +66,15 @@ public record PingProbeResult : ProbeResult
     {
         return new PingResultPublic
         {
-            Start = Timestamp.FromDateTime(DateTime.SpecifyKind(result.Start, DateTimeKind.Utc)),
-            End = Timestamp.FromDateTime(DateTime.SpecifyKind(result.End, DateTimeKind.Utc)),
+            Start = DateTime.SpecifyKind(result.Start, DateTimeKind.Utc),
+            End = DateTime.SpecifyKind(result.End, DateTimeKind.Utc),
             Target = result.Target,
-            IpStatus = result.IpStatus.ToString(),
             Ttl = result.Ttl,
             ReplyAddress = result.ReplyAddress,
+            Id = result.Id.ToString(),
+            StatusCodeEntry = IcmpStatusCodeLookup
+                .Lookup(result.IpStatus.Value, IPAddress.Parse(result.ReplyAddress))
+                .ToIcmpStatusCodeEntryPublic(),
         };
     }
 

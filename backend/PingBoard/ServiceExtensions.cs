@@ -1,11 +1,8 @@
 ﻿namespace PingBoard;
 
-using System.Collections.Immutable;
 using System.Net.NetworkInformation;
-using System.Reflection;
-using System.Threading.Channels;
+using Apis.Probes;
 using Database.Models;
-using Endpoints;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
@@ -15,7 +12,8 @@ using Probes;
 using Probes.NetworkProbes;
 using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
-using Protos;
+using Probes.Utilities;
+using Scalar.AspNetCore;
 using Serilog;
 using Services;
 
@@ -66,22 +64,32 @@ public static class ServiceExtensions
                         : 5245,
                     listenOptions =>
                     {
-                        listenOptions.Protocols = HttpProtocols.Http2;
+                        listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
                     }
                 );
             }
         );
     }
+
+    public static void ConfigureHttpJson(this WebApplicationBuilder builder)
+    {
+        builder.Services.ConfigureHttpJsonOptions(options =>
+        {
+            options.SerializerOptions.TypeInfoResolverChain.Insert(0, AppJsonSerializerContext.Default);
+        });
+    }
     // csharpier-ignore-end
 
+    /*
     public static void AddGrpc(this WebApplicationBuilder builder)
     {
         builder.Services.AddGrpc();
         builder.Services.AddGrpcReflection();
         //builder.Services.AddGrpcHealthChecks()
         //.AddCheck("InsertCheckNameHere", () => HealthCheckResult.Healthy());
-    }
+    }*/
 
+    /*
     public static void AddServerEventChannels(this WebApplicationBuilder builder)
     {
         var typeNames = Enum.GetNames<ServerEvent.ServerEventOneofCase>().ToHashSet();
@@ -106,8 +114,9 @@ public static class ServiceExtensions
                 channel
             );
         }
-    }
+    }*/
 
+    /*
     public static void AddServerEventChannelReaders(this WebApplicationBuilder builder)
     {
         builder.Services.AddKeyedSingleton<IImmutableList<IChannelReaderAdapter>>(
@@ -162,14 +171,15 @@ public static class ServiceExtensions
                 return channelList.ToImmutableList();
             }
         );
-    }
+    } */
 
+    /*
     public static void AddServerEventClasses(this WebApplicationBuilder builder)
     {
         builder.AddServerEventChannels();
-        builder.AddServerEventChannelReaders();
+        //builder.AddServerEventChannelReaders();
         builder.Services.AddSingleton<ServerEventEmitter>();
-    }
+    }*/
 
     public static void ConfigureCorsPolicy(this WebApplicationBuilder builder)
     {
@@ -259,6 +269,11 @@ public static class ServiceExtensions
         }
     }
 
+    public static void AddOpenApi(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddOpenApi();
+    }
+
     // csharpier-ignore-start
     public static void AddNetworkProbeLiaisonFactory(this WebApplicationBuilder builder)
     {
@@ -300,14 +315,16 @@ public static class ServiceExtensions
     public static void AddServices(this WebApplicationBuilder builder)
     {
         builder.ConfigureWebServer();
-        builder.AddGrpc();
+        builder.ConfigureHttpJson();
+        //builder.AddGrpc();
         builder.AddPingingClasses();
         builder.AddProbes();
         builder.AddDatabase();
-        builder.AddServerEventClasses();
+        //builder.AddServerEventClasses();
         builder.AddServiceLayerTypes();
         builder.ConfigureCorsPolicy();
         builder.AddLogging();
+        builder.AddOpenApi();
     }
 
     /******************* Web Application related extensions *******************/
@@ -324,24 +341,20 @@ public static class ServiceExtensions
         {
             //app.UseSwagger();
             //app.UseSwaggerUI();
-            app.MapGrpcReflectionService();
         }
     }
 
-    public static void UseGrpc(this WebApplication app)
+    public static void UseOpenApi(this WebApplication app)
     {
-        app.MapGrpcService<Services.PingBoardService>();
-        app.MapGet(
-            "/",
-            () =>
-                "This gRPC service is gRPC-Web enabled and is callable from browser apps using the gRPC-Web protocol"
-        );
+        app.MapOpenApi();
+        app.MapScalarApiReference();
     }
 
     public static void Configure(this WebApplication app)
     {
         app.UsePermissiveCorsPolicy();
         app.ConfigureHttpRequestPipeline();
-        app.UseGrpc();
+        app.UseOpenApi();
+        app.MapProbingApis();
     }
 }
