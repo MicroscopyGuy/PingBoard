@@ -1,6 +1,8 @@
 ﻿namespace PingBoard;
 
+using System.Collections.Immutable;
 using System.Net.NetworkInformation;
+using System.Threading.Channels;
 using Apis.Probes;
 using Database.Models;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -16,6 +18,7 @@ using Probes.Utilities;
 using Scalar.AspNetCore;
 using Serilog;
 using Services;
+using Services.ServerEvents;
 
 public static class ServiceExtensions
 {
@@ -80,106 +83,16 @@ public static class ServiceExtensions
     }
     // csharpier-ignore-end
 
-    /*
-    public static void AddGrpc(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddGrpc();
-        builder.Services.AddGrpcReflection();
-        //builder.Services.AddGrpcHealthChecks()
-        //.AddCheck("InsertCheckNameHere", () => HealthCheckResult.Healthy());
-    }*/
-
-    /*
     public static void AddServerEventChannels(this WebApplicationBuilder builder)
     {
-        var typeNames = Enum.GetNames<ServerEvent.ServerEventOneofCase>().ToHashSet();
-        var serverEventTypes = typeof(ServerEvent)
-            .GetProperties()
-            .Select(prop => prop.PropertyType)
-            .Where(pt => typeNames.Contains(pt.Name))
-            .ToList();
+        builder.Services.AddSingleton<Channel<IServerEvent>>();
+    }
 
-        foreach (Type serverEventType in serverEventTypes)
-        {
-            var channel = typeof(Channel)
-                .GetMethods(BindingFlags.Static | BindingFlags.Public)
-                .Where(m => m.Name.StartsWith("CreateBounded"))
-                .Where(m => m.GetGenericArguments().Length == 1)
-                .First(m => m.GetParameters()[0].ParameterType == typeof(BoundedChannelOptions))
-                .MakeGenericMethod(serverEventType)
-                .Invoke(null, new object?[] { new BoundedChannelOptions(100) })!;
-
-            builder.Services.AddSingleton(
-                typeof(Channel<>).MakeGenericType(serverEventType),
-                channel
-            );
-        }
-    }*/
-
-    /*
-    public static void AddServerEventChannelReaders(this WebApplicationBuilder builder)
-    {
-        builder.Services.AddKeyedSingleton<IImmutableList<IChannelReaderAdapter>>(
-            "ServerEventChannelReaders",
-            (svc, _) =>
-            {
-                var channelList = new List<IChannelReaderAdapter>
-                {
-                    new ChannelReaderAdapter<ServerEvent.Types.PingAgentError>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.PingAgentError>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.PingAnomaly>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.PingAnomaly>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.PingInfo>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.PingInfo>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.PingOnOffToggle>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.PingOnOffToggle>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.DnsAgentError>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.DnsAgentError>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.DnsAnomaly>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.DnsAnomaly>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.DnsInfo>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.DnsInfo>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.DnsOnOffToggle>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.DnsOnOffToggle>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.TracerouteAgentError>(
-                        svc.GetRequiredService<
-                            Channel<ServerEvent.Types.TracerouteAgentError>
-                        >().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.TracerouteAnomaly>(
-                        svc.GetRequiredService<
-                            Channel<ServerEvent.Types.TracerouteAnomaly>
-                        >().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.TracerouteInfo>(
-                        svc.GetRequiredService<Channel<ServerEvent.Types.TracerouteInfo>>().Reader
-                    ),
-                    new ChannelReaderAdapter<ServerEvent.Types.TracerouteOnOffToggle>(
-                        svc.GetRequiredService<
-                            Channel<ServerEvent.Types.TracerouteOnOffToggle>
-                        >().Reader
-                    ),
-                };
-                return channelList.ToImmutableList();
-            }
-        );
-    } */
-
-    /*
     public static void AddServerEventClasses(this WebApplicationBuilder builder)
     {
         builder.AddServerEventChannels();
-        //builder.AddServerEventChannelReaders();
         builder.Services.AddSingleton<ServerEventEmitter>();
-    }*/
+    }
 
     public static void ConfigureCorsPolicy(this WebApplicationBuilder builder)
     {
@@ -274,6 +187,11 @@ public static class ServiceExtensions
         builder.Services.AddOpenApi();
     }
 
+    public static void AddEventHandling(this WebApplicationBuilder builder)
+    {
+        builder.Services.AddSignalR();
+    }
+
     // csharpier-ignore-start
     public static void AddNetworkProbeLiaisonFactory(this WebApplicationBuilder builder)
     {
@@ -307,7 +225,6 @@ public static class ServiceExtensions
 
     public static void AddServiceLayerTypes(this WebApplicationBuilder builder)
     {
-        //builder.Services.AddSingleton<NetworkProbeManager>();
         builder.Services.AddSingleton<ProbeOperationsCenter>();
         builder.AddNetworkProbeLiaisonFactory();
     }
@@ -316,15 +233,15 @@ public static class ServiceExtensions
     {
         builder.ConfigureWebServer();
         builder.ConfigureHttpJson();
-        //builder.AddGrpc();
         builder.AddPingingClasses();
         builder.AddProbes();
         builder.AddDatabase();
-        //builder.AddServerEventClasses();
+        builder.AddServerEventClasses();
         builder.AddServiceLayerTypes();
         builder.ConfigureCorsPolicy();
         builder.AddLogging();
         builder.AddOpenApi();
+        builder.AddEventHandling();
     }
 
     /******************* Web Application related extensions *******************/

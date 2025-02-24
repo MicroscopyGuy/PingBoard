@@ -1,24 +1,6 @@
-﻿namespace PingBoard.Services;
+﻿namespace PingBoard.Apis.Events;
 
-using System.Collections.Immutable;
-using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
-using JsonSchemaGeneratedTypes;
-using PingBoard.Database.Utilities;
-using PingBoard.Endpoints;
-using PingBoard.Probes.NetworkProbes;
-using Probes.NetworkProbes.Common;
-using Probes.NetworkProbes.Ping;
-using Probes.Utilities;
-using Protos;
-using StartProbe = JsonSchemaGeneratedTypes.StartProbeRequest;
-using StopProbe = JsonSchemaGeneratedTypes.StopProbeRequest;
-
-/// <summary>
-/// A class which represents the service offerings of the PingBoard backend, and defines
-/// the central stream through which ServerEvents are sent to the frontend.
-/// </summary>
-public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBoardServiceBase
+public class ServerEventNotifications
 {
     private ProbeOperationsCenter _probeOperationsCenter;
     private readonly IImmutableList<IChannelReaderAdapter> _serverEventChannelReaders;
@@ -48,9 +30,9 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
     /// <param name="responseStream">The writer that writes ServerEvents to the stream.</param>
     /// <param name="context">Represents the context of a server-side call.</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public override async Task GetLatestServerEvent(
+    public async Task GetLatestServerEvent(
         Empty request,
-        IServerStreamWriter<ServerEvent> responseStream,
+        IServerStreamWriter<IServerEvent> responseStream,
         ServerCallContext context
     )
     {
@@ -59,8 +41,7 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         {
             var readyTaskReader = await GetReadyChannelReaderAdapter(context.CancellationToken);
 
-            // the boolean result of Invoke indicates if something was read or not
-            ServerEvent? eventToSend;
+            IServerEvent? eventToSend;
             while ((eventToSend = readyTaskReader.ReadNextServerEvent()) != null)
             {
                 await responseStream.WriteAsync(eventToSend, context.CancellationToken);
@@ -114,20 +95,4 @@ public class PingBoardService : global::PingBoard.Protos.PingBoardService.PingBo
         var readyTaskReader = _serverEventChannelReaders[channelReaderTasks.IndexOf(readyTask)];
         return readyTaskReader;
     }
-
-    /*
-    // give this a PaginationToken as well, add to protobuff
-    public override async Task<ListPingsResponse> ListPings(ListPingsRequest request, ServerCallContext context)
-    {
-        var response = new ListPingsResponse();
-        var results = _crudOperations(
-            request.StartingTime,
-            request.EndingTime,
-            request.PingTarget,
-            request.Metric,
-            request.Statistic,
-            context.CancellationToken,
-            request.Quantum);
-
-    }*/
 }

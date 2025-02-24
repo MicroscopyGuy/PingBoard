@@ -1,9 +1,15 @@
-﻿namespace PingBoard.Endpoints;
+﻿namespace PingBoard.Services.ServerEvents;
 
 using System.Threading.Channels;
 using Protos;
 
+/// <summary>
+/// Allows reading events from one of the ServerEvent channels so the events can be placed on the main
+/// channel that sends events to the frontend.
+/// </summary>
+/// <typeparam name="T"></typeparam>
 public class ChannelReaderAdapter<T> : IChannelReaderAdapter
+    where T : IServerEvent
 {
     private readonly ChannelReader<T> _channelReader;
 
@@ -17,24 +23,14 @@ public class ChannelReaderAdapter<T> : IChannelReaderAdapter
         return await _channelReader.WaitToReadAsync(cancellationToken);
     }
 
-    public ServerEvent? ReadNextServerEvent()
+    public IServerEvent? ReadNextServerEvent()
     {
-        T item = default(T);
         // if there is nothing to read
-        if (!_channelReader.TryRead(out item))
+        if (!_channelReader.TryRead(out var serverEvent))
         {
             return null;
         }
 
-        var serverEvent = new ServerEvent();
-        foreach (var serverEventProperty in serverEvent.GetType().GetProperties())
-        {
-            if (typeof(T) == serverEventProperty.PropertyType)
-            {
-                serverEventProperty.SetValue(serverEvent, item);
-                break;
-            }
-        }
         return serverEvent;
     }
 }

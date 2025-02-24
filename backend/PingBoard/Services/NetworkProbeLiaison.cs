@@ -1,8 +1,9 @@
-﻿namespace PingBoard.Probes.NetworkProbes;
+﻿namespace PingBoard.Services;
 
-using Common;
 using PingBoard.Database.Utilities;
+using PingBoard.Probes;
 using PingBoard.Services;
+using Probes.NetworkProbes.Common;
 
 /// A class that implements INetworkProbeBase (sic) can combine as many other low level probes (raw networking functionality)
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe

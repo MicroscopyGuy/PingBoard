@@ -2,8 +2,7 @@ namespace PingBoard.Services;
 
 using System.Threading.Channels;
 using Grpc.Core;
-using Protos;
-using static Protos.ServerEvent.Types;
+using Services.ServerEvents;
 
 /// <summary>
 /// Provides a single, combined stream of the ServerEvent channels to the frontend, through which all ServerEvents
@@ -11,48 +10,34 @@ using static Protos.ServerEvent.Types;
 /// </summary>
 public class ServerEventEmitter //<T> where T: INetworkProbeBase
 {
-    private readonly Channel<PingAnomaly> _pingAnomalyChannel;
-    private readonly Channel<PingOnOffToggle> _pingOnOffToggleChannel;
-    private readonly Channel<PingAgentError> _pingAgentErrorChannel;
-    private readonly Channel<PingInfo> _pingInfoChannel;
+    private readonly Channel<IServerEvent> _serverEventChannel;
+
+    //private readonly IChannelReaderAdapter _channelReaderAdapter;
 
     //private readonly Func<INetworkProbeBase, channels> channelFactory;
     private readonly ILogger<ServerEventEmitter> _logger;
 
     public ServerEventEmitter(
-        Channel<PingAnomaly> anomalyErrorChannel,
-        Channel<PingOnOffToggle> pingOnOffToggleChannel,
-        Channel<PingAgentError> pingAgentErrorChannel,
-        Channel<PingInfo> pingInfoChannel,
+        Channel<IServerEvent> serverEventChannel,
         ILogger<ServerEventEmitter> logger
     )
     {
-        _pingAnomalyChannel = anomalyErrorChannel;
-        _pingOnOffToggleChannel = pingOnOffToggleChannel;
-        _pingAgentErrorChannel = pingAgentErrorChannel;
-        _pingInfoChannel = pingInfoChannel;
+        _serverEventChannel = serverEventChannel;
+        //_channelReaderAdapter = new ChannelReaderAdapter<IServerEvent>(_serverEventChannel.Reader);
         _logger = logger;
     }
 
     /// <summary>
-    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
+    /// Sends a ServerEvent to the frontend
     /// </summary>
-    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
-    /// <param name="status">A boolean value indicating whether the pinging is active or not</param>
-    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
+    /// <param name="serverEvent">The server event to be sent.</param>
+    /// <param name="caller">The function that invoked this function, used for logging purposes.</param>
     /// <exception cref="InvalidOperationException"></exception>
-    public void IndicatePingOnOffToggle(string target, bool status, string caller)
+    public void IndicateServerEvent(IServerEvent serverEvent, string caller)
     {
         try
         {
-            var writeSuccess = _pingOnOffToggleChannel.Writer.TryWrite(
-                new PingOnOffToggle
-                {
-                    PingTarget = new PingTarget { Target = target },
-                    Active = status,
-                }
-            );
-
+            var writeSuccess = _serverEventChannel.Writer.TryWrite(serverEvent);
             if (!writeSuccess)
             {
                 string message =
@@ -60,10 +45,9 @@ public class ServerEventEmitter //<T> where T: INetworkProbeBase
                 throw (new InvalidOperationException(message));
             }
             _logger.LogDebug(
-                $"ServerEventEmitter: IndicateChangedPingStatus: target{target}, status:{status}, caller:{caller}",
-                target,
-                status,
-                caller
+                $"ServerEventEmitter: IndicateServerEvent: caller:{caller} event:{serverEvent}",
+                caller,
+                serverEvent
             );
         }
         catch (Exception e)
@@ -73,119 +57,17 @@ public class ServerEventEmitter //<T> where T: INetworkProbeBase
                 caller,
                 e.ToString()
             );
-        }
-    }
 
-    /// <summary>
-    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
-    /// </summary>
-    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
-    /// <param name="description">A description of the PingAnomaly, ie, in which way(s) it is anomalous</param>
-    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
-    /// <exception cref="InvalidOperationException"></exception>
-    public void IndicatePingAnomaly(string target, string description, string caller)
-    {
-        try
-        {
-            var writeSuccess = _pingAnomalyChannel.Writer.TryWrite(
-                new PingAnomaly()
-                {
-                    PingTarget = new PingTarget { Target = target },
-                    AnomalyDescription = description,
-                }
-            );
+            // If an event cannot be written to the server event channel, information that the frontend needs will not
+            // be available; buttons will not update, graphs won't request new information. In short, the application
+            // would be, or soon become unusable. For this reason, the application must be closed and restarted.
+            string failFastMsg = """
+                One or more events could not be communicated to the frontend for an unknown reason.
+                Application is now in an unusable state and must be restarted.
+                """;
 
-            if (!writeSuccess)
-            {
-                string message =
-                    "An attempt to write to the PingAnomalyIndicator channel was unsuccessful.";
-                throw (new InvalidOperationException(message));
-            }
-            _logger.LogDebug(
-                $"ServerEventEmitter: IndicatePingAnomaly: target{target}, anomalyDescription:{description}, caller:{caller}",
-                target,
-                caller
-            );
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(
-                "ServerEventEmitter: IndicatePingAnomaly: ${caller}: ${eText}",
-                caller,
-                e.ToString()
-            );
-        }
-    }
-
-    /// <summary>
-    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
-    /// </summary>
-    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
-    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
-    /// <exception cref="InvalidOperationException"></exception>
-    public void IndicatePingInfo(string target, string caller)
-    {
-        try
-        {
-            var writeSuccess = _pingInfoChannel.Writer.TryWrite(
-                new PingInfo() { PingTarget = new PingTarget { Target = target } }
-            );
-
-            if (!writeSuccess)
-            {
-                string message =
-                    "An attempt to write to the PingAnomalyIndicator channel was unsuccessful.";
-                throw (new InvalidOperationException(message));
-            }
-            _logger.LogDebug(
-                $"ServerEventEmitter: IndicatePingInfo: target{target}, caller:{caller}",
-                target,
-                caller
-            );
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(
-                "ServerEventEmitter: IndicatePingInfo: ${caller}: ${eText}",
-                caller,
-                e.ToString()
-            );
-        }
-    }
-
-    /// <summary>
-    /// An RPC that the backend can use to send a PingOnOffToggle ServerEvent through the stream
-    /// </summary>
-    /// <param name="target">The domain or IPAddress that has now either started or stopped being pinged.</param>
-    /// <param name="caller">The function that invoked this function, used for logging purposes</param>
-    /// <exception cref="InvalidOperationException"></exception>
-    public void IndicatePingAgentError(string target, string caller)
-    {
-        try
-        {
-            var writeSuccess = _pingAgentErrorChannel.Writer.TryWrite(
-                new PingAgentError() { PingTarget = new PingTarget { Target = target } }
-            );
-
-            if (!writeSuccess)
-            {
-                string message =
-                    "An attempt to write to the PingAnomalyIndicator channel was unsuccessful.";
-                throw (new InvalidOperationException(message));
-            }
-            _logger.LogDebug(
-                $"ServerEventEmitter: IndicatePingInfo: target{target}, caller:{caller}",
-                target,
-                caller
-            );
-        }
-        catch (Exception e)
-        {
-            _logger.LogCritical(
-                "ServerEventEmitter: IndicatePingInfo: ${caller}: ${eText}",
-                caller,
-                e.ToString()
-            );
+            // kills the application immediately, logs to the OS crash logs
+            Environment.FailFast(failFastMsg, e);
         }
     }
 }
