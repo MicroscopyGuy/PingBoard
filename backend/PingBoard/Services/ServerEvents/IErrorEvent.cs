@@ -1,6 +1,6 @@
 ﻿namespace PingBoard.Services.ServerEvents;
 
-public interface IErrorEvent : IServerEvent
+public interface IErrorEvent
 {
     string ErrorDescription { get; set; }
 }

@@ -1,6 +1,6 @@
 ﻿namespace PingBoard.Services.ServerEvents;
 
-public interface IProbeEvent : IServerEvent
+public interface IProbeEvent
 {
     Guid ProbeId { get; set; }
     string ProbeType { get; set; }

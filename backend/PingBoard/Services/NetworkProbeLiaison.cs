@@ -4,6 +4,7 @@ using PingBoard.Database.Utilities;
 using PingBoard.Probes;
 using PingBoard.Services;
 using Probes.NetworkProbes.Common;
+using ServerEvents;
 
 /// A class that implements INetworkProbeBase (sic) can combine as many other low level probes (raw networking functionality)
 /// as it needs to be operational, and will be presented to a NetworkProbe as a single unit. A full-fledged NetworkProbe
@@ -24,7 +25,7 @@ public class NetworkProbeLiaison : IDisposable
         public ILogger<NetworkProbeLiaison> Logger { get; init; }
     }
 
-    private readonly INetworkProbeBase _baseNetworkProbe; // need an INetworkProbeBase factory
+    private readonly INetworkProbeBase _probe; // need an INetworkProbeBase factory
     private readonly CancellationTokenSource _cancellationTokenSource;
     private readonly CrudOperations _crudOperations;
     private readonly ServerEventEmitter _serverEventEmitter;
@@ -39,7 +40,7 @@ public class NetworkProbeLiaison : IDisposable
 
     public NetworkProbeLiaison(Configuration configuration)
     {
-        _baseNetworkProbe = configuration.BaseNetworkProbe;
+        _probe = configuration.BaseNetworkProbe;
         _crudOperations = configuration.CrudOperations;
         _cancellationTokenSource = configuration.CancellationTokenSource;
         _serverEventEmitter = configuration.ServerEventEmitter;
@@ -58,7 +59,7 @@ public class NetworkProbeLiaison : IDisposable
     public void StartProbingAsync()
     {
         _logger.LogTrace(
-            $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered StartProbingAsync"
+            $"NetworkProbeLiaison with probe type {_probe.GetType()}: Entered StartProbingAsync"
         );
         _logger.LogInformation("(9) NetworkProbeLiaison: StartProbing: About to DoProbingAsync()");
         _probeTask = DoProbingAsync().ContinueWith(AfterProbingAsync);
@@ -87,9 +88,15 @@ public class NetworkProbeLiaison : IDisposable
             _logger.LogInformation(
                 "(14) NetworkProbeLiaison: AfterProbingAsync(): task state is faulted"
             );
-            _serverEventEmitter.IndicatePingAgentError(
-                _probeBehavior.GetTarget(),
-                t.Exception.ToString()
+
+            _serverEventEmitter.IndicateServerEvent(
+                new ProbeError(
+                    _probe.ProbeId,
+                    _probe.GetName(),
+                    _probeBehavior.GetTarget(),
+                    t.Exception.Message
+                ),
+                "NetworkProbeLiaison: AfterProbingAsync"
             );
             _logger.LogCritical(
                 "An exception occured while probing {target.ToString()} Exception: {exception}",
@@ -102,34 +109,33 @@ public class NetworkProbeLiaison : IDisposable
             _logger.LogDebug("NetworkProbeLiaison ran to completion");
         }
 
-        _serverEventEmitter.IndicatePingOnOffToggle(
-            _probeBehavior.GetTarget(),
-            false,
+        _serverEventEmitter.IndicateServerEvent(
+            new ProbeStatus(_probe.ProbeId, "off", _probeBehavior.GetTarget(), _probe.GetName()),
             "NetworkProbeLiaison: AfterProbingAsync"
-        ); // hardcode for now
+        );
     }
 
     private async Task DoProbingAsync()
     {
         //logging here
         _logger.LogTrace(
-            $"NetworkProbeLiaison with probe type {_baseNetworkProbe.GetType()}: Entered DoProbingAsync"
+            $"NetworkProbeLiaison with probe type {_probe.GetType()}: Entered DoProbingAsync"
         );
         _logger.LogInformation(
-            $"(10) NetworkProbeLiaison: Entered DoProbingAsync with probe type {_baseNetworkProbe.GetName()}"
+            $"(10) NetworkProbeLiaison: Entered DoProbingAsync with probe type {_probe.GetName()}"
         );
         var token = _cancellationTokenSource.Token;
-        var result = _baseNetworkProbe.NewResult();
+        var result = _probe.NewResult();
         var onEventReported = false;
 
         //emit server event, OnOffToggle
-        while (!token.IsCancellationRequested && _baseNetworkProbe.ShouldContinue(result))
+        while (!token.IsCancellationRequested && _probe.ShouldContinue(result))
         {
             //_probeScheduler.StartIntervalTracking();
             _logger.LogInformation(
                 "(11) NetworkProbeLiaison: DoProbingAsync, about to call the probe"
             );
-            result = await _baseNetworkProbe.ProbeAsync(_probeBehavior, token);
+            result = await _probe.ProbeAsync(_probeBehavior, token);
             _logger.LogInformation(
                 $"(12) NetworkProbeLiaison: DoProbingAsync: result: {(result is null ? "null" : result.ToString())}"
             );
@@ -137,25 +143,37 @@ public class NetworkProbeLiaison : IDisposable
 
             if (!onEventReported)
             {
-                _serverEventEmitter.IndicatePingOnOffToggle(
-                    _probeBehavior.GetTarget(),
-                    true,
+                _serverEventEmitter.IndicateServerEvent(
+                    new ProbeStatus(
+                        _probe.ProbeId,
+                        "on",
+                        _probeBehavior.GetTarget(),
+                        _probe.GetName()
+                    ),
                     "NetworkProbeLiaison: DoProbingAsync"
                 );
             }
 
             await _crudOperations.InsertProbeResult(result, token);
-            _serverEventEmitter.IndicatePingInfo(
-                _probeBehavior.GetTarget(),
+            _serverEventEmitter.IndicateServerEvent(
+                new ProbeInfo(_probe.ProbeId, _probeBehavior.GetTarget(), _probe.GetName()),
                 "NetworkProbeLiaison: DoProbingAsync"
             );
+
+            if (_probe.IsAnomaly(result, _probeThresholds))
+            {
+                _serverEventEmitter.IndicateServerEvent(
+                    new ProbeAnomaly(_probe.ProbeId, _probeBehavior.GetTarget(), _probe.GetName()),
+                    "NetworkProbeLiaison: DoProbingAsync"
+                );
+            }
 
             //_probeScheduler.DelayProbingAsync();
             await Task.Delay(1000, token);
         }
     }
 
-    //https://learn.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskStatus?view=net-9.0
+    // https://learn.microsoft.com/en-us/dotnet/api/System.Threading.Tasks.TaskStatus?view=net-9.0
     public TaskStatus GetProbingStatus()
     {
         return _probeTask.Status;

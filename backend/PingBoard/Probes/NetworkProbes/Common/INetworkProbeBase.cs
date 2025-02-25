@@ -13,6 +13,7 @@ public interface INetworkProbeBase<TProbeBehavior, TProbeThresholds, TProbeResul
 public interface INetworkProbeBase
 {
     public static abstract string Name { get; }
+    public Guid ProbeId { get; }
     Task<ProbeResult> ProbeAsync(IProbeBehavior probeBehavior, CancellationToken cancellationToken);
     bool ShouldContinue(ProbeResult result);
     bool IsAnomaly(ProbeResult result, IProbeThresholds thresholds);

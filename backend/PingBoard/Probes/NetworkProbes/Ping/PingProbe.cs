@@ -16,10 +16,12 @@ public class PingProbe
     public static string Name => "Ping";
     private IIndividualPinger _pinger;
     private ILogger<PingProbe> _logger;
+    public Guid ProbeId { get; private set; }
 
     public PingProbe(IIndividualPinger pinger, ILogger<PingProbe> logger)
     {
         _pinger = pinger;
+        ProbeId = Guid.CreateVersion7();
         _logger = logger;
     }
 
