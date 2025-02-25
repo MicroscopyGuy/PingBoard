@@ -1,9 +1,5 @@
 ﻿namespace PingBoard.Apis.Probes;
 
-using Endpoints;
-using Google.Protobuf.WellKnownTypes;
-using Grpc.Core;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using PingBoard.Probes.NetworkProbes.Common;
 using Services;
