@@ -3,7 +3,6 @@ import { PingConfig, StartProbe } from '../../../apiSchemas/startProbeTypes'
 import { string } from 'zod';
 import { ProbeFormDialog } from './CommonInput/ProbeFormDialog';
 import { probes, Probe } from './CommonInput/ProbeFormTypes';
-import { StartProbingRequest } from "client/dist/gen/service_pb";
 import { DatabaseContext } from '@/PingBackendContext';
 
 

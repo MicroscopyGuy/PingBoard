@@ -8,6 +8,11 @@ public static class Anomalies
     public static void MapAnomalyApis(this WebApplication app)
     {
         var anomalies = app.MapGroup("ProbeData");
+        anomalies
+            .MapGet("", ListAnomalies)
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status500InternalServerError);
     }
 
     /*
@@ -37,19 +42,49 @@ public static class Anomalies
         DateTime startTime = DateTime.UtcNow;
         if (!string.IsNullOrEmpty(paginationToken))
         {
-            var suppliedToken = PaginationToken<DateTime>.FromApiFormat(
-                paginationToken,
-                "ListAnomalies"
-            );
+            PaginationToken<DateTime> suppliedToken;
+            try
+            {
+                suppliedToken = PaginationToken<DateTime>.FromApiFormat(
+                    paginationToken,
+                    "ListAnomalies"
+                );
+            }
+            catch (Exception ex)
+            {
+                var problemDetails = new ProblemDetails()
+                {
+                    Title = "Pagination token doesn't match API name",
+                    Detail = ex.Message,
+                    Status = StatusCodes.Status400BadRequest,
+                };
+                return Results.BadRequest(problemDetails);
+            }
+
             startTime = suppliedToken.Token;
         }
         var response = new ListAnomaliesResponse();
-        var anomalies = await crudOperations.ListAnomaliesAsync(
-            startTime,
-            numberRequested + 1,
-            cancellationToken,
-            target
-        );
+
+        List<PingResultPublic> anomalies;
+        try
+        {
+            anomalies = await crudOperations.ListAnomaliesAsync(
+                startTime,
+                numberRequested + 1,
+                cancellationToken,
+                target
+            );
+        }
+        catch (Exception ex)
+        {
+            var problemDetails = new ProblemDetails()
+            {
+                Title = "Error retrieving anomalies from the database",
+                Detail = ex.Message,
+                Status = StatusCodes.Status500InternalServerError,
+            };
+            return Results.BadRequest(problemDetails);
+        }
 
         if (anomalies.Count == numberRequested + 1)
         {

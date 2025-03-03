@@ -1,0 +1,159 @@
+{
+  "type": "object",
+  "properties": {
+    "ProbeAnomaly": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ProbeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ProbeType": {
+          "type": "string"
+        },
+        "Target": {
+          "type": "string"
+        },
+        "EventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "EventTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ProbeId",
+        "ProbeType",
+        "Target"
+      ]
+    },
+    "ProbeError": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ProbeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "ProbeType": {
+          "type": "string"
+        },
+        "ErrorDescription": {
+          "type": "string"
+        },
+        "Target": {
+          "type": "string"
+        },
+        "EventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "EventTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ProbeId",
+        "ProbeType",
+        "ErrorDescription",
+        "Target"
+      ]
+    },
+    "ProbeStatus": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ProbeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "Status": {
+          "type": "string"
+        },
+        "Target": {
+          "type": "string"
+        },
+        "ProbeType": {
+          "type": "string"
+        },
+        "EventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "EventTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ProbeId",
+        "Status",
+        "Target",
+        "ProbeType"
+      ]
+    },
+    "ProbeInfo": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ProbeId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "Target": {
+          "type": "string"
+        },
+        "ProbeType": {
+          "type": "string"
+        },
+        "EventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "EventTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ProbeId",
+        "Target",
+        "ProbeType"
+      ]
+    },
+    "AdminError": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "properties": {
+        "ErrorDescription": {
+          "type": "string"
+        },
+        "EventId": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "EventTime": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": [
+        "ErrorDescription"
+      ]
+    }
+  }
+}

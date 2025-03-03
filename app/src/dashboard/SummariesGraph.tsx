@@ -3,7 +3,6 @@ import LineChart from "@cloudscape-design/components/line-chart";
 import Box from "@cloudscape-design/components/box";
 import Button from "@cloudscape-design/components/button";
 import Link from "@cloudscape-design/components/link";
-import { PingTarget, ServerEvent_PingInfo } from "client/dist/gen/service_pb";
 import {useState, useEffect, useCallback} from 'react';
 import { useBackendClient } from './PingBackendContext'
 import { useServerEventListener } from "./ServerEventListener";

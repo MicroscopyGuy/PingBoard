@@ -4,12 +4,9 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.NetworkInformation;
 using System.Text.Json;
-using Google.Protobuf.WellKnownTypes;
-using PingBoard.Probes.NetworkProbes;
 using PingBoard.Probes.NetworkProbes.Ping.IpStatusCode;
 using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
-using Protos;
 using PingResultPublic = Probes.NetworkProbes.Ping.PingResultPublic;
 
 /// <summary>

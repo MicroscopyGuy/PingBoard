@@ -1,9 +1,19 @@
 ﻿namespace PingBoard.Services.ServerEvents;
 
+using System.Text.Json.Serialization;
+
+[JsonDerivedType(typeof(AdminError))]
+[JsonDerivedType(typeof(ProbeAnomaly))]
+[JsonDerivedType(typeof(ProbeError))]
+[JsonDerivedType(typeof(ProbeInfo))]
+[JsonDerivedType(typeof(ProbeStatus))]
 public record ServerEventBase : IServerEvent
 {
-    public Guid EventId { get; set; }
-    public DateTime EventTime { get; set; }
+    [JsonInclude]
+    public Guid EventId { get; }
+
+    [JsonInclude]
+    public DateTime EventTime { get; }
 
     public ServerEventBase()
     {

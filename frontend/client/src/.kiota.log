@@ -1,0 +1,10 @@
+Warning: KiotaBuilder OpenAPI warning: #/ - A servers entry (v3) or host + basePath + schemes properties (v2) was not present in the OpenAPI description. The root URL will need to be set manually with the request adapter.
+Warning: KiotaBuilder OpenAPI warning: #/components/schemas/ProblemDetails/properties/status - The format int32 is not supported by Kiota for the type Null, Integer and the string type will be used.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/IProbeBehavior/discriminator - Schema  must contain property specified in the discriminator $type in the required field list.
+Error: KiotaBuilder OpenAPI error: #/components/schemas/IProbeThresholds/discriminator - Schema  must contain property specified in the discriminator $type in the required field list.
+Warning: KiotaBuilder No server url found in the OpenAPI document. The base url will need to be set when using the client.
+Warning: KiotaBuilder Discriminator INetworkProbeTargetIpAddressTarget not found in the OpenAPI document.
+Warning: KiotaBuilder Discriminator INetworkProbeTargetHostnameTarget not found in the OpenAPI document.
+Warning: KiotaBuilder Discriminator INetworkProbeTargetIpAddressTarget not found in the OpenAPI document.
+Warning: KiotaBuilder Discriminator INetworkProbeTargetHostnameTarget not found in the OpenAPI document.
+Warning: KiotaBuilder Discriminator IProbeBehaviorPingProbeBehavior is not inherited from IProbeBehavior.

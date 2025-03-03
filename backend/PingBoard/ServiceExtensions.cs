@@ -1,7 +1,9 @@
 ﻿namespace PingBoard;
 
-using System.Collections.Immutable;
 using System.Net.NetworkInformation;
+using System.Text.Json;
+using System.Text.Json.Nodes;
+using System.Text.Json.Schema;
 using System.Threading.Channels;
 using Apis.Probes;
 using Database.Models;
@@ -11,10 +13,9 @@ using Microsoft.EntityFrameworkCore;
 using PingBoard.Database.Utilities;
 using Pinging;
 using Probes;
-using Probes.NetworkProbes;
 using Probes.NetworkProbes.Common;
 using Probes.NetworkProbes.Ping;
-using Probes.Utilities;
+using Probes.Services;
 using Scalar.AspNetCore;
 using Serilog;
 using Services;
@@ -85,7 +86,9 @@ public static class ServiceExtensions
 
     public static void AddServerEventChannels(this WebApplicationBuilder builder)
     {
-        builder.Services.AddSingleton<Channel<IServerEvent>>();
+        builder.Services.AddSingleton<Channel<ServerEventBase>>(
+            Channel.CreateBounded<ServerEventBase>(100)
+        );
     }
 
     public static void AddServerEventClasses(this WebApplicationBuilder builder)
@@ -184,7 +187,50 @@ public static class ServiceExtensions
 
     public static void AddOpenApi(this WebApplicationBuilder builder)
     {
-        builder.Services.AddOpenApi();
+        builder.Services.AddOpenApi(options =>
+        {
+            options.AddDocumentTransformer(
+                async (operation, context, cancellationToken) =>
+                {
+                    if (!Directory.Exists("ServerEventSchemas"))
+                    {
+                        Directory.CreateDirectory("ServerEventSchemas");
+                    }
+
+                    var serverEventTypes = new[]
+                    {
+                        typeof(ProbeAnomaly),
+                        typeof(ProbeError),
+                        typeof(ProbeStatus),
+                        typeof(ProbeInfo),
+                        typeof(AdminError),
+                    };
+
+                    var properties = new JsonObject();
+
+                    foreach (var eventType in serverEventTypes)
+                    {
+                        var schema = JsonSchemaExporter.GetJsonSchemaAsNode(
+                            new JsonSerializerOptions()
+                            {
+                                TypeInfoResolver = AppJsonSerializerContext.Default,
+                            },
+                            eventType
+                        );
+                        properties.Add(eventType.Name, schema);
+                    }
+
+                    var serverEventSchema = new JsonObject();
+                    serverEventSchema.Add("type", "object");
+                    serverEventSchema.Add("properties", properties);
+
+                    File.WriteAllText(
+                        "./ServerEventSchemas/ServerEventSchema.json",
+                        serverEventSchema.ToJsonString()
+                    );
+                }
+            );
+        });
     }
 
     public static void AddEventHandling(this WebApplicationBuilder builder)

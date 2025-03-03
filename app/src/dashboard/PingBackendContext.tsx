@@ -1,9 +1,8 @@
 import { ReactNode, useContext } from "react";
 import { createContext, useEffect, useCallback } from "react";
-import type * as bc from 'client/dist/gen/service_pb';
 import { dispatchEvent, CustomEventMap } from "./ServerEventListener";
 import { BackendClient } from '../types';
-import createClient from './PingBackendClient';
+import createClient from 'client';
 
 type DatabaseContext = {
     client?: BackendClient

@@ -11,12 +11,14 @@
     <OpenApiDocumentsDirectory>.</OpenApiDocumentsDirectory>
     <NoDefaultLaunchSettingsFile>true</NoDefaultLaunchSettingsFile>
     <InvariantGlobalization>true</InvariantGlobalization>
+    <PublishAot>false</PublishAot>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <PublishAot>true</PublishAot>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Corvus.Json.ExtendedTypes" Version="4.2.4" />
-    <PackageReference Include="DnsClient" Version="1.8.0" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.2" />
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.6" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.7">
@@ -50,10 +52,6 @@
     <PackageReference Include="Grpc.AspNetCore.HealthChecks" Version="2.65.0" />
     <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.65.0" />
     <PackageReference Include="Grpc.StatusProto" Version="2.65.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Protobuf Include="..\..\protos\service.proto" GrpcServices="Server" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,6 +1,5 @@
 import './AnomaliesTable.css';
 import { useCallback, useContext, useState, useEffect, useRef } from 'react';
-import { ListAnomaliesRequest, ListAnomaliesResponse, PingGroupSummaryPublic, ServerEvent_PingAnomaly } from 'client/dist/gen/service_pb';
 import { useServerEventListener } from './ServerEventListener';
 import { DatabaseContext } from './PingBackendContext';
 

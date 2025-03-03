@@ -2,7 +2,7 @@
 
 public interface IServerEvent
 {
-    Guid EventId { get; set; }
+    Guid EventId { get; }
 
-    DateTime EventTime { get; set; }
+    DateTime EventTime { get; }
 }

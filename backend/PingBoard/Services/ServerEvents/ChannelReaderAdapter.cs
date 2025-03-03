@@ -1,7 +1,6 @@
 ﻿namespace PingBoard.Services.ServerEvents;
 
 using System.Threading.Channels;
-using Protos;
 
 /// <summary>
 /// Allows reading events from one of the ServerEvent channels so the events can be placed on the main

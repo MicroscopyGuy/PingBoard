@@ -4,13 +4,6 @@ import { spawn } from "child_process";
 import { join } from "path";
 import * as http from "http";
 import { ipcMain } from "electron";
-import {
-  ListAnomaliesResponse,
-  PingTarget,
-  ServerEvent,
-} from "client/dist/gen/service_pb";
-import { PingBoardService } from "client";
-import { Empty } from "@bufbuild/protobuf";
 import type {
   Maybe,
   PromiseOrNever,

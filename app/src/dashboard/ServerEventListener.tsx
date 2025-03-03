@@ -1,6 +1,7 @@
-import * as proto from "client/dist/gen/service_pb";
+
 import { useEffect } from 'react';
 
+/*
 interface CustomEventMap {
     "pingonofftoggle": proto.ServerEvent_PingOnOffToggle;
     "pinganomaly": proto.ServerEvent_PingAnomaly;
@@ -17,6 +18,6 @@ function useServerEventListener<T extends keyof CustomEventMap> (serverEventName
         window.addEventListener(serverEventName, handler as EventListener);
         return () => window.removeEventListener(serverEventName, handler as EventListener);
     }, [serverEventName, handler]);
-}
+}*/
 
-export {dispatchEvent, type CustomEventMap, useServerEventListener};
+//export {useServerEventListener};

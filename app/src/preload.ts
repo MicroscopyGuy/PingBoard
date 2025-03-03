@@ -1,6 +1,5 @@
 // See the Electron documentation for details on how to use preload scripts:
 // https://www.electronjs.org/docs/latest/tutorial/process-model#preload-scripts
-import { ServerEvent } from "client/dist/gen/service_pb";
 import { contextBridge, ipcMain, ipcRenderer } from "electron";
 
 contextBridge.exposeInMainWorld("apiBridge", {

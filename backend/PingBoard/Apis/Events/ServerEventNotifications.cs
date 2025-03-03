@@ -1,11 +1,12 @@
 ﻿namespace PingBoard.Apis.Events;
 
+
+/*
 public class ServerEventNotifications
 {
     private ProbeOperationsCenter _probeOperationsCenter;
     private readonly IImmutableList<IChannelReaderAdapter> _serverEventChannelReaders;
     private readonly ILogger<PingBoardService> _logger;
-    private readonly CrudOperations _crudOperations;
 
     public PingBoardService(
         ProbeOperationsCenter probeOperationsCenter,
@@ -21,15 +22,14 @@ public class ServerEventNotifications
         _logger = logger;
     }
 
-    /* Consider renaming this to SendLatestServerEvents: pluralize it, and clarify direction of communication */
-    /// <summary>
-    /// Streams ServerEvents to the FrontEnd, one at a time. See the ServerEvent definition in protos/service.proto
-    /// for a comprehensive list of which ServerEvents are supported.
-    /// </summary>
-    /// <param name="request">Empty, since no user parameters are needed./param>
-    /// <param name="responseStream">The writer that writes ServerEvents to the stream.</param>
-    /// <param name="context">Represents the context of a server-side call.</param>
-    /// <exception cref="InvalidOperationException"></exception>
+    
+    private static async Task<IResult> GetServerEventNotifications(
+        [FromQuery] string? paginationToken,
+        [FromQuery] uint numberRequested,
+        CancellationToken cancellationToken,
+        [FromServices] Logger<PingResultPublic> logger,
+        [FromQuery] string? target = null
+    )
     public async Task GetLatestServerEvent(
         Empty request,
         IServerStreamWriter<IServerEvent> responseStream,
@@ -96,3 +96,4 @@ public class ServerEventNotifications
         return readyTaskReader;
     }
 }
+*/
